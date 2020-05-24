@@ -1,4 +1,4 @@
-const Code = require('../../shared/service/Code');
+const Code = require('../../shared/server/Code');
 
 let logic = module.exports;
 

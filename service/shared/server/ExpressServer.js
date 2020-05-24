@@ -64,27 +64,29 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
 
     let self = this;
     let {serverType, configServer, listen} = self;
+    const name = ServiceAccess.Name(serverType, listen.host, listen.port);
 
     if (serverType !== Code.ServiceType.config) {
         await configData.Init(serverType, configServer.host, configServer.port);
+
+        self._initMiddleware();
+
+        //初始化service注册etcd中心
+        this.serviceAccess = new ServiceAccess(configData.etcd);
+        await this.serviceAccess.discover(SERVER_TYPE.version);
+
+        await this._initListen();
+        await this.serviceAccess.register(serverType, listen);
+
+        discoverServers.push(SERVER_TYPE.monitor);
+        for (let server of discoverServers) {
+            await this.serviceAccess.discover(server);
+        }
+
+        this._initMonitor();
+    } else {
+        await this._initListen();
     }
-
-    self._initMiddleware();
-
-    //初始化service注册etcd中心
-    this.serviceAccess = new ServiceAccess(configData.etcd);
-    await this.serviceAccess.discover(SERVER_TYPE.version);
-
-    await this._initListen();
-    await this.serviceAccess.register(serverType, listen);
-
-    discoverServers.push(SERVER_TYPE.monitor);
-    for (let server of discoverServers) {
-        await this.serviceAccess.discover(server);
-    }
-
-    this._initMonitor();
-    const name = ServiceAccess.Name(serverType, listen.host, listen.port);
 
     this.app.use("/admin", require('./routes/admin'));
 
@@ -96,6 +98,7 @@ ExpressServer.prototype._initListen = function () {
     const {app, listen} = this;
     let self = this;
 
+    console.debug(`listen`, listen);
     return new Promise((resolve, reject) => {
         self._server = app.listen(listen.port, function (err) {
             if (err) {
@@ -298,7 +301,7 @@ ExpressServer.prototype.getTypeServer = function (type) {
     return this.serviceAccess.servers[type];
 };
 
-ExpressServer.prototype.getAllService = async function(){
+ExpressServer.prototype.getAllService = async function () {
 
     return await this.serviceAccess.getAllService();
 };

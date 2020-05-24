@@ -4,11 +4,11 @@
     "address": "http://localhost:5101",
     "name": "服务监听配置信息",
     "host": "127.0.0.1",
-    "port": 5101
+    "port": 6101
   },
   "configServer": {
     "name": "配置中心服务信息",
     "host": "127.0.0.1",
-    "port": 5701
+    "port": 6701
   }
 }
