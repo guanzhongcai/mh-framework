@@ -1,0 +1,5 @@
+{
+  "port": 6083,
+  "gm_title": "后台",
+  "entry_server": "http://localhost:6801"
+}
