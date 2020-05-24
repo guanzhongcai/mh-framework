@@ -1,0 +1,16 @@
+{
+  "name": "match-server",
+  "version": "1.0.0",
+  "description": "配置服务",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "keywords": [
+    "config"
+  ],
+  "author": "gzc",
+  "license": "ISC",
+  "dependencies": {
+  }
+}

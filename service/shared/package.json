@@ -1,0 +1,40 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "library for mohun server framework",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoop0564/mh-framework.git"
+  },
+  "keywords": [
+    "micro",
+    "mohun",
+    "server",
+    "framework",
+    "express",
+    "redis",
+    "mongo",
+    "etcd",
+    "monitor",
+    "gm"
+  ],
+  "author": "guanzhongcai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hoop0564/mh-framework/issues"
+  },
+  "homepage": "https://github.com/hoop0564/mh-framework#readme",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "etcd3": "^0.2.13",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "pidusage": "^2.0.20",
+    "pomelo-monitor": "^0.3.7",
+    "request": "^2.88.2"
+  }
+}
