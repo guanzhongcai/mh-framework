@@ -1,6 +1,9 @@
 let express = require('express');
 
 const serverConfig = require('../../config/config-service');
+const Code = require('../shared/server/Code');
+
+const serviceType  = Code.ServiceType.config;
 
 let app = module.exports = express();
 
@@ -17,5 +20,5 @@ app.listen(port, function (err) {
     if (err) {
         throw err;
     }
-    console.log(`服务启动成功：%j`, port);
+    console.log(`服务启动成功：serviceType=${serviceType}, port=${port}`);
 });

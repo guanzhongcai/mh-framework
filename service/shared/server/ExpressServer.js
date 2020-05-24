@@ -66,27 +66,23 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
     let {serverType, configServer, listen} = self;
     const name = ServiceAccess.Name(serverType, listen.host, listen.port);
 
-    if (serverType !== Code.ServiceType.config) {
-        await configData.Init(serverType, configServer.host, configServer.port);
+    await configData.Init(serverType, configServer.host, configServer.port);
 
-        self._initMiddleware();
+    self._initMiddleware();
 
-        //初始化service注册etcd中心
-        this.serviceAccess = new ServiceAccess(configData.etcd);
-        await this.serviceAccess.discover(SERVER_TYPE.version);
+    //初始化service注册etcd中心
+    this.serviceAccess = new ServiceAccess(configData.etcd);
+    await this.serviceAccess.discover(SERVER_TYPE.version);
 
-        await this._initListen();
-        await this.serviceAccess.register(serverType, listen);
+    await this._initListen();
+    await this.serviceAccess.register(serverType, listen);
 
-        discoverServers.push(SERVER_TYPE.monitor);
-        for (let server of discoverServers) {
-            await this.serviceAccess.discover(server);
-        }
-
-        this._initMonitor();
-    } else {
-        await this._initListen();
+    discoverServers.push(SERVER_TYPE.monitor);
+    for (let server of discoverServers) {
+        await this.serviceAccess.discover(server);
     }
+
+    this._initMonitor();
 
     this.app.use("/admin", require('./routes/admin'));
 

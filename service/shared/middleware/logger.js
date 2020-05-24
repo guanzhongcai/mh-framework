@@ -7,7 +7,6 @@ const loggerFormat = ":date :remote-addr :method :url :message :status :res[cont
 let logger = require('morgan');
 
 logger.token('date', util.getDateTime);
-logger.token('remote-addr', util.getHttpIPv4IP);
 logger.token('message', function (req, res) {
     return req.method === "GET" ? "" : JSON.stringify(req.body)
 });
