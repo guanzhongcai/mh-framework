@@ -1,0 +1,39 @@
+{
+  "listen": {
+    "port": 6101
+  },
+  "etcd": {
+    "hosts": [
+      "http://localhost:2379"
+    ],
+    "username": "",
+    "password": "",
+    "ttl": 10
+  },
+  "login": {
+  },
+  "gateway": {
+  },
+  "game": {
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "db": 1,
+      "auth_pass": "password",
+      "poolsize": 500
+    },
+    "mongodb": {
+      "uri": "mongodb://user:password@hostname:port:3717/database?authSource=admin",
+      "options": {
+        "autoIndex": true,
+        "reconnectTries": 86400,
+        "reconnectInterval": 1000,
+        "poolSize": 100,
+        "bufferMaxEntries": 0,
+        "useNewUrlParser": true,
+        "useCreateIndex": true,
+        "useUnifiedTopology": true
+      }
+    }
+  }
+}

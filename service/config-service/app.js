@@ -1,33 +1,21 @@
-let ExpressServer = require("../shared/server/ExpressServer");
-const serverConfig = require('./config-service');
-const dbAccess = require('./db/dbAccess');
-const Code = require('../shared/server/Code');
+let express = require('express');
 
-const server_type = Code.ServiceType.config;
+const serverConfig = require('../../config/config-service');
 
-let server = new ExpressServer({
-    serverType: server_type,
-    configServer: serverConfig.configServer,
-    listen: serverConfig.listen,
-    logs: console.log
+let app = module.exports = express();
+
+app.use(require('../shared/middleware/logger'));
+app.use(require('body-parser').json());
+app.use(require('../shared/middleware/checkSign'));
+
+//路由处理
+app.use('/config', require('./routes/configRoute'));
+
+const port = serverConfig.listen.port;
+
+app.listen(port, function (err) {
+    if (err) {
+        throw err;
+    }
+    console.log(`服务启动成功：%j`, port);
 });
-
-const discoverServers = [
-];
-
-server.InitServer(dbAccess.initDB, discoverServers).then(async function () {
-
-    server.AddRouter('/config', require('./routes/configRoute'));
-
-    server.EnableErrorHandler();
-
-}).catch(console.error);
-
-process.on('SIGINT', function () {
-
-    server.GracefulStop(dbAccess.Close);
-});
-
-module.exports = server;
-
-
