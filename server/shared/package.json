@@ -29,9 +29,11 @@
   },
   "homepage": "https://github.com/hoop0564/mh-framework#readme",
   "dependencies": {
+    "async": "^2.6.3",
     "compression": "^1.7.4",
     "etcd3": "^0.2.13",
     "express": "^4.17.1",
+    "mongoose": "^5.9.15",
     "morgan": "^1.10.0",
     "pidusage": "^2.0.20",
     "pomelo-monitor": "^0.3.7",

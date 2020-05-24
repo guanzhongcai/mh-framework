@@ -1,6 +1,6 @@
 let express = require('express');
 
-const serverConfig = require('../../config/config-service');
+const serverConfig = require('../../config/config-server');
 const Code = require('../shared/server/Code');
 
 const serviceType  = Code.ServiceType.config;

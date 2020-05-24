@@ -148,38 +148,6 @@ ExpressServer.prototype._initMiddleware = function () {
     app.use(checkSign);
 };
 
-/**
- * 发现服务和配置服务事件处理业务
- * @param serverType string
- * @param handler function when event happle to do
- * @returns {Promise<void>}
- * @constructor
- */
-ExpressServer.prototype.DiscoverServer = async function (serverType, handler) {
-
-    await this.serviceAccess.discover(serverType, handler);
-};
-
-/**
- * json-web-token中间件
- * @param unlessPaths array 不需要做jwt的路由列表
- * @constructor
- */
-ExpressServer.prototype.EnableJsonWebToken = function (unlessPaths = []) {
-
-    const Jwt = jwt({secret: JWT_SECRET}).unless({path: unlessPaths});
-    this.app.use(Jwt, function (err, req, res, next) {
-        if (err) {
-            // console.debug(`Authorization`, req.get("Authorization"));
-            const errMsg = `${err.name}: ${err.message}`;
-            res.status(HTTP_STATUS.Unauthorized).json({code: HTTP_STATUS.Unauthorized, msg: errMsg});
-
-            let msg = req.method === "GET" ? req.query : req.body;
-            console.error("JWT", req.ip, req.method, req.path, errMsg, msg);
-        }
-    });
-};
-
 ExpressServer.prototype.EnableSerialTask = function (timeoutMs = 20) {
 
     this.app.use(require('../middleware/serialTask')(timeoutMs));
@@ -290,25 +258,6 @@ ExpressServer.prototype.GracefulStop = function (dbCloseFunc) {
 ExpressServer.prototype.getTypeServer = function (type) {
 
     return this.serviceAccess.servers[type];
-};
-
-ExpressServer.prototype.getAllService = async function () {
-
-    return await this.serviceAccess.getAllService();
-};
-
-/**
- * 获取单个服务-真随机
- * @param type string
- */
-ExpressServer.prototype.getOneRandServer = function (type) {
-
-    return this.serviceAccess.getOneRandServer(type);
-};
-
-ExpressServer.prototype.getDiffHostServers = function (type) {
-
-    return this.serviceAccess.getDiffHostServers(type);
 };
 
 /**

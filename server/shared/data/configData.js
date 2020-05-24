@@ -28,8 +28,6 @@ configData.Init = async function (serverType, configAddress) {
 
         const uri = `${configAddress}/config/get`;
         requestHttp.post(uri, msg, function (err, result) {
-
-            console.debug(`result`, result);
             if (err) {
                 throw err;
             }

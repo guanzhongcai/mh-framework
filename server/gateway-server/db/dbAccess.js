@@ -1,4 +1,4 @@
-exports.initDB = function (cb) {
+exports.InitDB = function (cb) {
 
     cb(null);
 };
