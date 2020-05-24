@@ -189,7 +189,7 @@ ExpressServer.prototype.NotifyMonitor = function (route, report) {
         return;
     }
 
-    const service = this.getOneRandServer(SERVER_TYPE.monitor);
+    const service = this.serviceAccess.getOneRandServer(SERVER_TYPE.monitor);
     if (!service) {
         console.error(`no monitor-server! %j`, report);
         return;

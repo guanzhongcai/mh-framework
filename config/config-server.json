@@ -36,7 +36,7 @@
       }
     }
   },
-  "mongo": {
+  "monitor": {
     "mongodb": {
       "uri": "mongodb://user:password@hostname:port:3717/database?authSource=admin",
       "options": {

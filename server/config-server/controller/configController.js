@@ -12,8 +12,8 @@ logic.getConfig = function ({type}, cb) {
     }
     let result = {
         code: Code.OK,
-        config: serverConfig[type],
         etcd: serverConfig.etcd,
     };
+    Object.assign(result, config);
     cb(null, result);
 };

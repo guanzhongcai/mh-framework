@@ -28,6 +28,12 @@ configData.Init = async function (serverType, configAddress) {
 
         const uri = `${configAddress}/config/get`;
         requestHttp.post(uri, msg, function (err, result) {
+            if (err || result.code !== 200) {
+                console.error(err);
+                console.error(result);
+                return process.exit(0);
+            }
+            console.debug(`config: %j`, result);
             if (err) {
                 throw err;
             }
