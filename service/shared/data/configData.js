@@ -14,11 +14,10 @@ let configData = {
 /**
  *
  * @param serverType string
- * @param confHost string
- * @param confPort number
+ * @param configAddress string
  * @constructor
  */
-configData.Init = async function (serverType, confHost, confPort) {
+configData.Init = async function (serverType, configAddress) {
 
     const msg = {
         type: serverType,
@@ -27,16 +26,16 @@ configData.Init = async function (serverType, confHost, confPort) {
 
     return new Promise(((resolve, reject) => {
 
-        const uri = requestHttp.getUri(confHost, confPort, '/config/get');
+        const uri = `${configAddress}/config/get`;
         requestHttp.post(uri, msg, function (err, result) {
 
-            // console.debug(`result`, result);
+            console.debug(`result`, result);
             if (err) {
                 throw err;
             }
 
             try {
-                Object.assign(configData, JSON.parse(result));
+                Object.assign(configData, result);
                 resolve(null);
             } catch (e) {
                 reject(e);

@@ -31,18 +31,20 @@ class ServiceAccess extends EtcdAccess {
 /**
  * 服务注册
  * @param type string 服务器类型
- * @param server object {host,port,name,..}
+ * @param server object {host,port,name,address}
+ * @param protocol string
  * @returns {Promise<void>}
  */
-ServiceAccess.prototype.register = async function (type, server) {
+ServiceAccess.prototype.register = async function (type, server, protocol = "http") {
 
     const {host, port} = server;
     if (!type || !host || !port) {
         throw `参数错误！${type} ${host} ${port}`;
     }
+    server.address = `${protocol}://${host}:${port}`;
     const key = ServiceAccess.Name(type, host, port);
     await this.putWithLease(key, JSON.stringify(server));
-    console.debug(`server register:: ${key} %j`, server);
+    console.debug(`service register:: ${key} %j`, server);
 };
 
 /**
@@ -56,7 +58,7 @@ ServiceAccess.prototype.discover = async function (type, cb) {
     const self = this;
 
     let server = self.servers[type] = await self.getAll(type);
-    console.debug(`server discover:: ${type}`, server);
+    console.debug(`service discover:: ${type}`, server);
 
     const key = type + "@";
     self.watchPrefix(key, function (err, result) {

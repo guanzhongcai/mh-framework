@@ -24,23 +24,19 @@ class ExpressServer {
     /**
      * 构造器
      * @param serverType string 服务类型
-     * @param configServer object {host, port} 配置服信息
+     * @param configAddress string 配置服信息
      * @param listen object {host, port} 本服务对外host和监听端口
      * @param logs object {host, port} 日志模块
      * @param traceEndpoint string 服务链路追踪终点
      */
-    constructor({serverType, configServer, listen, logs, traceEndpoint}) {
+    constructor({serverType, configAddress, listen, logs, traceEndpoint}) {
 
         this.serverType = serverType;
-        this.configServer = {
-            host: configServer.host || "0.0.0.0",
-            port: configServer.port,
-        };
+        this.configAddress = configAddress;
         this.listen = {
             host: listen.host || "0.0.0.0",
             port: listen.port,
         };
-        this.logs = logs || console.debug;
 
         this.app = express();
         this._serviceId = ServiceAccess.Name(this.serverType, this.listen.host, this.listen.port);
@@ -63,16 +59,15 @@ class ExpressServer {
 ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers) {
 
     let self = this;
-    let {serverType, configServer, listen} = self;
+    let {serverType, configAddress, listen} = self;
     const name = ServiceAccess.Name(serverType, listen.host, listen.port);
 
-    await configData.Init(serverType, configServer.host, configServer.port);
+    await configData.Init(serverType, configAddress);
 
     self._initMiddleware();
 
     //初始化service注册etcd中心
     this.serviceAccess = new ServiceAccess(configData.etcd);
-    await this.serviceAccess.discover(SERVER_TYPE.version);
 
     await this._initListen();
     await this.serviceAccess.register(serverType, listen);
@@ -147,7 +142,7 @@ ExpressServer.prototype._initMiddleware = function () {
     app.use(express.urlencoded({extended: false}));
 
     //消息日志
-    app.use(require('../middleware/logMessage')(this, this.logs));
+    app.use(require('../middleware/logMessage')(this));
 
     //签名检查
     app.use(checkSign);
