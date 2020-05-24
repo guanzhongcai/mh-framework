@@ -1,14 +1,19 @@
 const os = require('os');
+const publicIp = require('public-ip');
 
 const m = module.exports;
+
+m.getPublicIP = async function() {
+    return await publicIp.v4();
+};
 
 m.getLocalIP = function () {
     const interfaces = os.networkInterfaces(); // 在开发环境中获取局域网中的本机iP地址
     let IPAddress = '';
-    for(var devName in interfaces){
-        var iface = interfaces[devName];
-        for(var i=0;i<iface.length;i++){
-            var alias = iface[i];
+    for(let devName in interfaces){
+        let iface = interfaces[devName];
+        for(let i=0;i<iface.length;i++){
+            let alias = iface[i];
             if(alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal){
                 IPAddress = alias.address;
                 // console.log(`IPAddress`, IPAddress); //云服上会有两个 内网&外网
