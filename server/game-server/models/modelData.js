@@ -54,7 +54,7 @@ const getData = function (args, cb) {
             }
 
             const condition = {uid};
-            const projection = {_id: 0, __v: 0, obj: 1};
+            const projection = {_id: 0, __v: 0, data: 1};
             gameMongo.findOne(model, condition, projection, function (err, doc) {
                 if (!doc) {
                     cb(null, null);
@@ -68,8 +68,33 @@ const getData = function (args, cb) {
     })
 };
 
-modelData.loadUser = function (table, cb) {
+modelData.loadUser = function (uid, cb) {
 
+    const tables = [];
+    let i = 0;
+    async.whilst(
+        function () {
+            return i < tables.length;
+        },
+        function (callback) {
+            const table = tables[i];
+            i++;
+            const model = gameMongo.models[table];
+            gameMongo.findOne(model, {uid}, {data: 1}, function (err, doc) {
+                if (!doc) {
+                    callback(null);
+                } else {
+                    const key = table + '_' + uid;
+                    gameRedis.exec(redisCommand.set, [key, JSON.stringify(doc)], function (err) {
+                        callback(null);
+                    })
+                }
+            })
+        },
+        function (err) {
+            cb(null);
+        }
+    );
 };
 
 modelData.multiHandler = function (multiArgs, cb) {

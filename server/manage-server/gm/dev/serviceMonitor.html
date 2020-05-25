@@ -1,0 +1,62 @@
+<html lang="ch">
+<h1>服务监控</h1>
+<hr/>
+<link type="text/css" rel="stylesheet" href="../../css/base.css"/>
+<link href='../../css/comon.css' type="text/css" rel="Stylesheet"/>
+<link href='../../css/Style.css' type="text/css" rel="Stylesheet"/>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script type="text/javascript" src="../../js/2.0.0-crypto-md5.js"></script>
+<script type="text/javascript" src="../../js/utils/shared.js"></script>
+<script type="text/javascript" src="serviceMonitor.js"></script>
+
+<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-ui.js"></script>
+<script type="text/javascript" src="../../js/jquery-ui-slide.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-ui-timepicker-addon.js"></script>
+<body>
+<table border="1">
+    <tr>
+        <td>
+            <label for="action_select">功能选择：</label>
+        </td>
+        <td>
+            <select id="action_select">
+                <option value="getProfile">查看所有服务</option>
+            </select>
+            <button onclick="onButton()">执行</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="error_select">错误日志：</label>
+        </td>
+        <td>
+            <label for="beginTime">开始:</label>
+            <input id="beginTime" type="text" size="25" style="text-align: center">
+            <label for="beginTime">结束:</label>
+            <input id="endTime" type="text" size="25" style="text-align: center">
+            <label for="error_select">类型:</label>
+            <select id="error_select">
+                <option value="0" selected>所有</option>
+            </select>
+            <button onclick="getError()">执 行</button>
+        </td>
+    </tr>
+</table>
+
+<p></p>
+<table id="table1" border="1"></table>
+<p></p>
+<table id="table2" border="1"></table>
+<p></p>
+<table id="table3" border="1"></table>
+</body>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        onReady();
+    });
+
+</script>
+</html>
