@@ -3,11 +3,14 @@
 *  
 * */
 const Code = require('../../shared/server/Code');
-const gameModel = require('../db/gameMongo');
+const gameRedis = require('../db/gameRedis');
+const gameMongo = require('../db/gameMongo');
 const async = require('async');
+
 
 let modelData = module.exports;
 
+const TTL = 2 * 24 * 3600;
 const Table = {
     user: "user",
     hero: "hero",
@@ -22,19 +25,50 @@ const redisCommand = {
     //...
 };
 
+const readCommands = [
+    redisCommand.get,
+    redisCommand.hget,
+];
+
+const updateCommands = [
+    redisCommand.set,
+    redisCommand.hset,
+];
+
 modelData.Table = Table;
 
 const getData = function (args, cb) {
 
     const [command, key] = args;
     const [table, uid] = key.split("_");
-    if (!Table[table]) {
-        return cb(null, {code: Code.FAIL, msg: `undefined table=${table}`});
-    }
 
     //find in redis first
+    const arguments = args.slice(1, args.length);
+    gameRedis.exec(command, arguments, function (err, result) {
+        if (result === null) {
+            //load from mongo
+            const model = gameMongo.models[table];
+            if (!model) {
+                cb(null, null);
+                return
+            }
 
-    //load from mongo
+            const condition = {uid};
+            const projection = {_id: 0, __v: 0, obj: 1};
+            gameMongo.findOne(model, condition, projection, function (err, doc) {
+                if (!doc) {
+                    cb(null, null);
+                } else {
+                    gameRedis.exec('', [key])
+                }
+            });
+        } else {
+            cb(null, JSON.parse(result));
+        }
+    })
+};
+
+modelData.loadUser = function (table, cb) {
 
 };
 

@@ -14,11 +14,6 @@ const Code = require('./Code');
 
 let checkSign = require('../middleware/checkSign');
 
-const SERVER_TYPE = {
-    version: "version",
-    monitor: "monitor"
-};
-
 class ExpressServer {
 
     /**
@@ -72,7 +67,7 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
     await this._initListen();
     await this.serviceAccess.register(serverType, listen);
 
-    discoverServers.push(SERVER_TYPE.monitor);
+    discoverServers.push(Code.ServiceType.monitor);
     for (let server of discoverServers) {
         await this.serviceAccess.discover(server);
     }
@@ -103,7 +98,7 @@ ExpressServer.prototype._initListen = function () {
 
 ExpressServer.prototype._initMonitor = function () {
 
-    if (this.serverType === SERVER_TYPE.monitor) {
+    if (this.serverType === Code.ServiceType.monitor) {
         return;
     }
 
@@ -185,11 +180,11 @@ ExpressServer.prototype.EnableErrorHandler = function () {
  */
 ExpressServer.prototype.NotifyMonitor = function (route, report) {
 
-    if (this.serverType === SERVER_TYPE.monitor) {
+    if (this.serverType === Code.ServiceType.monitor) {
         return;
     }
 
-    const service = this.serviceAccess.getOneRandServer(SERVER_TYPE.monitor);
+    const service = this.serviceAccess.getOneRandServer(Code.ServiceType.monitor);
     if (!service) {
         console.error(`no monitor-server! %j`, report);
         return;
@@ -276,16 +271,6 @@ ExpressServer.prototype.watchDatabase = function (db, obj) {
     }
 
     this._dbMap.set(db, obj);
-};
-
-ExpressServer.prototype.watchRedis = function (dbConn) {
-
-    this.watchDatabase('redis', dbConn);
-};
-
-ExpressServer.prototype.watchMongo = function (dbConn) {
-
-    this.watchDatabase('mongo', dbConn);
 };
 
 

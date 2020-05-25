@@ -7,8 +7,8 @@ module.exports = gameMongo;
 
 //数据表模型
 let DataSchema = new gameMongo.Schema({
-    uuid: {type: Number, unique: true}, //玩家编号
-    data: {},
+    uid: {type: Number, unique: true}, //玩家编号
+    obj: {},
 });
 
 gameMongo.models = {};

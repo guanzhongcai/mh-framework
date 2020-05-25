@@ -17,8 +17,8 @@ exports.InitDB = function (cb) {
             }
 
             let app = require('../app');
-            app.watchRedis(gameRedis);
-            app.watchMongo(gameMongo);
+            app.watchDatabase('redis', gameRedis);
+            app.watchDatabase('mongo', gameMongo);
             cb(null);
         })
     });
