@@ -2,7 +2,6 @@
 * GZC created on 2020/5/25
 *  
 * */
-const Code = require('../../shared/server/Code');
 const gameRedis = require('../db/gameRedis');
 const gameMongo = require('../db/gameMongo');
 const async = require('async');
@@ -11,6 +10,8 @@ const async = require('async');
 let modelData = module.exports;
 
 const TTL = 2 * 24 * 3600;
+const separator = "_";
+
 const Table = {
     user: "user",
     hero: "hero",
@@ -25,11 +26,6 @@ const redisCommand = {
     //...
 };
 
-const readCommands = [
-    redisCommand.get,
-    redisCommand.hget,
-];
-
 const updateCommands = [
     redisCommand.set,
     redisCommand.hset,
@@ -37,36 +33,43 @@ const updateCommands = [
 
 modelData.Table = Table;
 
-const getData = function (args, cb) {
+/**
+ *
+ * @param args array 元素都是字符串类型 不可为对象
+ * @param cb
+ */
+function handleCommand(args, cb) {
 
     const [command, key] = args;
-    const [table, uid] = key.split("_");
 
-    //find in redis first
     const arguments = args.slice(1, args.length);
     gameRedis.exec(command, arguments, function (err, result) {
-        if (result === null) {
-            //load from mongo
-            const model = gameMongo.models[table];
-            if (!model) {
-                cb(null, null);
-                return
-            }
-
-            const condition = {uid};
-            const projection = {_id: 0, __v: 0, data: 1};
-            gameMongo.findOne(model, condition, projection, function (err, doc) {
-                if (!doc) {
-                    cb(null, null);
-                } else {
-                    gameRedis.exec('', [key])
-                }
+        if (updateCommands.includes(command)) {
+            const [table, uid] = key.split(separator);
+            updateMongo(uid, table, args[0], function (err) {
+                cb(err, result);
             });
         } else {
-            cb(null, JSON.parse(result));
+            cb(null, result);
         }
     })
-};
+}
+
+function updateMongo(uid, table, data, cb) {
+
+    const model = gameMongo.models[table];
+    if (!model) {
+        cb(null, null);
+        return
+    }
+
+    const condition = {uid};
+    const updateDoc = {data: JSON.parse(data)};
+    const options = {upsert: true};
+    gameMongo.updateOne(model, condition, updateDoc, options, function (err) {
+        cb(err);
+    });
+}
 
 modelData.loadUser = function (uid, cb) {
 
@@ -84,8 +87,8 @@ modelData.loadUser = function (uid, cb) {
                 if (!doc) {
                     callback(null);
                 } else {
-                    const key = table + '_' + uid;
-                    gameRedis.exec(redisCommand.set, [key, JSON.stringify(doc)], function (err) {
+                    const key = table + separator + uid;
+                    gameRedis.exec(redisCommand.set, [key, JSON.stringify(doc), TTL], function (err) {
                         callback(null);
                     })
                 }
@@ -97,7 +100,7 @@ modelData.loadUser = function (uid, cb) {
     );
 };
 
-modelData.multiHandler = function (multiArgs, cb) {
+modelData.multi = function (multiArgs, cb) {
 
     let commandArray = [];
     let command = [];
@@ -112,7 +115,7 @@ modelData.multiHandler = function (multiArgs, cb) {
 
     let results = [];
     async.eachLimit(commandArray, 10, function (command, callback) {
-        getData(command, function (err, result) {
+        handleCommand(command, function (err, result) {
             result.push(result);
             callback(null);
         })
