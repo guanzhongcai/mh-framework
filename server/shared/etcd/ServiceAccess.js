@@ -12,7 +12,7 @@ class ServiceAccess extends EtcdAccess {
         super();
         // this.etcdClient = new EtcdAccess().init({hosts, username, password, ttl});
         this.init({hosts, username, password, ttl});
-        this.servers = {}; //字典 {serverType: {serverID: {host: "ip address",port: 3010,..}}
+        this.servers = {}; //字典 {serverType: {serverID: {host: "ip address",port: 3010, address..}}
     }
 
     /**
@@ -118,16 +118,29 @@ ServiceAccess.prototype.getDiffHostServers = function (type) {
 /**
  * 获取所有此类型的服务
  * @param type string
+ * @param lastAddress 上次用的服务地址
  * @returns {*} object
  */
-ServiceAccess.prototype.getOneRandServer = function (type) {
+ServiceAccess.prototype.getOneRandServer = function (type, lastAddress = "") {
     const server = this.servers[type];
     if (!server) {
         return console.error(`未配置服务发现type=${type}`);
     }
 
     let array = Object.values(server);
-    const size = array.length;
+
+    let size = array.length;
+    //去除上次的
+    if (lastAddress.length > 0) {
+        for (let i=0; i < size; i++) {
+            const s = array[i];
+            if (s.address === lastAddress) {
+                array.splice(i, 1);
+                size--;
+                break;
+            }
+        }
+    }
     if (size === 0) {
         return console.warn(`当前没有可用的服务！type=${type}`);
     }
@@ -136,8 +149,8 @@ ServiceAccess.prototype.getOneRandServer = function (type) {
     if (size > 1) {
         idx = Math.floor(Math.random() * size);
     }
-    const {host, port} = JSON.parse(array[idx]);
-    return {host, port};
+    const {host, port, address} = JSON.parse(array[idx]);
+    return {host, port, address};
 };
 
 /**
