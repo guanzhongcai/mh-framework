@@ -19,10 +19,10 @@
       "host": "localhost",
       "port": 6379,
       "db": 1,
-      "auth_pass": "password",
+      "auth_pass": "gotech123",
       "poolsize": 500
     },
-    "mongodb": {
+    "mongo": {
       "uri": "mongodb://user:password@hostname:port:3717/database?authSource=admin",
       "options": {
         "autoIndex": true,
@@ -37,7 +37,7 @@
     }
   },
   "monitor": {
-    "mongodb": {
+    "mongo": {
       "uri": "mongodb://user:password@hostname:port:3717/database?authSource=admin",
       "options": {
         "autoIndex": true,

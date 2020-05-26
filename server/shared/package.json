@@ -33,11 +33,14 @@
     "compression": "^1.7.4",
     "etcd3": "^0.2.13",
     "express": "^4.17.1",
-    "mongoose": "^5.9.15",
+    "generic-pool": "^2.4.2",
+    "mongoose": "^5.2.13",
+    "mongoose-lean": "^1.0.0",
     "morgan": "^1.10.0",
     "pidusage": "^2.0.20",
     "pomelo-monitor": "^0.3.7",
     "public-ip": "^4.0.1",
+    "redis": "^3.0.2",
     "request": "^2.88.2"
   }
 }

@@ -61,6 +61,7 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
 
     self._initMiddleware();
 
+    await execFn(dbInitFunc);
     //初始化service注册etcd中心
     this.serviceAccess = new ServiceAccess(configData.etcd);
 
@@ -78,6 +79,16 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
 
     console.debug(`service start success: ${name}`);
 };
+
+function execFn(fn) {
+    if (!fn) {
+        return;
+    }
+
+    return new Promise((resolve) => {
+        fn(resolve)
+    });
+}
 
 ExpressServer.prototype._initListen = function () {
 

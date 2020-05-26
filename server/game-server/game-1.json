@@ -1,0 +1,6 @@
+{
+  "name": "game-1",
+  "script": "app.js",
+  "cwd": "./",
+  "args": "port=6501 host=localhost"
+}
