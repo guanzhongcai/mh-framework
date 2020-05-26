@@ -1,4 +1,4 @@
-let monitorAddress = null;
+let monitorAddress = "http://localhost:6401";
 
 const ERROR_TYPE = {
     "1": "系统异常",
@@ -20,7 +20,7 @@ function onReady() {
     });
 
     let tnow = Date.now();
-    $("#beginTime").datetimepicker('setDate', (new Date(tnow - 8 * 3600 * 1000)));
+    $("#beginTime").datetimepicker('setDate', (new Date(tnow - 3600 * 1000)));
     $("#endTime").datetimepicker('setDate', (new Date(tnow)));
 
     for (let error in ERROR_TYPE) {
@@ -28,9 +28,7 @@ function onReady() {
         $("#error_select").append($(option));
     }
 
-    getService(SERVER_TYPE.monitor, function (address) {
-        monitorAddress = address;
-    })
+    relayRequest({});
 }
 
 const PAGE_SIZE = 30;

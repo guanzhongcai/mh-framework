@@ -23,7 +23,7 @@
       "poolsize": 500
     },
     "mongo": {
-      "uri": "mongodb://user:password@hostname:port:3717/database?authSource=admin",
+      "uri": "mongodb://admin:123456@localhost:27017/game?authSource=admin",
       "options": {
         "autoIndex": true,
         "reconnectTries": 86400,
@@ -38,7 +38,7 @@
   },
   "monitor": {
     "mongo": {
-      "uri": "mongodb://user:password@hostname:port:3717/database?authSource=admin",
+      "uri": "mongodb://admin:123456@localhost:27017/monitor?authSource=admin",
       "options": {
         "autoIndex": true,
         "reconnectTries": 86400,

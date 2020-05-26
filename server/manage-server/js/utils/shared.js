@@ -1,5 +1,4 @@
 // http://localhost:6083/gm/dev/serviceMonitor.html
-const entryAddress = "http://localhost:3001";
 
 //服务器类型
 const SERVER_TYPE = {
@@ -11,86 +10,56 @@ const SERVER_TYPE = {
 
 /**
  *
- * @param type string 服务类型 account/lobby/..
- * @param cb
+ * @param url string http://host:port/path
+ * @param method GET/POST
+ * @param body object
+ * @returns {{url: *, method: *, body: *}}
  */
-function getService(type, cb) {
-
-    if (type === "entry") {
-        return cb(entryAddress);
+function newRelayRequest({url, body}) {
+    return {
+        url,
+        body,
     }
+}
+/**
+ *
+ * @param request object 发送给目标服务的请求数据
+ * @param cb
+ * @private
+ */
+function relayRequest(request, cb) {
 
-    const url = urlMerge(sessionStorage.entry_server, '/getService');
-    const request = new RelayRequest({
-        url: url,
-        method: "POST",
-        body: {type: type},
-    });
-    gmRequest(Route.RelayRequest, request, function (result) {
-        //{"code":200,"type":"account","service":{"type":"account","address":"http://127.0.0.1:5001","protocol":"http"}}
-        console.log(result);
-        try {
-            const ret = JSON.parse(result);
-            if (ret.code !== 200) {
-                return alert(result);
-            }
-            const {type, address, protocol} = ret.service || {};
-            cb(address);
-        } catch (e) {
-            alert(`askEntry失败！route=${route}, result=` + result);
-            alert(e);
-        }
-    })
+    _ajax({
+        url: '/relayRequest',
+        type: "GET",
+        dataType: "JSONP",
+        data: request,
+    }, cb);
 }
 
 /**
  *
- * @param addr string http://host:port
- * @param route string /xx/yy
- * @returns {string}
- */
-function urlMerge(addr, route) {
-    if (route[0] !== "/") {
-        route = "/" + route;
-    }
-    return `${addr}${route}`;
-}
-
-/**
- * 向gm-server发送jsonp请求
- * @param route string 路由 /player/xxx
- * @param request object json请求
- * @param cb
- */
-function gmRequest(route, request, cb) {
-
-    //beego的autoRoute需要小写
-    console.log(`gmRequest: %s, %s`, request.url, request.body);
-
-    const url = sessionStorage.gm_server + route.toLowerCase();
-    _ajax(url, 'GET', 'JSONP', request, cb);
-}
-
-/**
- * ajax请求
- * @param url string 请求地址
- * @param method string 请求方式，默认是GET，常用的还有POST
- * @param dataType string 设置返回的数据格式，常用的是json格式，也可以设置为html/jsonp
- * @param data object 设置发送给服务器的数据
+ * @param url string
+ * @param type string GET/POST
+ * @param dataType string
+ * @param data object
  * @param cb
  * @private
  */
-function _ajax(url, method, dataType, data, cb) {
+function _ajax({url, type, dataType, data}, cb) {
 
     $.ajax({
         url: url,
-        type: method.toUpperCase(),
+        type: type,
         dataType: dataType,
         data: data,
         success: function (result) {//设置请求成功后的回调函数
             if (cb && typeof (cb) === "function") {
-                cb(result);
+                cb(null, result);
             } else {
+                if (typeof result === 'object') {
+                    result = JSON.stringify(result);
+                }
                 alert(result); //string
             }
         },
@@ -155,16 +124,16 @@ function array2table(arr, keyname = {}) {
     }
     tr += '</tr>';
 
-    for (var i in arr) {
-        var index = Number(i) + 1;
+    for (const i in arr) {
+        const index = Number(i) + 1;
         tr += "<tr><td>" + index + "</td>";
-        var obj = arr[i];
+        const obj = arr[i];
         if (!obj) {
             console.error("null obj");
             continue;
         }
         for (let key of keyMap.keys()) {
-            var val = obj[key];
+            let val = obj[key];
             if (val === undefined) {
                 val = '';
             }
@@ -172,7 +141,7 @@ function array2table(arr, keyname = {}) {
                 val = JSON.stringify(val);
             }
             else if (!isNaN(val) && val > 1028218329197) {
-                val = getDateTime(val);
+                val = new Date(val).toLocaleString();
             }
             tr += "<td>" + val + "</td>";
         }
@@ -180,47 +149,4 @@ function array2table(arr, keyname = {}) {
     }
 
     return tr;
-}
-
-/**
- * 获取md5签名值
- * @param obj object
- * @returns {*}
- */
-const getCryptoSign = function (obj) {
-
-    const keys = Object.keys(obj).sort();
-    let str = "";
-    for (const key of keys) {
-        if (key === "sign" || key === "__sign") {
-            continue;
-        }
-
-        let val = obj[key];
-        if (typeof (val) === 'object' && Object.keys(val).length > 0) {
-            // toString(obj);
-            val = JSON.stringify(val);
-        }
-        str += val + "#";
-    }
-    str += "gosecret98b36e97159eaa9cbf8aaa35";
-    // console.log(`str::${str}`);
-    return Crypto.MD5(str);
-};
-
-/**
- * 添加时间戳和签名值
- * @param obj object
- */
-function addTimeSign(obj) {
-
-    if (!obj.__timestamp) {
-        obj.__timestamp = Date.now();
-    }
-
-    if (!obj.__sign) {
-        obj.__sign = getCryptoSign(obj);
-    }
-
-    return obj;
 }
