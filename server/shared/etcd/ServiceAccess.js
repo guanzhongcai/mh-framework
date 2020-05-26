@@ -4,6 +4,7 @@
  */
 
 const EtcdAccess = require('./EtcdAccess');
+const Code = require('../server/Code');
 
 class ServiceAccess extends EtcdAccess {
 
@@ -190,7 +191,7 @@ ServiceAccess.prototype.Close = function () {
 ServiceAccess.prototype.getAllService = async function () {
 
     let s = {};
-    const keys = Object.keys(SERVER_TYPE);
+    const keys = Object.keys(Code.ServiceType);
     for (const key of keys) {
         s[key] = await this.getAllJson(key + "@");
     }

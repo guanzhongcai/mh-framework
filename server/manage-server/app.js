@@ -2,7 +2,7 @@ const express = require("express");
 const serverConfig = require('../../config/manage-server');
 const favicon = require('serve-favicon');
 const path = require('path');
-const sign = require('../shared/util/sign');
+const requestHttp = require('../shared/http/requestHttp');
 
 let app = express();
 app.use(favicon(path.join(__dirname, 'image', 'favicon.ico')));
@@ -10,9 +10,13 @@ app.use(favicon(path.join(__dirname, 'image', 'favicon.ico')));
 const staticPath = __dirname;
 console.log(`staticPath=${staticPath}`);
 
+//消息体解析
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+
 app.use("/", express.static(staticPath, {maxage: 5000}));
 app.use(function (req, res, next) {
-    console.log(req.method, req.originalUrl, req.query, req.body);
+    console.log(new Date().toLocaleString(), req.method, req.originalUrl, req.query, req.body);
     next(null);
 });
 
@@ -20,17 +24,23 @@ app.listen(serverConfig.port, function (err) {
     if (err) {
         throw err;
     }
-    console.log(`静态文件服务器启动OK，${serverConfig.gm_title}, http://127.0.0.1:${serverConfig.port}/`);
+    console.log(`静态文件服务器启动OK http://localhost:${serverConfig.port}/`);
 });
 
-app.get('/config', function (req, res) {
+app.post('/config', function (req, res) {
 
     res.json(serverConfig);
 });
 
-app.get('/relayRequest', function (req, res) {
+app.post('/relayRequest', function (req, res) {
 
-    const query = req.query;
-    sign.addSign(query);
-    res.jsonp({code: 200, msg: "success"});
+    let {url, body} = req.body;
+    if (!body) {
+        body = {};
+    }
+    require('../shared/util/sign').addSign(body);
+    requestHttp.post(url, body, function (err, result) {
+
+        res.json(result);
+    });
 });

@@ -1,4 +1,4 @@
 {
   "port": 6083,
-  "monitor": "http://localhost:6401"
+  "monitorAddress": "http://localhost:6401"
 }

@@ -1,10 +1,20 @@
-let monitorAddress = "http://localhost:6401";
+// http://localhost:6083/gm/dev/serviceMonitor.html
 
 const ERROR_TYPE = {
     "1": "系统异常",
     "2": "响应失败",
     "3": "指令超时",
 };
+
+//服务器类型
+const SERVER_TYPE = {
+    game: 'game',   //游戏牌局服
+    config: 'config',//配置服
+    gateway: 'gateway', //网关服务器
+    monitor: 'monitor', //监控服务器
+};
+
+let monitorAddress;
 
 function onReady() {
 
@@ -28,10 +38,27 @@ function onReady() {
         $("#error_select").append($(option));
     }
 
-    relayRequest({});
+    configGet();
+}
+
+function configGet() {
+
+    sendRequest('/config', {}, function (err, result) {
+        monitorAddress = result['monitorAddress'];
+        alert(`monitorAddress=${monitorAddress}`);
+        relayRequest(monitorAddress, '/service/getAll', {})
+    })
 }
 
 const PAGE_SIZE = 30;
+
+function relayRequest(address, path, body, cb) {
+    const request = {
+        url: address + path,
+        body: body,
+    };
+    sendRequest('/relayRequest', request, cb);
+}
 
 function getError() {
 
@@ -127,21 +154,6 @@ function getProfile() {
 }
 
 
-function requestMonitor(route, param, cb) {
-
-    const url = urlMerge(monitorAddress, route);
-    const request = new RelayRequest({
-        url,
-        method: "POST",
-        body: param
-    });
-
-    gmRequest(Route.RelayRequest, request, function (result) {
-        console.log(`route: ${route}, param=${JSON.stringify(param)}, result: ${result}`);
-        cb(JSON.parse(result));
-    })
-}
-
 const actionHandler = {
 
     getProfile: getProfile,
@@ -155,5 +167,161 @@ function onButton() {
         return alert(`no default handler for action=${action}`);
     }
     handler();
+}
 
+
+/**
+ * 添加时间戳和签名值
+ * @param obj object
+ */
+function addTimeSign(obj) {
+
+    if (!obj.__timestamp) {
+        obj.__timestamp = Date.now();
+    }
+
+    if (!obj.__sign) {
+        obj.__sign = getCryptoSign(obj);
+    }
+
+    return obj;
+}
+
+/**
+ * 获取md5签名值
+ * @param obj object
+ * @returns {*}
+ */
+const getCryptoSign = function (obj) {
+
+    const keys = Object.keys(obj).sort();
+    let str = "";
+    for (const key of keys) {
+        if (key === "sign" || key === "__sign") {
+            continue;
+        }
+
+        let val = obj[key];
+        if (typeof (val) === 'object' && Object.keys(val).length > 0) {
+            // toString(obj);
+            val = JSON.stringify(val);
+        }
+        str += val + "#";
+    }
+    str += "md5_salt";
+    // console.log(`str::${str}`);
+    return Crypto.MD5(str);
+};
+
+
+/**
+ *
+ * @param url string
+ * @param data object
+ * @param cb
+ * @private
+ */
+function sendRequest(url, data, cb) {
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        dataType: "JSON",
+        data: data,
+        success: function (result) {//设置请求成功后的回调函数
+            if (cb && typeof (cb) === "function") {
+                cb(null, result);
+            } else {
+                if (typeof result === 'object') {
+                    result = JSON.stringify(result);
+                }
+                alert(result); //string
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {//设置请求失败后的回调函数
+            alert('服务器超时，请重试')
+        },
+        async: true,//设置是否异步，默认值是true，表示异步
+    })
+}
+
+
+/**
+ *
+ * @param timestamp 时间戳
+ * @returns {string}
+ */
+function timeAgo(timestamp) {
+
+    let str = '';
+
+    let olTime = parseInt((Date.now() - timestamp) / 1000);
+    let val = parseInt(olTime / 3600);
+    if (val > 0) {
+        str += val + '时';
+        olTime -= val * 3600;
+    }
+    val = parseInt(olTime / 60);
+    if (val > 0) {
+        str += val + '分';
+        olTime -= val * 60;
+    }
+    str += olTime + '秒';
+
+    return str;
+}
+
+/**
+ * js数组转html的table
+ * @param arr Object [{a,b,..}]
+ * @param keyname object, {nick: "昵称"} 每个key在表中的列名
+ * @returns {string}
+ */
+function array2table(arr, keyname = {}) {
+
+    if (!arr || arr.length === 0) {
+        console.log(`无数据`, arr);
+        return '';
+    }
+
+    let keyMap = new Map();
+    for (let obj of arr) {
+        for (let key in obj) {
+            if (!keyMap.has(key)) {
+                keyMap.set(key, keyname[key] || key);
+            }
+        }
+    }
+
+    let tr = '<tr><th></th>';
+    for (let name of keyMap.values()) {
+        tr += '<th>' + name + '</th>';
+    }
+    tr += '</tr>';
+
+    for (const i in arr) {
+        const index = Number(i) + 1;
+        tr += "<tr><td>" + index + "</td>";
+        const obj = arr[i];
+        if (!obj) {
+            console.error("null obj");
+            continue;
+        }
+        for (let key of keyMap.keys()) {
+            let val = obj[key];
+            if (val === undefined) {
+                val = '';
+            }
+            else if (typeof (val) === 'object') {
+                val = JSON.stringify(val);
+            }
+            else if (!isNaN(val) && val > 1028218329197) {
+                val = new Date(val).toLocaleString();
+            }
+            tr += "<td>" + val + "</td>";
+        }
+        tr += "/<tr>";
+    }
+
+    return tr;
 }
