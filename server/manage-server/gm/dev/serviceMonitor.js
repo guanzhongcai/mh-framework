@@ -107,7 +107,7 @@ function getError() {
 
 function getProfile() {
 
-    requestMonitor('/profile/get', {}, function (docs) {
+    relayRequest(monitorAddress, '/profile/get', {}, function (err, docs) {
         if (docs.length === 0) {
             return alert('查无记录');
         }
@@ -197,21 +197,6 @@ function commandMetricGet() {
         const text = array2table(array, keyName);
         $("#table2").html(text);
     })
-}
-
-const actionHandler = {
-    getProfile,
-    commandMetricGet,
-};
-
-function onButton() {
-
-    const action = $("#action_select").val();
-    const handler = actionHandler[action];
-    if (!handler) {
-        return alert(`no default handler for action=${action}`);
-    }
-    handler();
 }
 
 
