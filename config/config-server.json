@@ -15,6 +15,43 @@
   "gateway": {
   },
   "game": {
+    "server": {
+      "debug": true,
+      "encrypt": false,
+      "enableClientDebug": true,
+      "host": "0.0.0.0",
+      "port": 8130,
+      "gamedb": {
+        "url": "mongodb://localhost:27017",
+        "dbname": "mohungames",
+        "options": {
+          "useNewUrlParser": true,
+          "useUnifiedTopology": true
+        }
+      },
+      "gameRedis": {
+        "url": "127.0.0.1",
+        "port": 6379,
+        "db": 0,
+        "password": "gotech123",
+        "syncdata": "UserSyncData"
+      }
+    },
+    "log": {
+      "kafkaConf" : {
+        "enable" : false,
+        "fork": true,
+        "kafkaHost" : "localhost:9092",
+        "zkHost" : "localhost:2181",
+        "topic" : "mohunlogs",
+        "maxCount" : 100
+      },
+      "webConf": {
+        "logFileKeepDays": "1",
+        "autoClearTime": "2",
+        "loggerPath": "./devOpsLog"
+      }
+    },
     "redis": {
       "host": "localhost",
       "port": 6379,
@@ -23,7 +60,8 @@
       "poolsize": 500
     },
     "mongo": {
-      "uri": "mongodb://admin:123456@localhost:27017/game?authSource=admin",
+      "uri0": "mongodb://admin:123456@localhost:27017/game?authSource=admin",
+      "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/game?authSource=admin",
       "options": {
         "autoIndex": true,
         "reconnectTries": 86400,
@@ -38,7 +76,8 @@
   },
   "monitor": {
     "mongo": {
-      "uri": "mongodb://admin:123456@localhost:27017/monitor?authSource=admin",
+      "uri0": "mongodb://admin:123456@localhost:27017/monitor?authSource=admin",
+      "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/monitor?authSource=admin",
       "options": {
         "autoIndex": true,
         "reconnectTries": 86400,
