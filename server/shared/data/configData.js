@@ -15,41 +15,31 @@ let configData = {
  *
  * @param serverType string
  * @param configAddress string
+ * @param cb function
  * @constructor
  */
-configData.Init = async function (serverType, configAddress) {
+configData.Init = function (serverType, configAddress, cb) {
 
     const msg = {
         type: serverType,
     };
     sign.addSign(msg);
 
-    return new Promise(((resolve, reject) => {
+    const uri = `${configAddress}/config/get`;
+    requestHttp.post(uri, msg, function (err, result) {
+        if (err || result.code !== 200) {
+            console.error(err);
+            console.error(result);
+            return process.exit(0);
+        }
+        console.debug(`[configData] %j`, result);
+        if (err) {
+            throw err;
+        }
 
-        const uri = `${configAddress}/config/get`;
-        requestHttp.post(uri, msg, function (err, result) {
-            if (err || result.code !== 200) {
-                console.error(err);
-                console.error(result);
-                return process.exit(0);
-            }
-            console.debug(`config: %j`, result);
-            if (err) {
-                throw err;
-            }
-
-            try {
-                Object.assign(configData, result);
-                resolve(null);
-            } catch (e) {
-                reject(e);
-                throw e;
-            }
-        });
-
-    })).then(data => {
-        // console.log(`done`, data);
-    }).catch(err => console.error(err));
+        Object.assign(configData, result);
+        cb(null);
+    });
 };
 
 

@@ -1,12 +1,25 @@
-const configData = require('../shared/data/configData');
+/**
+ * 从配置中心加载配置到本地
+ */
+function loadConfig() {
+
+    const configData = require('../shared/data/configData');
+    const fs = require('fs');
+    let str = JSON.stringify(configData['server'], null, '\t');
+    fs.writeFileSync('./configs/server.json', str, 'utf8');
+    str = JSON.stringify(configData['log'], null, '\t');
+    fs.writeFileSync('./configs/log.json', str, 'utf8');
+}
+
 exports.startServer = function(app, cb) {
 
+    loadConfig();
     cb(null);
 
     const compression = require('compression');
     const morgan = require('morgan');
-    const config = require('./configs/server.json'); //require('./dataWrapper/configuration.json');
-    console.debug(`configData_server`, config.server);
+    let config = require('./configs/server.json'); //require('./dataWrapper/configuration.json');
+
 //const handles = require('./handle');
     const zlib = require('zlib');
     const protocol = require('./app/common/protocol');
@@ -216,6 +229,7 @@ exports.startServer = function(app, cb) {
         req_domain.run(next)
     })
 
+    return;
     process.on('uncaughtException',function (err) {
         // 监听异常退出
     })

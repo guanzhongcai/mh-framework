@@ -19,15 +19,13 @@ class ExpressServer {
     /**
      * 构造器
      * @param serverType string 服务类型
-     * @param configAddress string 配置服信息
      * @param listen object {host, port} 本服务对外host和监听端口
      * @param logs object {host, port} 日志模块
      * @param traceEndpoint string 服务链路追踪终点
      */
-    constructor({serverType, configAddress, listen, logs, traceEndpoint}) {
+    constructor({serverType, listen, logs, traceEndpoint}) {
 
         this.serverType = serverType;
-        this.configAddress = configAddress;
         this.listen = {
             host: listen.host || "0.0.0.0",
             port: listen.port,
@@ -54,19 +52,14 @@ class ExpressServer {
 ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers) {
 
     let self = this;
-    let {serverType, configAddress, listen} = self;
+    let {serverType, listen} = self;
     const name = ServiceAccess.Name(serverType, listen.host, listen.port);
 
-    await configData.Init(serverType, configAddress);
-
-    self._initMiddleware();
+    // self._initMiddleware();
 
     await execFn(dbInitFunc);
     //初始化service注册etcd中心
     this.serviceAccess = new ServiceAccess(configData.etcd);
-
-    await this._initListen();
-    await this.serviceAccess.register(serverType, listen);
 
     discoverServers.push(Code.ServiceType.monitor);
     for (let server of discoverServers) {
@@ -76,6 +69,9 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
     this._initMonitor();
 
     this.app.use("/admin", require('./routes/admin'));
+
+    await this._initListen();
+    await this.serviceAccess.register(serverType, listen);
 
     console.debug(`service start success: ${name}`);
 };
@@ -242,6 +238,8 @@ ExpressServer.prototype.GracefulStop = function (dbCloseFunc) {
         self._server.close(function (err) {
             console.debug(`[listen] close`);
 
+            //todo wait to finish all commands done
+
             dbCloseFunc = checkFn(dbCloseFunc);
             dbCloseFunc(function (err) {
                 console.log('Graceful Stop');
@@ -253,7 +251,7 @@ ExpressServer.prototype.GracefulStop = function (dbCloseFunc) {
     setTimeout(function () {
         console.error(`timeout exit !`);
         process.exit(0);
-    }, 2000);
+    }, 3000);
 };
 
 /**

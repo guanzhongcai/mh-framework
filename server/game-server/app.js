@@ -1,5 +1,6 @@
 let ExpressServer = require("../shared/server/ExpressServer");
 const serverConfig = require('../../config/game-server');
+const configData = require('../shared/data/configData');
 const dbAccess = require('./db/dbAccess');
 const Code = require('../shared/server/Code');
 
@@ -11,20 +12,22 @@ let server = new ExpressServer({
     listen: serverConfig.listen,
 });
 
-const discoverServers = [
-];
+configData.Init(serverType, serverConfig.configAddress, function (err) {
 
-server.InitServer(dbAccess.InitDB, discoverServers).then(async function () {
+    require('./index.app.js').startServer(server.app, function (err) {
+        const discoverServers = [];
 
-    // server.AddRouter('/', require('./routes/gatewayRoute'));
+        server.InitServer(dbAccess.InitDB, discoverServers).then(async function () {
 
-    server.EnableErrorHandler();
+            server.EnableErrorHandler();
+        });
 
-}).catch(console.error);
+    });
 
-process.on('SIGINT', function () {
+    process.on('SIGINT', function () {
 
-    server.GracefulStop(dbAccess.Close);
+        server.GracefulStop(dbAccess.Close);
+    });
 });
 
 module.exports = server;
