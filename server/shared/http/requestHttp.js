@@ -39,7 +39,8 @@ exp.post = function (uri, body, cb) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: body
+            body: body,
+            timout: 2000,
         },
         function (error, response, body) {
             if (!error && response.statusCode === 200) {

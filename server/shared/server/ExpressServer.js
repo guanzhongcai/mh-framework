@@ -11,6 +11,7 @@ const monitor = require('../metrics/monitor');
 const reportFormat = require('../metrics/reportFormat');
 const requestHttp = require('../http/requestHttp');
 const Code = require('./Code');
+const utils = require('../util/utils');
 
 let checkSign = require('../middleware/checkSign');
 
@@ -54,8 +55,6 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
     let self = this;
     let {serverType, listen} = self;
     const name = ServiceAccess.Name(serverType, listen.host, listen.port);
-
-    // self._initMiddleware();
 
     await execFn(dbInitFunc);
     //初始化service注册etcd中心
@@ -129,7 +128,7 @@ ExpressServer.prototype._initMonitor = function () {
  * 初始化默认中间件
  * @private
  */
-ExpressServer.prototype._initMiddleware = function () {
+ExpressServer.prototype.initMiddleware = function () {
 
     const {serverType, listen, app} = this;
 
@@ -183,23 +182,26 @@ ExpressServer.prototype.EnableErrorHandler = function () {
  *
  * @param route string
  * @param report object
+ * @param cb function
  * @constructor
  */
-ExpressServer.prototype.NotifyMonitor = function (route, report) {
+ExpressServer.prototype.NotifyMonitor = function (route, report, cb) {
 
     if (this.serverType === Code.ServiceType.monitor) {
+        utils.invokeCallback(cb, null);
         return;
     }
 
     const service = this.serviceAccess.getOneRandServer(Code.ServiceType.monitor);
     if (!service) {
         console.error(`no monitor-server! %j`, report);
+        utils.invokeCallback(cb, null);
         return;
     }
     const {host, port} = service;
     const uri = requestHttp.getUri(host, port, route);
     require('../util/sign').addSign(report);
-    requestHttp.post(uri, report);
+    requestHttp.post(uri, report, cb);
 };
 
 /**
@@ -233,19 +235,25 @@ ExpressServer.prototype.GracefulStop = function (dbCloseFunc) {
     const {serverType, listen} = self;
     self.serviceAccess.Delete(serverType, listen).then(function () {
 
-        self.serviceAccess.Close();
+        const report = {
+            serviceId: self._serviceId,
+        };
+        self.NotifyMonitor('/profile/delete', report, function (err) {
 
-        self._server.close(function (err) {
-            console.debug(`[listen] close`);
+            self.serviceAccess.Close();
 
-            //todo wait to finish all commands done
+            self._server.close(function (err) {
+                console.debug(`[listen] close`);
 
-            dbCloseFunc = checkFn(dbCloseFunc);
-            dbCloseFunc(function (err) {
-                console.log('Graceful Stop');
-                process.exit(0);
+                //todo wait to finish all commands done
+
+                dbCloseFunc = checkFn(dbCloseFunc);
+                dbCloseFunc(function (err) {
+                    console.log('Graceful Stop');
+                    process.exit(0);
+                })
             })
-        })
+        });
     });
 
     setTimeout(function () {

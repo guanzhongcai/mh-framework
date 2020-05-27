@@ -14,7 +14,6 @@ function loadConfig() {
 exports.startServer = function(app, cb) {
 
     loadConfig();
-    cb(null);
 
     const compression = require('compression');
     const morgan = require('morgan');
@@ -229,26 +228,6 @@ exports.startServer = function(app, cb) {
         req_domain.run(next)
     })
 
-    return;
-    process.on('uncaughtException',function (err) {
-        // 监听异常退出
-    })
-
-    process.on('uncaughtRejectException',function (err) {
-        // 监听异步异常退出
-    })
-
-    process.on('exit',function (err) {
-    })
-
     const RouteMapping = require('./app/mapping');
     RouteMapping(app);
-
-    app.listen(app.get('port'), app.get('host'), () => {
-        console.log("==========================================");
-        console.log("|             MH GAME SERVER             |");
-        console.log("==========================================");
-        console.log("Server running: http://%s:%s/", app.get('host'), app.get('port'));
-    });
-
 }

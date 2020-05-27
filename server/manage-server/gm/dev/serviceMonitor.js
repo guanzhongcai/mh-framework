@@ -74,7 +74,7 @@ const PAGE_SIZE = 30;
 
 function onRelayRequest() {
 
-    const url = prompt('请输入url', "http://0.0.0.0:8130/healthCheck");
+    const url = prompt('请输入url', "http://0.0.0.0:8130/admin/healthCheck");
     if (!url) {
         return;
     }
@@ -184,7 +184,7 @@ function getProfile() {
 
 function commandMetricGet() {
 
-    const address = prompt('请输入服务address:', "http://localhost:6501");
+    const address = prompt('请输入服务address:', "http://localhost:8130");
     if (!address) {
         return;
     }
