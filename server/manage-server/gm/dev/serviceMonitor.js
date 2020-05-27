@@ -45,26 +45,41 @@ function configGet() {
 
     sendRequest('/config', {}, function (err, result) {
         monitorAddress = result['monitorAddress'];
-        // alert(`monitorAddress=${monitorAddress}`);
-        relayRequest(monitorAddress, '/service/getAll', {}, function (err, serviceAll) {
-            let services = [];
-            for (let type in serviceAll) {
-                const all = serviceAll[type];
-                for (let key in all) {
-                    services.push({
-                        type: type,
-                        key: key,
-                        value: all[key],
-                    })
-                }
+        if (!monitorAddress) {
+            alert(JSON.stringify(result));
+        }
+    })
+}
+
+function serviceGetAll() {
+    // alert(`monitorAddress=${monitorAddress}`);
+    relayRequest(monitorAddress, '/service/getAll', {}, function (err, serviceAll) {
+        let services = [];
+        for (let type in serviceAll) {
+            const all = serviceAll[type];
+            for (let key in all) {
+                services.push({
+                    type: type,
+                    key: key,
+                    value: all[key],
+                })
             }
-            const data = array2table(services);
-            $("#table1").html(data);
-        })
+        }
+        const data = array2table(services);
+        $("#table1").html(data);
     })
 }
 
 const PAGE_SIZE = 30;
+
+function onRelayRequest() {
+
+    const url = prompt('请输入url', "http://0.0.0.0:8130/healthCheck");
+    if (!url) {
+        return;
+    }
+    relayRequest(url, '', {});
+}
 
 function relayRequest(address, path, body, cb) {
     const request = {
@@ -92,7 +107,7 @@ function getError() {
     const projection = {_id: 0, __v: 0};
     const options = {limit: PAGE_SIZE, sort: {time: -1}, skip: PAGE_SIZE * (page - 1)};
     const params = {condition, projection, options};
-    requestMonitor(`/error/get`, params, function (docs) {
+    relayRequest(monitorAddress, `/error/get`, params, function (err, docs) {
         if (docs.length === 0) {
             return alert('查无记录');
         }
@@ -180,6 +195,9 @@ function commandMetricGet() {
         for (let route in data) {
             array.push(Object.assign({route, avg: 0}, data[route]));
         }
+        if (array.length === 0) {
+            return alert('查无记录')
+        }
         const keyName = {
             route: "调用路由",
             avg: "平均处理",
@@ -198,51 +216,6 @@ function commandMetricGet() {
         $("#table2").html(text);
     })
 }
-
-
-/**
- * 添加时间戳和签名值
- * @param obj object
- */
-function addTimeSign(obj) {
-
-    if (!obj.__timestamp) {
-        obj.__timestamp = Date.now();
-    }
-
-    if (!obj.__sign) {
-        obj.__sign = getCryptoSign(obj);
-    }
-
-    return obj;
-}
-
-/**
- * 获取md5签名值
- * @param obj object
- * @returns {*}
- */
-const getCryptoSign = function (obj) {
-
-    const keys = Object.keys(obj).sort();
-    let str = "";
-    for (const key of keys) {
-        if (key === "sign" || key === "__sign") {
-            continue;
-        }
-
-        let val = obj[key];
-        if (typeof (val) === 'object' && Object.keys(val).length > 0) {
-            // toString(obj);
-            val = JSON.stringify(val);
-        }
-        str += val + "#";
-    }
-    str += "md5_salt";
-    // console.log(`str::${str}`);
-    return Crypto.MD5(str);
-};
-
 
 /**
  *
