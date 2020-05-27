@@ -45,8 +45,22 @@ function configGet() {
 
     sendRequest('/config', {}, function (err, result) {
         monitorAddress = result['monitorAddress'];
-        alert(`monitorAddress=${monitorAddress}`);
-        relayRequest(monitorAddress, '/service/getAll', {})
+        // alert(`monitorAddress=${monitorAddress}`);
+        relayRequest(monitorAddress, '/service/getAll', {}, function (err, serviceAll) {
+            let services = [];
+            for (let type in serviceAll) {
+                const all = serviceAll[type];
+                for (let key in all) {
+                    services.push({
+                        type: type,
+                        key: key,
+                        value: all[key],
+                    })
+                }
+            }
+            const data = array2table(services);
+            $("#table1").html(data);
+        })
     })
 }
 
@@ -153,10 +167,41 @@ function getProfile() {
     }
 }
 
+function commandMetricGet() {
+
+    const address = prompt('请输入服务address:', "http://localhost:6501");
+    if (!address) {
+        return;
+    }
+    relayRequest(address, '/admin/commandMetricGet', {}, function (err, result) {
+
+        const {data} = result;
+        let array = [];
+        for (let route in data) {
+            array.push(Object.assign({route, avg: 0}, data[route]));
+        }
+        const keyName = {
+            route: "调用路由",
+            avg: "平均处理",
+            min: "最短时间",
+            max: "最长时间",
+            count: "调用次数",
+        };
+        for (let o of array) {
+            o.avg = Math.round(o.total / o.count) + 'ms';
+            delete o.total;
+        }
+        array.sort(function (a, b) {
+            return b.avg - a.avg;
+        });
+        const text = array2table(array, keyName);
+        $("#table2").html(text);
+    })
+}
 
 const actionHandler = {
-
-    getProfile: getProfile,
+    getProfile,
+    commandMetricGet,
 };
 
 function onButton() {
