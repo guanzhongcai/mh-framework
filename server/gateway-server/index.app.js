@@ -55,4 +55,5 @@ exports.startServer = function (app, cb) {
     routeMapping(app);
 
     console.log(" * MH Gateway running: http://%s:%s/", config.host, config.port);
+    cb(null);
 };

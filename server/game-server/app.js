@@ -34,7 +34,7 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
         server.InitServer(dbAccess.InitDB, discoverServers).then(async function () {
 
             server.EnableErrorHandler();
-        });
+        }).catch(console.error);;
 
     });
 
