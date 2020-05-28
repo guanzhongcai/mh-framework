@@ -13,6 +13,96 @@
   "login": {
   },
   "gateway": {
+    "bulletin.cfg": [
+      {
+        "pubid": 10000,
+        "thumbtitle": "维护公告",
+        "title": "2020年1月4日维护公告",
+        "subtitle0": "新内容开放",
+        "text0": "各位兰台：\n本次删档为删档，不限号，不计费测试。\n测试时间为：3月20日10:00~3月26日23:59\n本次测试为开发中的游戏版本，测试内容不代表游戏最终品质；也欢迎兰台将测试过程中所遇问题及体验建议通过以下渠道告知我们，我们将尽快回复：\nBug与游戏问题：\n①官方客服QQ：800184517\n②微博私信@墨魂独立工作室\n体验感受与建议意见：\n①客服邮箱：mohun@qhooplay.com\n②官方测试QQ群：905728764（一群）、712194404（二群）。\n客服在线时间：10:00-19:00\n再次感谢各位兰台的支持与协力！",
+        "starttime": 1584519148000,
+        "endtime": 1585238400000,
+        "isred": 1,
+        "isheader": 1,
+        "ispreshow": 1
+      }
+    ],
+    "gateway.cfg": {
+      "debug": true,
+      "encrypt": false,
+      "host": "0.0.0.0",
+      "port": 8310,
+      "redis": {
+        "url": "localhost",
+        "port": 6379,
+        "db": 0,
+        "password": "mhpass123456",
+        "syncdata": "UserSyncData"
+      },
+      "uuid_index": 18808030
+    },
+    "manifest": {
+      "platform": {
+        "android": {
+          "minVer": "",
+          "audVer": ""
+        },
+        "ios": {
+          "minVer": "1.0.1",
+          "audVer": ""
+        },
+        "win32": {
+          "minVer": "",
+          "audVer": ""
+        }
+      },
+      "serverStatus": {
+        "android": {
+          "status": 0
+        },
+        "ios": {
+          "status": 0
+        },
+        "win32": {
+          "status": 0
+        }
+      }
+    },
+    "serverlist": [
+      {
+        "serverId": 1,
+        "loginServInfo": {
+          "win32": {
+            "host": "192.168.188.224",
+            "port": 8120
+          },
+          "ios": {
+            "host": "192.168.188.224",
+            "port": 8120
+          },
+          "android": {
+            "host": "192.168.188.224",
+            "port": 8120
+          }
+        },
+        "gameServInfo": {
+          "win32": {
+            "host": "192.168.188.224",
+            "port": 8130
+          },
+          "ios": {
+            "host": "192.168.188.224",
+            "port": 8130
+          },
+          "android": {
+            "host": "192.168.188.224",
+            "port": 8130
+          }
+        },
+        "maxNum": 100000,
+        "extNum": 0
+      }
+    ]
   },
   "game": {
     "server": {

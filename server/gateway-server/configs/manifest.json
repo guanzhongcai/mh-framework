@@ -1,0 +1,27 @@
+{
+	"platform": {
+		"android": {
+			"minVer": "",
+			"audVer": ""
+		},
+		"ios": {
+			"minVer": "1.0.1",
+			"audVer": ""
+		},
+		"win32": {
+			"minVer": "",
+			"audVer": ""
+		}
+	},
+	"serverStatus": {
+		"android": {
+			"status": 0
+		},
+		"ios": {
+			"status": 0
+		},
+		"win32": {
+			"status": 0
+		}
+	}
+}

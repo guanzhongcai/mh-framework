@@ -3,7 +3,6 @@ const serverConfig = require('../../config/game-server');
 const configData = require('../shared/data/configData');
 const dbAccess = require('./db/dbAccess');
 const Code = require('../shared/server/Code');
-const fs = require('fs');
 
 const serverType = Code.ServiceType.game;
 
@@ -18,18 +17,20 @@ let server = new ExpressServer({
  */
 function loadConfig() {
 
-    let str = JSON.stringify(configData['server'], null, '\t');
-    fs.writeFileSync('./configs/server.json', str, 'utf8');
-    str = JSON.stringify(configData['log'], null, '\t');
-    fs.writeFileSync('./configs/log.json', str, 'utf8');
+    const fs = require('fs');
+    const files = ['server', 'log'];
+    for (let file of files){
+        let str = JSON.stringify(configData[file], null, '\t');
+        fs.writeFileSync(`./configs/${file}.json`, str, 'utf8');
+    }
 }
 
 configData.Init(serverType, serverConfig.configAddress, function (err) {
 
     loadConfig();
     require('./index.app.js').startServer(server.app, function (err) {
-        const discoverServers = [];
 
+        const discoverServers = [];
         server.InitServer(dbAccess.InitDB, discoverServers).then(async function () {
 
             server.EnableErrorHandler();
