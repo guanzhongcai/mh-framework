@@ -1,19 +1,5 @@
-/**
- * 从配置中心加载配置到本地
- */
-function loadConfig() {
-
-    const configData = require('../shared/data/configData');
-    const fs = require('fs');
-    let str = JSON.stringify(configData['server'], null, '\t');
-    fs.writeFileSync('./configs/server.json', str, 'utf8');
-    str = JSON.stringify(configData['log'], null, '\t');
-    fs.writeFileSync('./configs/log.json', str, 'utf8');
-}
 
 exports.startServer = function(app, cb) {
-
-    loadConfig();
 
     const compression = require('compression');
     const morgan = require('morgan');
@@ -82,44 +68,6 @@ exports.startServer = function(app, cb) {
         message:'too many connection'
     }))
 
-
-
-    /*
-    function mapping()
-    {
-        let keys = Object.keys(handles.routeTable);
-        for (let i = 0; i < keys.length; i++) {
-            app.post(keys[i], function (req, res) {
-                if (keys[i] === '/fetchservertime') {
-                    handles.routeTable[keys[i]](res, req, req.body);
-                } else {
-                    if (req.body.token) {
-
-                        GameDB.findOne('UserData', ['token'], { uuid: req.body.uuid }, auth => {
-                            if (auth && auth.token) {
-                                if (auth.token == req.body.token) {
-                                    handles.routeTable[keys[i]](res, req, req.body);
-                                } else {
-                                    res.end(JSON.stringify({code:999}));
-                                }
-                            } else {
-                                handles.routeTable[keys[i]](res, req, req.body);
-                            }
-                        });
-                    } else {
-                        handles.routeTable[keys[i]](res, req, req.body);
-                    }
-                }
-            });
-        }
-
-        let getkeys = Object.keys(handles.getRouteTable);
-        for (let i = 0; i < getkeys.length; i++) {
-            app.get(getkeys[i], function (req, res) {
-                handles.getRouteTable[getkeys[i]](res, req);
-            });
-        }
-    }*/
 
     const tokenEnabled = true;
 
@@ -230,4 +178,6 @@ exports.startServer = function(app, cb) {
 
     const RouteMapping = require('./app/mapping');
     RouteMapping(app);
+    cb(null);
 }
+

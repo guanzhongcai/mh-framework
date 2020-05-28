@@ -128,7 +128,7 @@ ExpressServer.prototype._initMonitor = function () {
  * 初始化默认中间件
  * @private
  */
-ExpressServer.prototype.initMiddleware = function () {
+ExpressServer.prototype.InitMiddleware = function () {
 
     const {serverType, listen, app} = this;
 

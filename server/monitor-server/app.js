@@ -19,15 +19,13 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
         Code.ServiceType.gateway,
     ];
 
-    server.initMiddleware();
+    server.InitMiddleware();
     server.InitServer(dbAccess.InitDB, discoverServers).then(function () {
 
         server.AddRouter('/error', require('./routers/error'));
         server.AddRouter('/profile', require('./routers/profile'));
         server.AddRouter('/service', require('./routers/service'));
 
-        //app.use(express.json());
-        //app.use(express.urlencoded({extended: false}));
         server.EnableErrorHandler();
 
     }).catch(console.error);

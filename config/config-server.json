@@ -38,13 +38,13 @@
       }
     },
     "log": {
-      "kafkaConf" : {
-        "enable" : false,
+      "kafkaConf": {
+        "enable": false,
         "fork": true,
-        "kafkaHost" : "localhost:9092",
-        "zkHost" : "localhost:2181",
-        "topic" : "mohunlogs",
-        "maxCount" : 100
+        "kafkaHost": "localhost:9092",
+        "zkHost": "localhost:2181",
+        "topic": "mohunlogs",
+        "maxCount": 100
       },
       "webConf": {
         "logFileKeepDays": "1",
@@ -60,33 +60,27 @@
       "poolsize": 500
     },
     "mongo": {
-      "uri0": "mongodb://admin:123456@localhost:27017/game?authSource=admin",
-      "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/game?authSource=admin",
+      "uri": "mongodb://admin:123456@localhost:27017/game?authSource=admin",
       "options": {
         "autoIndex": true,
         "reconnectTries": 86400,
         "reconnectInterval": 1000,
         "poolSize": 100,
         "bufferMaxEntries": 0,
-        "useNewUrlParser": true,
-        "useCreateIndex": true,
-        "useUnifiedTopology": true
+        "useNewUrlParser": true
       }
     }
   },
   "monitor": {
     "mongo": {
-      "uri0": "mongodb://admin:123456@localhost:27017/monitor?authSource=admin",
-      "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/monitor?authSource=admin",
+      "uri": "mongodb://admin:123456@localhost:27017/monitor?authSource=admin",
       "options": {
         "autoIndex": true,
         "reconnectTries": 86400,
         "reconnectInterval": 1000,
         "poolSize": 100,
         "bufferMaxEntries": 0,
-        "useNewUrlParser": true,
-        "useCreateIndex": true,
-        "useUnifiedTopology": true
+        "useNewUrlParser": true
       }
     }
   }
