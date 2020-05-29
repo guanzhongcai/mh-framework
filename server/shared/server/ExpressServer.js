@@ -43,6 +43,17 @@ class ExpressServer {
     }
 }
 
+ExpressServer.prototype.UpdateListen = function({host, port}) {
+    if (!!host) {
+        this.listen.host = host;
+    }
+    if (!!port) {
+        this.listen.port = port;
+    }
+    console.debug(`UpdateListen: %j`, this.listen);
+};
+
+
 /**
  * 服务启动
  * @param dbInitFunc function 数据库模块初始化启动
