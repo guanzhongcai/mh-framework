@@ -17,14 +17,11 @@
 <table border="1">
     <tr>
         <td>
-            <label>功能选择：</label>
+            <label for="option_select">功能选择：</label>
         </td>
         <td>
-            <button onclick="serviceGetAll()">serviceGetAll</button>
-            <button onclick="commandMetricGet()">commandMetricGet</button>
-            <button onclick="getProfile()">getProfile</button>
-            <button onclick="serviceOffline()">serviceOffline</button>
-            <button onclick="onRelayRequest()">relayRequest</button>
+            <select id="option_select"></select>
+            <button onclick="onButtonOption()">执 行</button>
         </td>
     </tr>
     <tr>

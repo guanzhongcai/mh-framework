@@ -64,8 +64,8 @@ ExpressServer.prototype.UpdateListen = function ({host, port}) {
 ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) {
 
     this.dbAccess = dbAccess || {};
-
-    let self = this;
+    this.serverStatus = Code.ServiceStatus.launching;
+    self = this;
     let {serverType, listen} = self;
     const name = ServiceAccess.Name(serverType, listen.host, listen.port);
 
@@ -88,6 +88,7 @@ ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) 
     await this.serviceAccess.register(serverType, listen);
 
     console.debug(`service start success: ${name}`);
+    this.ChangeStatus(Code.ServiceStatus.running);
 };
 
 function execFn(fn) {
@@ -230,20 +231,12 @@ ExpressServer.prototype.AddRouter = function (path, func) {
     this.app.use(path, func);
 };
 
-function checkFn(fn) {
-    if (!fn) {
-        fn = function (cb) {
-            cb(null);
-        }
-    }
-    return fn;
-}
-
 /**
  * 优雅停止服务前的清理工作
+ * @param force bool 是否强制停止服务 true/false
  * @constructor
  */
-ExpressServer.prototype.GracefulStop = function () {
+ExpressServer.prototype.GracefulStop = function (force = false) {
 
     let self = this;
     const {serverType, listen} = self;
@@ -260,18 +253,28 @@ ExpressServer.prototype.GracefulStop = function () {
                 console.debug(`[listen] close`);
 
                 //todo wait to finish all commands done
-
                 await execFn(self.dbAccess.CloseDB);
                 console.log('Graceful Stop');
-                process.exit(0);
+                self.ChangeStatus(Code.ServiceStatus.stop);
+
+                if (force) {
+                    process.exit(0);
+                }
             })
         });
     });
 
-    setTimeout(function () {
-        console.error(`timeout exit !`);
-        process.exit(0);
-    }, 3000);
+    if (force) {
+        setTimeout(function () {
+            console.error(`timeout exit !`);
+            process.exit(0);
+        }, 3000);
+    }
+};
+
+ExpressServer.prototype.ChangeStatus = function (status) {
+
+    this.serverStatus = status;
 };
 
 /**

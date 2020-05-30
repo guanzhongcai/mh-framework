@@ -17,10 +17,10 @@ router.post('/healthCheck', function (req, res) {
     res.json({code: 200, msg: "health success"});
 });
 
-router.post('/offline', function (req, res) {
+router.post('/stopService', function (req, res) {
 
     res.json({code: 200, msg: "success"});
-    router.server.GracefulStop();
+    router.server.GracefulStop(false);
 });
 
 router.bindServer = function (server) {

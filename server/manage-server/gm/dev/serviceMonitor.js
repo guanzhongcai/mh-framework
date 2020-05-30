@@ -14,6 +14,7 @@ const SERVER_TYPE = {
     monitor: 'monitor', //监控服务器
 };
 
+
 let monitorAddress;
 
 function onReady() {
@@ -38,6 +39,7 @@ function onReady() {
         $("#error_select").append($(option));
     }
 
+    initOptionSelect();
     configGet();
 }
 
@@ -72,7 +74,7 @@ function serviceGetAll() {
 
 const PAGE_SIZE = 30;
 
-function onRelayRequest() {
+function healthCheck() {
 
     const url = prompt('请输入url', "http://0.0.0.0:8130/admin/healthCheck");
     if (!url) {
@@ -81,9 +83,18 @@ function onRelayRequest() {
     relayRequest(url, '', {});
 }
 
-function serviceOffline() {
+function fetchservertime() {
 
-    const url = prompt('请输入url', "http://0.0.0.0:8130/admin/offline");
+    const url = prompt('请输入url', "http://0.0.0.0:8130/fetchservertime");
+    if (!url) {
+        return;
+    }
+    relayRequest(url, '', {});
+}
+
+function stopService() {
+
+    const url = prompt('请输入url', "http://0.0.0.0:8130/admin/stopService");
     if (!url) {
         return;
     }
@@ -337,4 +348,27 @@ function array2table(arr, keyname = {}) {
     }
 
     return tr;
+}
+
+
+const options = {
+    serviceGetAll,
+    commandMetricGet,
+    getProfile,
+    stopService,
+    healthCheck,
+    fetchservertime,
+};
+
+function initOptionSelect() {
+    for (const key in options) {
+        const option = `<option value=${key}>${key}</option>`;
+        $("#option_select").append($(option));
+    }
+}
+
+function onButtonOption() {
+
+    const key = $("#option_select").val();
+    options[key]();
 }

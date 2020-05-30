@@ -42,7 +42,7 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
 
         process.on('SIGINT', function () {
 
-            server.GracefulStop();
+            server.GracefulStop(true);
         });
     });
 });
