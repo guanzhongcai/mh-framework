@@ -11,26 +11,26 @@ exports.InitDB = function (cb) {
         }
 
         const {uri, options} = configData.mongo;
-        gameMongo.connect(uri, options, gameMongo.models, function (err) {
-            if (err) {
-                throw err;
-            }
+        // gameMongo.connect(uri, options, gameMongo.models, function (err) {
+        if (err) {
+            throw err;
+        }
 
-            let app = require('../app');
-            app.watchDatabase('redis', gameRedis);
-            app.watchDatabase('mongo', gameMongo);
-            cb(null);
-        })
+        let app = require('../app');
+        app.watchDatabase('redis', gameRedis);
+        // app.watchDatabase('mongo', gameMongo);
+        cb(null);
+        // })
     });
 };
 
 exports.CloseDB = function (cb) {
 
     gameRedis.shutdown(function (err) {
-        gameMongo.Disconnect(function (err) {
+        // gameMongo.Disconnect(function (err) {
 
-            cb(null);
-        })
+        // cb(null);
+        // })
     });
 };
 
