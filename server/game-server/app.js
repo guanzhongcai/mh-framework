@@ -49,7 +49,7 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
     require('./index.app.js').startServer(server.app, function (err) {
 
         const discoverServers = [];
-        server.InitServer(dbAccess.InitDB, discoverServers).then(async function () {
+        server.InitServer(dbAccess, discoverServers).then(async function () {
 
             server.EnableErrorHandler();
         }).catch(console.error);
@@ -58,7 +58,7 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
 
     process.on('SIGINT', function () {
 
-        server.GracefulStop(dbAccess.Close);
+        server.GracefulStop();
     });
 });
 

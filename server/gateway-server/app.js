@@ -34,7 +34,7 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
             Code.ServiceType.game,
         ];
 
-        server.InitServer(dbAccess.InitDB, discoverServers).then(async function () {
+        server.InitServer(dbAccess, discoverServers).then(async function () {
 
             server.EnableErrorHandler();
 
@@ -42,7 +42,7 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
 
         process.on('SIGINT', function () {
 
-            server.GracefulStop(dbAccess.Close);
+            server.GracefulStop();
         });
     });
 });

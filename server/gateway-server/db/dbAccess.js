@@ -3,7 +3,7 @@ exports.InitDB = function (cb) {
     cb(null);
 };
 
-exports.Close = function (cb) {
+exports.CloseDB = function (cb) {
 
     cb(null);
 };

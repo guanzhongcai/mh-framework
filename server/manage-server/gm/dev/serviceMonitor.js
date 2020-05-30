@@ -81,6 +81,15 @@ function onRelayRequest() {
     relayRequest(url, '', {});
 }
 
+function serviceOffline() {
+
+    const url = prompt('请输入url', "http://0.0.0.0:8130/admin/offline");
+    if (!url) {
+        return;
+    }
+    relayRequest(url, '', {});
+}
+
 function relayRequest(address, path, body, cb) {
     const request = {
         url: address + path,
@@ -119,6 +128,7 @@ function getError() {
         $("#table1").html(text);
     })
 }
+
 
 function getProfile() {
 

@@ -9,7 +9,7 @@ exports.InitDB = function (cb) {
     monitorMongo.connect(url, options, monitorMongo.models, cb);
 };
 
-exports.Close = function (cb) {
+exports.CloseDB = function (cb) {
 
     monitorMongo.Disconnect(cb);
 };

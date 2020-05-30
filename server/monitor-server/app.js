@@ -20,7 +20,7 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
     ];
 
     server.InitMiddleware();
-    server.InitServer(dbAccess.InitDB, discoverServers).then(function () {
+    server.InitServer(dbAccess, discoverServers).then(function () {
 
         server.AddRouter('/error', require('./routers/error'));
         server.AddRouter('/profile', require('./routers/profile'));
@@ -32,7 +32,7 @@ configData.Init(serverType, serverConfig.configAddress, function (err) {
 
     process.on('SIGINT', function () {
 
-        server.GracefulStop(dbAccess.Close);
+        server.GracefulStop();
     });
 });
 

@@ -16,3 +16,14 @@ router.post('/healthCheck', function (req, res) {
 
     res.json({code: 200, msg: "health success"});
 });
+
+router.post('/offline', function (req, res) {
+
+    res.json({code: 200, msg: "success"});
+    router.server.GracefulStop();
+});
+
+router.bindServer = function (server) {
+
+    router.server = server;
+};

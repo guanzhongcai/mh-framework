@@ -43,7 +43,7 @@ class ExpressServer {
     }
 }
 
-ExpressServer.prototype.UpdateListen = function({host, port}) {
+ExpressServer.prototype.UpdateListen = function ({host, port}) {
     if (!!host) {
         this.listen.host = host;
     }
@@ -56,18 +56,20 @@ ExpressServer.prototype.UpdateListen = function({host, port}) {
 
 /**
  * 服务启动
- * @param dbInitFunc function 数据库模块初始化启动
+ * @param dbAccess factory object 数据库模块
  * @param discoverServers array [server1,server2] 要发现的服务
  * @returns {Promise<void>}
  * @constructor
  */
-ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers) {
+ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) {
+
+    this.dbAccess = dbAccess || {};
 
     let self = this;
     let {serverType, listen} = self;
     const name = ServiceAccess.Name(serverType, listen.host, listen.port);
 
-    await execFn(dbInitFunc);
+    await execFn(self.dbAccess.InitDB);
     //初始化service注册etcd中心
     this.serviceAccess = new ServiceAccess(configData.etcd);
 
@@ -78,7 +80,9 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
 
     this._initMonitor();
 
-    this.app.use("/admin", require('./routes/admin'));
+    let admin = require('./routes/admin');
+    this.app.use("/admin", admin);
+    admin.bindServer(this);
 
     await this._initListen();
     await this.serviceAccess.register(serverType, listen);
@@ -87,7 +91,7 @@ ExpressServer.prototype.InitServer = async function (dbInitFunc, discoverServers
 };
 
 function execFn(fn) {
-    if (!fn) {
+    if (!fn || typeof fn !== "function") {
         return;
     }
 
@@ -237,10 +241,9 @@ function checkFn(fn) {
 
 /**
  * 优雅停止服务前的清理工作
- * @param dbCloseFunc function 数据库关闭函数
  * @constructor
  */
-ExpressServer.prototype.GracefulStop = function (dbCloseFunc) {
+ExpressServer.prototype.GracefulStop = function () {
 
     let self = this;
     const {serverType, listen} = self;
@@ -253,16 +256,14 @@ ExpressServer.prototype.GracefulStop = function (dbCloseFunc) {
 
             self.serviceAccess.Close();
 
-            self._server.close(function (err) {
+            self._server.close(async function (err) {
                 console.debug(`[listen] close`);
 
                 //todo wait to finish all commands done
 
-                dbCloseFunc = checkFn(dbCloseFunc);
-                dbCloseFunc(function (err) {
-                    console.log('Graceful Stop');
-                    process.exit(0);
-                })
+                await execFn(self.dbAccess.CloseDB);
+                console.log('Graceful Stop');
+                process.exit(0);
             })
         });
     });

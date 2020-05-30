@@ -24,7 +24,7 @@ exports.InitDB = function (cb) {
     });
 };
 
-exports.Close = function (cb) {
+exports.CloseDB = function (cb) {
 
     gameRedis.shutdown(function (err) {
         gameMongo.Disconnect(function (err) {
