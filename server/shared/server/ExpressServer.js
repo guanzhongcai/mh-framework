@@ -80,6 +80,8 @@ ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) 
 
     this._initMonitor();
 
+    this.app.use(require('../middleware/responseTime')(this));
+
     let admin = require('./routes/admin');
     this.app.use("/admin", admin);
     admin.bindServer(this);
@@ -159,7 +161,7 @@ ExpressServer.prototype.InitMiddleware = function () {
     app.use(express.urlencoded({extended: false}));
 
     //消息日志
-    app.use(require('../middleware/logMessage')(this));
+    app.use(require('../middleware/logMessage'));
 
     //签名检查
     app.use(checkSign);

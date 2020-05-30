@@ -21,6 +21,7 @@ exports.record = function (url, span) {
             item.max = span;
         }
     }
+    // console.debug(`record`, url, span);
 };
 
 exports.get = function () {
