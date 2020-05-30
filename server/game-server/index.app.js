@@ -3,7 +3,8 @@ exports.startServer = function(app, cb) {
 
     const compression = require('compression');
     const morgan = require('morgan');
-    let config = require('./configs/server.json'); //require('./dataWrapper/configuration.json');
+    const validator = require('validator');
+    const config = require('./configs/server.json'); //require('./dataWrapper/configuration.json');
 
 //const handles = require('./handle');
     const zlib = require('zlib');
@@ -50,7 +51,6 @@ exports.startServer = function(app, cb) {
     global.FIX_TASK = FIX_TASK.loadFixData()
     // 初始化
     global.FIX_INIT_TASKDATA = FIX_TASK.initTask()
-    console.debug(`FIXDB size=%d`, Object.keys(FIXDB).length);
 
     app.set('host', config.host);
     app.set('port', config.port);
