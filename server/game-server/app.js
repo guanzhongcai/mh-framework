@@ -20,10 +20,13 @@ let server = new ExpressServer({
 function loadConfig() {
 
     const fs = require('fs');
-    const files = ['server', 'log'];
-    for (let file of files) {
-        let str = JSON.stringify(configData[file], null, '\t');
-        fs.writeFileSync(`./configs/${file}.json`, str, 'utf8');
+    for (const key in configData) {
+        if (key.indexOf('.') === -1) {
+            continue;
+        }
+        const value = configData[key];
+        fs.writeFileSync(`./configs/${key}`, value, 'utf8');
+        console.log(`save config file=${key}`);
     }
 }
 

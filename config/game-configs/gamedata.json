@@ -1,0 +1,80 @@
+{
+    "GACHA": {
+        "SingleCostItem": [
+            {"id": 423001, "count": 1}
+        ],
+        "MultiCostItem": [
+            {"id": 423001, "count": 10}
+        ],
+        "SingleCostEnergy": 0,
+        "MultiCostEnergy": 0,
+        "BuyCountMax": 10,
+        "GachaCountDefault": 3,
+        "GachaEventType": {
+            "Empty":0,
+            "AddCount":1,
+            "Hero":11,
+            "Skin":12
+        },
+        "GachaRandomProbs":10000,
+        "GachaGridNum":36,
+        "GachaFirstMohunId":310001
+    },
+    "QUIZ":{
+        "QuizItemCdTime":43200000,
+        "QuizItemCdAdaptTime":5000,
+        "QuizItemId":440001,
+        "QuizItemCount":1
+    },
+    "WORK": {
+        "RepairedCostDiamond": 10
+    },
+    "SHOP": {
+        "RefreshMenuCD":18000000,
+        "RefreshFreeCount":5,
+        "RefreshCostDiamondNum":200
+    },
+    "SOULGAME":{
+        "SoulGameCount":5,
+        "SoulGameUpdateTime":21600000,
+        "SoulGameCostEnergy":50,
+        "SoulGameHostId":320000,
+        "SoulGameAttrsEnergyId":410005
+    },
+    "ORDER":{
+        "GoldValueRateDefault":0.1,
+        "ItemValueRateDefault":1.0,
+        "ShortOrderBuyMax":5,
+        "ShortOrderMaxRefreshTime":3,
+        "ShortOrderAddCountPerTime":10,
+        "ShortOrderCountLimited":20,
+        "ShortOrderMaxTimeOrder":1,
+        "ShortOrderTimeOrderMaxComplete":5,
+        "MaxMessageLength":20,
+        "LimitedOrderRefreshMaxCount":6,
+        "ShortOrderHeroSettingTime":0,
+        "LongOrderWaitTime":21600000,
+        "OrderTypeShortOrder":1,
+        "OrderTypeLongOrder":2,
+        "OrderContentCateProfitArray":[
+            [[100]],
+            [[65, 35], [60, 40], [55, 45], [50, 50]],
+            [[45, 30, 25], [40, 30, 30], [40, 35, 25], [35, 35, 30]],
+            [[25, 25, 25, 25], [40, 20, 20, 20], [30, 30, 20, 20], [35, 25, 20, 20], [30, 25, 25, 20], [35, 30, 20, 15]]
+        ]
+    },
+
+    "VIEWRESPECTS":{
+        "RespType_None":-1,
+        "RespType_Normal":0,
+        "RespType_Login":1,
+        "RespType_Anniversary":2,
+        "RespType_Birthday":3,
+        "RespType_Return":4
+    },
+    "MapBuildingBuySource":{
+        "BuySource_Shop":1,
+        "BuySource_Shopcart":2,
+        "BuySource_Shoppreview":3
+    }
+}

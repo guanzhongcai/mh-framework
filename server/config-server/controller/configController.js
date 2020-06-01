@@ -1,19 +1,29 @@
 const Code = require('../../shared/server/Code');
 const serverConfig = require('../../../config/config-server');
+const fs = require('fs');
 
 let logic = module.exports;
 
+const configServices = [
+    Code.ServiceType.login,
+    Code.ServiceType.gateway,
+    Code.ServiceType.game
+];
+
 logic.getConfig = function ({type}, cb) {
 
-    const config = serverConfig[type];
-    if (!config) {
-        cb(null, {code: Code.FAIL, msg: `not found service config for type=${type}`});
-        return
-    }
     let result = {
         code: Code.OK,
         etcd: serverConfig.etcd,
     };
-    Object.assign(result, config);
+
+    if (configServices.includes(type)) {
+        const path = `../../../config/${type}-configs`;
+        fs.readdirSync(path).forEach(function (fileName) {
+            const filePath = path + '/' + fileName;
+            result[fileName] = fs.readFileSync(filePath, 'utf8');
+        });
+    }
+
     cb(null, result);
 };

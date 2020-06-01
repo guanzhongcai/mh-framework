@@ -1,38 +1,29 @@
-const configData = require('../../shared/data/configData');
+const serverConfig = require('../configs/server');
 let gameRedis = require('./gameRedis');
 let gameMongo = require('./gameMongo');
 
 
 exports.InitDB = function (cb) {
 
-    gameRedis.Init(configData.redis, function (err) {
+    const redisConfig = {
+        host: serverConfig.gameRedis.url,
+        port: serverConfig.gameRedis.port,
+        password: serverConfig.gameRedis.port,
+        auth_pass: serverConfig.gameRedis.password,
+        poolsize: serverConfig.gameRedis.poolsize || 100,
+    };
+    gameRedis.Init(redisConfig, function (err) {
         if (err) {
             throw err;
         }
         let app = require('../app');
         app.watchDatabase('redis', gameRedis);
-        return cb(null);
-
-        const {uri, options} = configData.mongo;
-        gameMongo.connect(uri, options, gameMongo.models, function (err) {
-        if (err) {
-            throw err;
-        }
-        app.watchDatabase('mongo', gameMongo);
         cb(null);
-        })
     });
 };
 
 exports.CloseDB = function (cb) {
 
-    return gameRedis.shutdown(cb);
-
-    gameRedis.shutdown(function (err) {
-        gameMongo.Disconnect(function (err) {
-
-        cb(null);
-        })
-    });
+    gameRedis.shutdown(cb);
 };
 

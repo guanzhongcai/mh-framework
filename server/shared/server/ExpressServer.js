@@ -21,10 +21,8 @@ class ExpressServer {
      * 构造器
      * @param serverType string 服务类型
      * @param listen object {host, port} 本服务对外host和监听端口
-     * @param logs object {host, port} 日志模块
-     * @param traceEndpoint string 服务链路追踪终点
      */
-    constructor({serverType, listen, logs, traceEndpoint}) {
+    constructor({serverType, listen}) {
 
         this.serverType = serverType;
         this.listen = {

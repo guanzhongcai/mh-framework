@@ -2,11 +2,6 @@ const sign = require('../util/sign');
 const requestHttp = require('../http/requestHttp');
 
 let configData = {
-    redis: {},
-    mongo: {
-        uri: "",
-        options: {},
-    },
     etcd: {},
     monitorServer: "http://localhost:5801/",
 };
@@ -32,7 +27,6 @@ configData.Init = function (serverType, configAddress, cb) {
             console.error(result);
             return process.exit(0);
         }
-        console.debug(`[configData] %j`, result);
         if (err) {
             throw err;
         }
