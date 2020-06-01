@@ -18,7 +18,7 @@ logic.getConfig = function ({type}, cb) {
     };
 
     if (configServices.includes(type)) {
-        const path = `../../../config/${type}-configs`;
+        const path = `${__dirname}/../../../config/${type}-configs`;
         fs.readdirSync(path).forEach(function (fileName) {
             const filePath = path + '/' + fileName;
             result[fileName] = fs.readFileSync(filePath, 'utf8');

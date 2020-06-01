@@ -37,6 +37,7 @@ MongoAccess.prototype.connect = function (url, options, models, cb) {
     this._uri = url;
     this._models = models;
     let self = this;
+    console.debug(`uri::${url}, options=%j`, options);
 
     self._connection = mongoose.createConnection(url, options);
 
