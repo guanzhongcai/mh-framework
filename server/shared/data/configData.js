@@ -4,6 +4,7 @@ const requestHttp = require('../http/requestHttp');
 let configData = {
     etcd: {},
     monitorServer: "http://localhost:5801/",
+    mongo: {uri: "", options: {}}
 };
 
 /**

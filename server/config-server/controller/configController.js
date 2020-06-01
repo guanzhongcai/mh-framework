@@ -25,5 +25,9 @@ logic.getConfig = function ({type}, cb) {
         });
     }
 
+    if (type === Code.ServiceType.monitor) {
+        result.mongo = serverConfig.monitor.mongo;
+    }
+
     cb(null, result);
 };

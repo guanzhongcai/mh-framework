@@ -143,7 +143,8 @@ ServiceAccess.prototype.getOneRandServer = function (type, lastAddress = "") {
         }
     }
     if (size === 0) {
-        return console.warn(`当前没有可用的服务！type=${type}`);
+        // console.warn(`当前没有可用的服务！type=${type}`);
+        return
     }
 
     let idx = 0;
