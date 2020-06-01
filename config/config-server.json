@@ -11,6 +11,154 @@
     "ttl": 10
   },
   "login": {
+    "log.config": {
+      "kafkaConf": {
+        "enable": true,
+        "fork": true,
+        "kafkaHost": "10.0.40.63:9092,10.0.40.64:9092,10.0.40.65:9092",
+        "zkHost": "10.0.40.63:2181,10.0.40.64:2181,10.0.40.65:2181",
+        "topic": "mohunlogs",
+        "maxCount": 100
+      }
+    },
+    "manifest": {
+      "platform": {
+        "android": {
+          "minVer": "1.0.1",
+          "audVer": ""
+        },
+        "ios": {
+          "minVer": "1.0.1",
+          "audVer": ""
+        },
+        "win32": {
+          "minVer": "",
+          "audVer": ""
+        }
+      },
+      "serverStatus": {
+        "android": {
+          "status": 0
+        },
+        "ios": {
+          "status": 0
+        },
+        "win32": {
+          "status": 0
+        }
+      }
+    },
+    "player.await": {
+      "awaitQueueEnable": true,
+      "awaitQueueMax": 10000,
+      "onlineCountMax": 20000,
+      "awaitUpTime": 300
+    },
+    "server.config": {
+      "debug": true,
+      "encrypt": true,
+      "version": "1.0.0",
+      "host": "0.0.0.0",
+      "port": 8120,
+      "gamedb": {
+        "url": "mongodb://localhost:27017",
+        "dbname": "mohungames",
+        "options": {
+          "useNewUrlParser": true,
+          "useUnifiedTopology": true
+        }
+      },
+      "loginRedis": {
+        "url": "localhost",
+        "port": 6379,
+        "db": 0,
+        "password": "gotech123",
+        "syncdata": "UserSyncData"
+      },
+      "gameIndexTables": [
+        {
+          "tblname": "Buff",
+          "index": "uuid"
+        },
+        {
+          "tblname": "Clue",
+          "index": "uuid"
+        },
+        {
+          "tblname": "CollectData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "Dorm",
+          "index": "uuid"
+        },
+        {
+          "tblname": "ExternalData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "GachaData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "HeroData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "HotSpring",
+          "index": "uuid"
+        },
+        {
+          "tblname": "InspData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "ItemData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "MapData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "OrderData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "PoetryData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "PubNotices",
+          "index": "pubid"
+        },
+        {
+          "tblname": "SceneData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "ShopData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "SoulGameData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "Stock",
+          "index": "uuid"
+        },
+        {
+          "tblname": "TaskData",
+          "index": "uuid"
+        },
+        {
+          "tblname": "WorkData",
+          "index": "uuid"
+        }
+      ],
+      "uuid_index": 18808030
+    }
   },
   "gateway": {
     "bulletin.cfg": [
@@ -140,24 +288,6 @@
         "logFileKeepDays": "1",
         "autoClearTime": "2",
         "loggerPath": "./devOpsLog"
-      }
-    },
-    "redis": {
-      "host": "localhost",
-      "port": 6379,
-      "db": 1,
-      "auth_pass": "gotech123",
-      "poolsize": 500
-    },
-    "mongo": {
-      "uri": "mongodb://admin:123456@localhost:27017/game?authSource=admin",
-      "options": {
-        "autoIndex": true,
-        "reconnectTries": 86400,
-        "reconnectInterval": 1000,
-        "poolSize": 100,
-        "bufferMaxEntries": 0,
-        "useNewUrlParser": true
       }
     }
   },

@@ -1,10 +1,10 @@
 let ExpressServer = require("../shared/server/ExpressServer");
-const serverConfig = require('../../config/gateway-server');
+const serverConfig = require('../../config/login-server');
 const configData = require('../shared/data/configData');
 const dbAccess = require('./db/dbAccess');
 const Code = require('../shared/server/Code');
 
-const serverType = Code.ServiceType.gateway;
+const serverType = Code.ServiceType.login;
 
 let server = new ExpressServer({
     serverType: serverType,
@@ -18,7 +18,7 @@ let server = new ExpressServer({
 function loadConfig() {
 
     const fs = require('fs');
-    const files = ['bulletin.cfg', 'gateway.cfg', 'manifest', 'serverlist'];
+    const files = ['log.config', 'manifest', 'player.await', 'server.config'];
     for (let file of files){
         let str = JSON.stringify(configData[file], null, '\t');
         fs.writeFileSync(`./configs/${file}.json`, str, 'utf8');
@@ -28,11 +28,9 @@ function loadConfig() {
 configData.Init(serverType, serverConfig.configAddress, function (err) {
 
     loadConfig();
-    require('./index.app').startServer(server.app, function (err) {
+    require('./app/app.init').startServer(server.app, function (err) {
 
         const discoverServers = [
-            Code.ServiceType.login,
-            Code.ServiceType.game,
         ];
 
         server.InitServer(dbAccess, discoverServers).then(async function () {

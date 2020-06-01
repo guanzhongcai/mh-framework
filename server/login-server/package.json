@@ -1,0 +1,35 @@
+{
+  "name": "mh-loginapp",
+  "version": "1.0.0",
+  "description": "mohun gameserver's login app.",
+  "main": "index.app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node index.app.js"
+  },
+  "keywords": [
+    "mohun",
+    "game"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "domain": "0.0.1",
+    "validator": "^12.2.0"
+  },
+  "devDependencies": {
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.1",
+    "method-override": "^3.0.0",
+    "kafka-node": "^5.0.0",
+    "mongodb": "^3.3.3",
+    "morgan": "^1.9.1",
+    "redis": "^2.8.0",
+    "redis-connection-pool": "^1.7.2"
+  }
+}

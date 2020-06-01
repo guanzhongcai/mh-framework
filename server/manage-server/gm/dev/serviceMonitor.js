@@ -101,6 +101,9 @@ function stopService() {
     relayRequest(url, '', {});
 }
 
+//{"loginServInfo":{"host":"192.168.188.224","port":8120},
+// "gameServInfo":{"host":"192.168.188.224","port":8130},
+// "httpuuid":"0","uuid":18808031,"code":200}
 function gatewayGet() {
 
     const url = prompt('请输入url', "http://0.0.0.0:6301");
@@ -275,6 +278,7 @@ function sendRequest(url, data, cb) {
                     result = JSON.stringify(result);
                 }
                 alert(result); //string
+                $("#text_span").html(result);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {//设置请求失败后的回调函数

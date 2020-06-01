@@ -1,0 +1,6 @@
+{
+    "awaitQueueEnable": true,
+    "awaitQueueMax": 10000,
+    "onlineCountMax": 20000,
+    "awaitUpTime": 300
+}

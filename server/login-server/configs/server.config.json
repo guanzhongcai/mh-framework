@@ -1,0 +1,45 @@
+{
+	"debug": true,
+	"encrypt": true,
+	"version": "1.0.0",
+	"host": "0.0.0.0",
+	"port": 8120,
+	"gamedb": {
+		"url": "mongodb://localhost:27017",
+		"dbname": "mohungames",
+		"options": {
+			"useNewUrlParser": true,
+			"useUnifiedTopology": true
+		}
+	},
+	"loginRedis": {
+		"url": "localhost",
+		"port": 6379,
+		"db":0,
+		"password": "mhpass123456",
+		"syncdata": "UserSyncData"
+	},
+	"gameIndexTables": [
+		{ "tblname": "Buff", "index": "uuid" },
+		{ "tblname": "Clue", "index": "uuid" },
+		{ "tblname": "CollectData", "index": "uuid" },
+		{ "tblname": "Dorm", "index": "uuid" },
+		{ "tblname": "ExternalData", "index": "uuid" },
+		{ "tblname": "GachaData", "index": "uuid" },
+		{ "tblname": "HeroData", "index": "uuid" },
+		{ "tblname": "HotSpring", "index": "uuid" },
+		{ "tblname": "InspData", "index": "uuid" },
+		{ "tblname": "ItemData", "index": "uuid" },
+		{ "tblname": "MapData", "index": "uuid" },
+		{ "tblname": "OrderData", "index": "uuid" },
+		{ "tblname": "PoetryData", "index": "uuid" },
+		{ "tblname": "PubNotices", "index": "pubid" },
+		{ "tblname": "SceneData", "index": "uuid" },
+		{ "tblname": "ShopData", "index": "uuid" },
+		{ "tblname": "SoulGameData", "index": "uuid" },
+		{ "tblname": "Stock", "index": "uuid" },
+		{ "tblname": "TaskData", "index": "uuid" },
+		{ "tblname": "WorkData", "index": "uuid" }
+	],
+	"uuid_index": 18808030
+}
