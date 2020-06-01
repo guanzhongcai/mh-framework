@@ -1,5 +1,5 @@
 const Code = require('../../shared/server/Code');
-const serverConfig = require('../../../config/config-server');
+const serverConfig = require('../../../config/serverConfig');
 const fs = require('fs');
 
 let logic = module.exports;

@@ -1,5 +1,5 @@
 const express = require("express");
-const serverConfig = require('../../config/manage-server');
+const serverConfig = require('../../config/serverConfig');
 const favicon = require('serve-favicon');
 const path = require('path');
 const requestHttp = require('../shared/http/requestHttp');
@@ -20,16 +20,20 @@ app.use(function (req, res, next) {
     next(null);
 });
 
-app.listen(serverConfig.port, function (err) {
+const port = serverConfig.listenPort.manage;
+const publicIP = serverConfig.publicIP;
+app.listen(port, function (err) {
     if (err) {
         throw err;
     }
-    console.log(`静态文件服务器启动OK http://localhost:${serverConfig.port}/`);
+    console.log(`静态文件服务器启动OK http://${publicIP}:${port}/`);
 });
 
 app.all('/config', function (req, res) {
 
-    res.json(serverConfig);
+    res.json({
+        monitorAddress: serverConfig.address.monitor,
+    });
 });
 
 app.all('/relayRequest', function (req, res) {

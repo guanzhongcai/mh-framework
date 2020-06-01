@@ -1,5 +1,5 @@
 let ExpressServer = require("../shared/server/ExpressServer");
-const serverConfig = require('../../config/gateway-server');
+const serverConfig = require('../../config/serverConfig');
 const configData = require('../shared/data/configData');
 const dbAccess = require('./db/dbAccess');
 const Code = require('../shared/server/Code');
@@ -8,8 +8,8 @@ const serverType = Code.ServiceType.gateway;
 
 let server = new ExpressServer({
     serverType: serverType,
-    configAddress: serverConfig.configAddress,
-    listen: serverConfig.listen,
+    host: serverConfig.publicIP,
+    port: serverConfig.listenPort[serverType],
 });
 
 /**
@@ -28,7 +28,7 @@ function loadConfig() {
     }
 }
 
-configData.Init(serverType, serverConfig.configAddress, function (err) {
+configData.Init(serverType, serverConfig.address.config, function (err) {
 
     loadConfig();
     require('./index.app').startServer(server.app, function (err) {

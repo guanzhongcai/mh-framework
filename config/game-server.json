@@ -1,7 +1,0 @@
-{
-  "listen": {
-    "host": "localhost",
-    "port": 8130
-  },
-  "configAddress": "http://localhost:6101"
-}

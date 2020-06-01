@@ -20,14 +20,15 @@ class ExpressServer {
     /**
      * 构造器
      * @param serverType string 服务类型
-     * @param listen object {host, port} 本服务对外host和监听端口
+     * @param host string 服务主机
+     * @param port string 服务端口
      */
-    constructor({serverType, listen}) {
+    constructor({serverType, host, port}) {
 
         this.serverType = serverType;
         this.listen = {
-            host: listen.host || "0.0.0.0",
-            port: listen.port,
+            host: host || "0.0.0.0",
+            port: port,
         };
 
         this.app = express();

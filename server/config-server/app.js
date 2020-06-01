@@ -1,6 +1,6 @@
 let express = require('express');
 
-const serverConfig = require('../../config/config-server');
+const serverConfig = require('../../config/serverConfig');
 const Code = require('../shared/server/Code');
 
 const serviceType  = Code.ServiceType.config;
@@ -14,7 +14,7 @@ app.use(require('../shared/middleware/checkSign'));
 //路由处理
 app.use('/config', require('./routes/configRoute'));
 
-const port = serverConfig.listen.port;
+const port = serverConfig.listenPort.config;
 
 app.listen(port, function (err) {
     if (err) {

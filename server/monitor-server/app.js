@@ -1,5 +1,5 @@
 let ExpressServer = require("../shared/server/ExpressServer");
-const serverConfig = require('../../config/monitor-server');
+const serverConfig = require('../../config/serverConfig');
 const dbAccess = require('./db/dbAccess');
 const Code = require('../shared/server/Code');
 let configData = require('../shared/data/configData');
@@ -8,10 +8,11 @@ const serverType = Code.ServiceType.monitor;
 
 let server = new ExpressServer({
     serverType: serverType,
-    listen: serverConfig.listen,
+    host: serverConfig.publicIP,
+    port: serverConfig.listenPort[serverType],
 });
 
-configData.Init(serverType, serverConfig.configAddress, function (err) {
+configData.Init(serverType, serverConfig.address.config, function (err) {
 
     const discoverServers = [
         Code.ServiceType.login,

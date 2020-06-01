@@ -1,17 +1,16 @@
 let ExpressServer = require("../shared/server/ExpressServer");
-const serverConfig = require('../../config/game-server');
+const serverConfig = require('../../config/serverConfig');
 const configData = require('../shared/data/configData');
 const dbAccess = require('./db/dbAccess');
 const Code = require('../shared/server/Code');
-const hostInfo = require('./hostInfo');
 let port = 8130; //此服务的监听端口
 
 const serverType = Code.ServiceType.game;
 
 let server = new ExpressServer({
     serverType: serverType,
-    configAddress: serverConfig.configAddress,
-    listen: serverConfig.listen,
+    host: serverConfig.publicIP,
+    port: serverConfig.listenPort[serverType],
 });
 
 /**
@@ -44,11 +43,11 @@ function loadArgs() {
     }
 }
 
-configData.Init(serverType, serverConfig.configAddress, function (err) {
+configData.Init(serverType, serverConfig.address.config, function (err) {
 
     loadConfig();
     loadArgs();
-    server.UpdateListen({host: hostInfo.publicIP, port});
+    server.UpdateListen({host: serverConfig.publicIP, port});
     require('./index.app.js').startServer(server.app, function (err) {
 
         const discoverServers = [];
