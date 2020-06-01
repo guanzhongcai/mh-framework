@@ -2,6 +2,7 @@ let async = require('async');
 let mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true);
 mongoose.Promise = require('bluebird');
+const utils = require('../util/utils');
 
 let patchMongoose = require('../../shared/mongo/patchMongoose');
 patchMongoose(mongoose);
@@ -188,6 +189,10 @@ MongoAccess.prototype.find = function (model, condition, projection, cb) {
  * @param cb
  */
 MongoAccess.prototype.updateOne = function (model, condition, updateDoc, option, cb) {
+
+    if (!this._connection) {
+        return utils.invokeCallback(cb, null);
+    }
 
     if (!cb && typeof option === 'function') {
         cb = option;

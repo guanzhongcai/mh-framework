@@ -9,28 +9,30 @@ exports.InitDB = function (cb) {
         if (err) {
             throw err;
         }
+        let app = require('../app');
+        app.watchDatabase('redis', gameRedis);
+        return cb(null);
 
         const {uri, options} = configData.mongo;
-        // gameMongo.connect(uri, options, gameMongo.models, function (err) {
+        gameMongo.connect(uri, options, gameMongo.models, function (err) {
         if (err) {
             throw err;
         }
-
-        let app = require('../app');
-        app.watchDatabase('redis', gameRedis);
-        // app.watchDatabase('mongo', gameMongo);
+        app.watchDatabase('mongo', gameMongo);
         cb(null);
-        // })
+        })
     });
 };
 
 exports.CloseDB = function (cb) {
 
-    gameRedis.shutdown(function (err) {
-        // gameMongo.Disconnect(function (err) {
+    return gameRedis.shutdown(cb);
 
-        // cb(null);
-        // })
+    gameRedis.shutdown(function (err) {
+        gameMongo.Disconnect(function (err) {
+
+        cb(null);
+        })
     });
 };
 
