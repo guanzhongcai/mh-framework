@@ -101,11 +101,26 @@ function stopService() {
     relayRequest(url, '', {});
 }
 
+function gatewayGet() {
+
+    const url = prompt('请输入url', "http://0.0.0.0:6301");
+    if (!url) {
+        return;
+    }
+    const body = {
+        httpuuid: 0,
+        openid: "112233",
+        platform: "win32",
+    };
+    relayRequest(url, '/gateway', body);
+}
+
 function relayRequest(address, path, body, cb) {
     const request = {
         url: address + path,
         body: body,
     };
+    console.log(`body`, body, typeof body, `request`, request, typeof request);
     sendRequest('/relayRequest', request, cb);
 }
 
@@ -249,7 +264,7 @@ function sendRequest(url, data, cb) {
 
     $.ajax({
         url: url,
-        type: "POST",
+        type: "GET",
         dataType: "JSON",
         data: data,
         success: function (result) {//设置请求成功后的回调函数
@@ -358,6 +373,7 @@ const options = {
     stopService,
     healthCheck,
     fetchservertime,
+    gatewayGet,
 };
 
 function initOptionSelect() {

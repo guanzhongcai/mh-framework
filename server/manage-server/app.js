@@ -27,14 +27,15 @@ app.listen(serverConfig.port, function (err) {
     console.log(`静态文件服务器启动OK http://localhost:${serverConfig.port}/`);
 });
 
-app.post('/config', function (req, res) {
+app.all('/config', function (req, res) {
 
     res.json(serverConfig);
 });
 
-app.post('/relayRequest', function (req, res) {
+app.all('/relayRequest', function (req, res) {
 
-    let {url, body} = req.body;
+    const msg = req.method === "GET" ? req.query : req.body;
+    let {url, body} = msg;
     if (!body) {
         body = {};
     }
