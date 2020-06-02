@@ -69,7 +69,7 @@ class RedisAccess {
 }
 
 RedisAccess.prototype.set = function (key, value, cb) {
-    this.exec('set', [value], cb);
+    this.exec('set', [key, value], cb);
 };
 
 RedisAccess.prototype.get = function (key, cb) {
@@ -108,6 +108,12 @@ RedisAccess.prototype.del = function (key, cb) {
     this.exec('del', [key], cb)
 };
 
+/**
+ *
+ * @param key string
+ * @param fieldValue object {field: value}
+ * @param cb
+ */
 RedisAccess.prototype.hmset = function (key, fieldValue, cb) {
 
     let args = [key];
@@ -117,6 +123,12 @@ RedisAccess.prototype.hmset = function (key, fieldValue, cb) {
     this.exec('hmset', args, cb);
 };
 
+/**
+ *
+ * @param key string
+ * @param fields array object
+ * @param cb
+ */
 RedisAccess.prototype.hmget = function (key, fields, cb) {
     this.exec('hmset', [key].concat(fields), cb)
 };
@@ -125,6 +137,12 @@ RedisAccess.prototype.hgetall = function (key, cb) {
     this.exec('hgetall', [key], cb)
 };
 
+/**
+ *
+ * @param key
+ * @param values array object
+ * @param cb
+ */
 RedisAccess.prototype.sadd = function (key, values, cb) {
     this.exec('sadd', [key].concat(values), cb);
 };
@@ -139,7 +157,7 @@ RedisAccess.prototype.smembers = function (key, cb) {
 
 /**
  * multi
- * @param actions object [['hmset','tableName',{'key1':'value1','key2':'value2'}],['set','tableName3',JSON.stringify({'key1':'value1'})],['zadd','tableName2',[100,'value2']]]
+ * @param actions array object [['hmset','tableName',{'key1':'value1','key2':'value2'}],['set','tableName3',JSON.stringify({'key1':'value1'})],['zadd','tableName2',[100,'value2']]]
  * @param cb
  */
 RedisAccess.prototype.multi = function (actions, cb) {
@@ -170,6 +188,12 @@ RedisAccess.prototype.multi = function (actions, cb) {
     })
 };
 
+/**
+ *
+ * @param key string
+ * @param cursor string
+ * @param cb
+ */
 RedisAccess.prototype.hscan = function (key, cursor, cb) {
     this.exec('hscan', [key, cursor], cb);
 };
