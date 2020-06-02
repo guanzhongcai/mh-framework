@@ -1,11 +1,10 @@
 const redisConfig = require('../configs/server').gameRedis;
-let gameRedis = require('./gameRedis');
-let gameMongo = require('./gameMongo');
+let redisAccess = require('./redisAccess');
 
 
 exports.InitDB = function (cb) {
 
-    gameRedis.Init({
+    redisAccess.Init({
         host: redisConfig.url,
         port: redisConfig.port,
         auth_pass: redisConfig.password,
@@ -15,16 +14,16 @@ exports.InitDB = function (cb) {
         if (err) {
             throw err;
         }
-        require('../index.app').GameRedisHelper.redisClient = gameRedis;
+        require('../index.app').GameRedisHelper.redisClient = redisAccess;
 
         let app = require('../app');
-        app.watchDatabase('redis', gameRedis);
+        app.watchDatabase('redis', redisAccess);
         cb(null);
     });
 };
 
 exports.CloseDB = function (cb) {
 
-    gameRedis.shutdown(cb);
+    redisAccess.shutdown(cb);
 };
 

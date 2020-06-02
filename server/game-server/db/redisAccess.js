@@ -4,6 +4,6 @@
 * */
 const RedisAccess = require('../../shared/redis/RedisAccess');
 
-let gameRedis = new RedisAccess();
+let redisAccess = new RedisAccess();
 
-module.exports = gameRedis;
+module.exports = redisAccess;

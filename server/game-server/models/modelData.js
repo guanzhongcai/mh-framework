@@ -2,7 +2,7 @@
 * GZC created on 2020/5/25
 *  
 * */
-const gameRedis = require('../db/gameRedis');
+const gameRedis = require('../db/redisAccess');
 const gameMongo = require('../db/gameMongo');
 const async = require('async');
 

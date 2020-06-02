@@ -2,6 +2,7 @@
  * redis访问类
  */
 const async = require('async');
+const debug = require('debug')("RedisAccess");
 
 class RedisAccess {
 
@@ -24,6 +25,7 @@ class RedisAccess {
 
     exec(command, args, cb) {
 
+        debug(`command=${command}, args=%j`, args);
         let self = this;
         const _pool = this._pool;
 
@@ -43,6 +45,7 @@ class RedisAccess {
                     self._execOK += 1;
                 }
 
+                debug(`err=%j, res=%j`, err, res);
                 return cb && cb(err, res);
             });
         });
