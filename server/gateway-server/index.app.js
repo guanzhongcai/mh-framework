@@ -54,6 +54,6 @@ exports.startServer = function (app, cb) {
     const routeMapping = require('./app/routes');
     routeMapping(app);
 
-    console.log(" * MH Gateway running: http://%s:%s/", config.host, config.port);
+    // console.log(" * MH Gateway running: http://%s:%s/", config.host, config.port);
     cb(null);
 };

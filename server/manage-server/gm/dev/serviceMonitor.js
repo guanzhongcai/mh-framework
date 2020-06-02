@@ -76,29 +76,48 @@ const PAGE_SIZE = 30;
 
 function healthCheck() {
 
-    const url = prompt('请输入url', "http://0.0.0.0:8130/admin/healthCheck");
-    if (!url) {
-        return;
-    }
-    relayRequest(url, '', {});
+    const url = "http://0.0.0.0:8130/admin/healthCheck";
+    requestService(url, {});
 }
 
 function fetchservertime() {
 
-    const url = prompt('请输入url', "http://0.0.0.0:8130/fetchservertime");
-    if (!url) {
-        return;
-    }
-    relayRequest(url, '', {});
+    const url = "http://0.0.0.0:8130/fetchservertime";
+    requestService(url, {});
 }
 
 function stopService() {
 
-    const url = prompt('请输入url', "http://0.0.0.0:8130/admin/stopService");
+    const url = "http://0.0.0.0:8130/admin/stopService";
+    requestService(url, {});
+}
+
+function getOneService() {
+
+    const url = "http://0.0.0.0:6501/getOneService";
+    const body = {type: "game", lastAddress: "http://host:port"};
+    requestService(url, body);
+}
+
+/**
+ *
+ * @param url string
+ * @param body object
+ */
+function requestService(url, body) {
+
+    url = prompt('请输入请求url:', url);
     if (!url) {
         return;
     }
-    relayRequest(url, '', {});
+
+    body = prompt("请输入JSON请求消息体:", JSON.stringify(body));
+    try {
+        body = JSON.parse(body);
+        relayRequest(url, '', body);
+    } catch (e) {
+        alert(`JSON格式不合法，发送失败！请确认！\n` + body);
+    }
 }
 
 //{"loginServInfo":{"host":"192.168.188.224","port":8120},
@@ -106,16 +125,13 @@ function stopService() {
 // "httpuuid":"0","uuid":18808031,"code":200}
 function gatewayGet() {
 
-    const url = prompt('请输入url', "http://0.0.0.0:6501");
-    if (!url) {
-        return;
-    }
+    const url = "http://0.0.0.0:6501/gateway";
     const body = {
         httpuuid: 0,
         openid: "112233",
         platform: "win32",
     };
-    relayRequest(url, '/gateway', body);
+    requestService(url, body);
 }
 
 function relayRequest(address, path, body, cb) {
@@ -378,6 +394,7 @@ const options = {
     healthCheck,
     fetchservertime,
     gatewayGet,
+    getOneService,
 };
 
 function initOptionSelect() {
