@@ -1,18 +1,17 @@
-const serverConfig = require('../configs/server');
+const redisConfig = require('../configs/server').gameRedis;
 let gameRedis = require('./gameRedis');
 let gameMongo = require('./gameMongo');
 
 
 exports.InitDB = function (cb) {
 
-    const redisConfig = {
-        host: serverConfig.gameRedis.url,
-        port: serverConfig.gameRedis.port,
-        password: serverConfig.gameRedis.port,
-        auth_pass: serverConfig.gameRedis.password,
-        poolsize: serverConfig.gameRedis.poolsize || 100,
-    };
-    gameRedis.Init(redisConfig, function (err) {
+    gameRedis.Init({
+        host: redisConfig.url,
+        port: redisConfig.port,
+        auth_pass: redisConfig.password,
+        db: redisConfig.db,
+        poolsize: redisConfig.poolsize || 100,
+    }, function (err) {
         if (err) {
             throw err;
         }

@@ -1,7 +1,7 @@
 {
-  "name": "game-1",
+  "name": "game-8",
   "script": "app.js",
-  "cwd": "./",
+  "cwd": "../",
   "max_memory_restart": "800M",
-  "args": "port=8130"
+  "args": "port=6408"
 }

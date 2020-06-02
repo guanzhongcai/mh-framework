@@ -163,10 +163,9 @@ RedisAccess.prototype.smembers = function (key, cb) {
 RedisAccess.prototype.multi = function (actions, cb) {
 
     const self = this;
-    const limit = 5;   //每次最多并行请求数
     let results = [];
 
-    async.eachLimit(actions, limit, function (action, callback) {
+    async.eachLimit(actions, 1, function (action, callback) {
         const [command, key] = action;
         if (command !== 'hmset') {
             const args = action.slice(1);
