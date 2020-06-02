@@ -15,7 +15,7 @@ module.exports = {
     },
     "etcd": {   //服务发现中间件配置信息
         "hosts": [  //主机信息
-            "http://localhost:2479"
+            "http://localhost:2379"
         ],
         "username": "", //用户名
         "password": "", //密码

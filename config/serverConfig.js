@@ -23,7 +23,7 @@ module.exports = {
     },
     "monitor": {    //监控中心的配置信息
         "mongo": {  //mongo数据库信息
-            "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/monitor?authSource=admin",
+            "uri": "",
             "options": {
                 "autoIndex": true,
                 "reconnectTries": 86400,
