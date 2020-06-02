@@ -234,10 +234,10 @@ ExpressServer.prototype.AddRouter = function (path, func) {
 
 /**
  * 优雅停止服务前的清理工作
- * @param force bool 是否强制停止服务 true/false
+ * @param force int 是否强制停止服务 1是/0否
  * @constructor
  */
-ExpressServer.prototype.GracefulStop = function (force = false) {
+ExpressServer.prototype.GracefulStop = function (force = 0) {
 
     let self = this;
     const {serverType, listen} = self;
@@ -252,13 +252,11 @@ ExpressServer.prototype.GracefulStop = function (force = false) {
 
             self._server.close(async function (err) {
                 console.debug(`[listen] close`);
-
-                //todo wait to finish all commands done
-                await execFn(self.dbAccess.CloseDB);
                 console.log('Graceful Stop');
                 self.ChangeStatus(Code.ServiceStatus.stop);
 
                 if (force) {
+                    await execFn(self.dbAccess.CloseDB);
                     process.exit(0);
                 }
             })

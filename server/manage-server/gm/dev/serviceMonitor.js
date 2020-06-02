@@ -89,7 +89,7 @@ function fetchservertime() {
 function stopService() {
 
     const url = "http://0.0.0.0:8130/admin/stopService";
-    requestService(url, {});
+    requestService(url, {force: 0});
 }
 
 function getOneService() {

@@ -19,8 +19,10 @@ router.post('/healthCheck', function (req, res) {
 
 router.post('/stopService', function (req, res) {
 
-    res.json({code: 200, msg: "success"});
-    router.server.GracefulStop(false);
+    res.json({code: 200, msg: "stop success"});
+
+    const {force} = req.body;
+    router.server.GracefulStop(Number(force));
 });
 
 router.bindServer = function (server) {
