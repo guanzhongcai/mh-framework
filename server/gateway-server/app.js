@@ -40,6 +40,7 @@ configData.Init(serverType, serverConfig.address.config, function (err) {
 
         server.InitServer(dbAccess, discoverServers).then(async function () {
 
+            server.AddRouter('/', require('./routes/gatewayRoute'));
             server.EnableErrorHandler();
 
         }).catch(console.error);

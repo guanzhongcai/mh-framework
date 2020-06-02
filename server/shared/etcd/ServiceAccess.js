@@ -129,10 +129,10 @@ ServiceAccess.prototype.getOneRandServer = function (type, lastAddress = "") {
     }
 
     let array = Object.values(server);
-
     let size = array.length;
     //去除上次的
-    if (lastAddress.length > 0) {
+    //如果当前只有1个 不去除之前的
+    if (array.length > 1 && !!lastAddress && lastAddress.length > 0) {
         for (let i=0; i < size; i++) {
             const s = array[i];
             if (s.address === lastAddress) {

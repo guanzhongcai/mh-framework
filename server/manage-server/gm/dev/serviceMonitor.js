@@ -106,7 +106,7 @@ function stopService() {
 // "httpuuid":"0","uuid":18808031,"code":200}
 function gatewayGet() {
 
-    const url = prompt('请输入url', "http://0.0.0.0:6301");
+    const url = prompt('请输入url', "http://0.0.0.0:6501");
     if (!url) {
         return;
     }

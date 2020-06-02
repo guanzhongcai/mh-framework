@@ -1,17 +1,15 @@
 let router = require('../../shared/server/ExpressServer').Router();
-const gatewayController = require('../controller/gatewayController');
+let gatewayController = require('../controller/gatewayController');
 
 module.exports = router;
 
 
-router.post('/test', function (req, res) {
+router.post('/getOneService', function (req, res) {
 
-    res.json({code: 200});
-});
+    let {type, lastAddress} = req.body;
 
-router.post('/getGameService', function (req, res) {
-
-    gatewayController.getGameService(req.body, function (err, result) {
+    gatewayController.getOneService(type, lastAddress, function (err, result) {
+        console.debug(`type=${type}, lastAddress=${lastAddress}, result=`, result);
         res.json(result);
     })
 });
