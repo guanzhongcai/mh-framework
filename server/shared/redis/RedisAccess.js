@@ -1,6 +1,7 @@
 /**
  * redis访问类
  */
+const async = require('async');
 
 class RedisAccess {
 
@@ -137,12 +138,36 @@ RedisAccess.prototype.smembers = function (key, cb) {
 };
 
 /**
- * todo
+ * multi
  * @param actions object [['hmset','tableName',{'key1':'value1','key2':'value2'}],['set','tableName3',JSON.stringify({'key1':'value1'})],['zadd','tableName2',[100,'value2']]]
  * @param cb
  */
 RedisAccess.prototype.multi = function (actions, cb) {
 
+    const self = this;
+    const limit = 5;   //每次最多并行请求数
+    let results = [];
+
+    async.eachLimit(actions, limit, function (action, callback) {
+        const [command, key] = action;
+        if (command !== 'hmset') {
+            const args = action.slice(1);
+            self.exec(command, args, function (err, result) {
+                results.push(result);
+                callback(err);
+            });
+        } else {
+            const fields = action.slice(2);
+            self.hmget(key, fields, function (err, result) {
+                results.push(result);
+                callback(err);
+            });
+        }
+    }, function (err) {
+        if (typeof cb === 'function') {
+            cb(err, results);
+        }
+    })
 };
 
 RedisAccess.prototype.hscan = function (key, cursor, cb) {
