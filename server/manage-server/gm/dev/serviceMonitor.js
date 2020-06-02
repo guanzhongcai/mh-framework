@@ -114,7 +114,12 @@ function requestService(url, body) {
     body = prompt("请输入JSON请求消息体:", JSON.stringify(body));
     try {
         body = JSON.parse(body);
-        relayRequest(url, '', body);
+        relayRequest(url, '', body, function (err, result) {
+            let str = `请求: url= ${url}, body= ` + JSON.stringify(body);
+            str += '<br>';
+            str += `回应: ` + JSON.stringify(result);
+            $("#text_span").html(str);
+        });
     } catch (e) {
         alert(`JSON格式不合法，发送失败！请确认！\n` + body);
     }
@@ -294,7 +299,6 @@ function sendRequest(url, data, cb) {
                     result = JSON.stringify(result);
                 }
                 alert(result); //string
-                $("#text_span").html(result);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {//设置请求失败后的回调函数
