@@ -16,6 +16,8 @@ exports.InitDB = function (cb) {
         if (err) {
             throw err;
         }
+        require('../index.app').GameRedisHelper.redisClient = gameRedis;
+
         let app = require('../app');
         app.watchDatabase('redis', gameRedis);
         cb(null);

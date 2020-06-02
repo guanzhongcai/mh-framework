@@ -67,162 +67,86 @@ class RedisAccess {
     }
 }
 
-/**
- * 同步操作redis
- * @param command
- * @param args
- * @returns {Promise<*>}
- */
-RedisAccess.prototype.execSync = async function (command, args) {
-
-    let self = this;
-
-    return new Promise((resolve, reject) => {
-
-        self.exec(command, args, function (err, result) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
+RedisAccess.prototype.set = function (key, value, cb) {
+    this.exec('set', [value], cb);
 };
 
-/**
- * 设置key的超时时间
- * @param key string 键
- * @param seconds int 秒
- * @param cb
- */
-RedisAccess.prototype.setKeyExpire = function (key, seconds, cb) {
-
-    this.exec('EXPIRE', [key, seconds], cb);
+RedisAccess.prototype.get = function (key, cb) {
+    this.exec('get', [key], cb);
 };
 
-/**
- * redis中update/insert增加key
- * @param command string 命令 set类
- * @param args array
- * @param key string
- * @param expire int 有效时间/秒
- * @param cb function
- */
-RedisAccess.prototype.upsertWithExpire = function (command, args, key, expire, cb) {
-
-    let self = this;
-
-    self.exec(command, args, function (err) {
-
-        self.setKeyExpire(key, expire, function (err) {
-
-            if (cb && typeof (cb) === "function") {
-                cb(err);
-            }
-        });
-    });
+RedisAccess.prototype.incr = function (key, cb) {
+    this.exec('incr', [key], cb);
 };
 
-/**
- * 分布式锁：key不存在时才获取锁
- * @param key string redis键
- * @param expireSeconds number 过期时间-秒
- * @param cb function true表示加锁成功
- */
-RedisAccess.prototype.TryLock = function (key, expireSeconds, cb) {
-
-    let self = this;
-    const args = [key, Date.now(), 'EX', expireSeconds, "NX"];
-    self.exec("SET", args, function (err, OK) {
-        console.debug(`lock key=${key} ${expireSeconds}秒: ${OK}`);
-        cb(null, OK === "OK");
-    })
+RedisAccess.prototype.hset = function (key, field, value, cb) {
+    this.exec('hset', [key, field, value], cb)
 };
 
-/**
- * 分布式环境下只执行一次
- * @param key string redis键
- * @param expireSeconds number 过期时间-秒
- * @param callback function 业务函数
- * @param param object 业务参数
- */
-RedisAccess.prototype.ExecuteOnce = function (key, expireSeconds, callback, param = {}) {
-
-    let self = this;
-    self.TryLock(key, expireSeconds, function (err, ok) {
-        if (ok) {
-            callback(param);
-        }
-    });
+RedisAccess.prototype.hget = function (key, field, cb) {
+    this.exec('hget', [key, field], cb)
 };
 
+RedisAccess.prototype.expire = function (key, expire, cb) {
+    this.exec('expire', [key, expire], cb)
+};
 
-//排行榜相关 分数从大到小
+RedisAccess.prototype.exists = function (key, cb) {
+    this.exec('exists', [key], cb)
+};
 
-/**
- *
- * @param key string
- * @param memberIncPair object {member: inc}
- * @param cb
- */
-RedisAccess.prototype.rankScoreInc = function (key, memberIncPair, cb) {
+RedisAccess.prototype.hexists = function (key, field, cb) {
+    this.exec('hexists', [key, field], cb)
+};
+
+RedisAccess.prototype.hincrby = function (key, field, value, cb) {
+    this.exec('hincrby', [key, field, value], cb)
+};
+
+RedisAccess.prototype.del = function (key, cb) {
+    this.exec('del', [key], cb)
+};
+
+RedisAccess.prototype.hmset = function (key, fieldValue, cb) {
 
     let args = [key];
-    for (let member in memberIncPair){
-        const inc = memberIncPair[member];
-        args.push(inc, member);
+    for (const field in fieldValue) {
+        args.push(field, fieldValue[field]);
     }
-    this.exec('ZINCRBY', args, cb);
+    this.exec('hmset', args, cb);
+};
+
+RedisAccess.prototype.hmget = function (key, fields, cb) {
+    this.exec('hmset', [key].concat(fields), cb)
+};
+
+RedisAccess.prototype.hgetall = function (key, cb) {
+    this.exec('hgetall', [key], cb)
+};
+
+RedisAccess.prototype.sadd = function (key, values, cb) {
+    this.exec('sadd', [key].concat(values), cb);
+};
+
+RedisAccess.prototype.srem = function (key, value, cb) {
+    this.exec('srem', [key, value], cb);
+};
+
+RedisAccess.prototype.smembers = function (key, cb) {
+    this.exec('smembers', [key], cb);
 };
 
 /**
- *
- * @param key string
- * @param start number 0
- * @param stop number
- * @param cb [member, score, ..]
- */
-RedisAccess.prototype.rankList = function (key, start, stop, cb) {
-
-    const args = [
-        key,
-        start,
-        stop,
-        'WITHSCORES',
-    ];
-    this.exec('ZREVRANGE', args, cb);
-};
-
-/**
- * 获取一个成员的排名和分数-从高到低
- * @param key
- * @param member
+ * todo
+ * @param actions object [['hmset','tableName',{'key1':'value1','key2':'value2'}],['set','tableName3',JSON.stringify({'key1':'value1'})],['zadd','tableName2',[100,'value2']]]
  * @param cb
  */
-RedisAccess.prototype.rankMemberInfo = function (key, member, cb) {
+RedisAccess.prototype.multi = function (actions, cb) {
 
-    let rank = 0, score = 0;
-    const self = this;
-    const args = [key, member];
-    self.exec('zrevrank', args, function (err, value) {
-        if (value === null) {
-            return cb(null, rank, score);
-        }
-
-        rank = Number(value) + 1;
-        self.exec('zscore', args, function (err, value) {
-            score = value;
-            cb(null, rank, score);
-        });
-    });
 };
 
-RedisAccess.prototype.rankScoreGet = function (key, member, cb){
-
-    this.exec('zscore', [key, member], function (err, score) {
-        cb(err, score);
-    })
+RedisAccess.prototype.hscan = function (key, cursor, cb) {
+    this.exec('hscan', [key, cursor], cb);
 };
-
 
 module.exports = RedisAccess;

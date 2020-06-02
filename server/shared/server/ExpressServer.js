@@ -256,8 +256,10 @@ ExpressServer.prototype.GracefulStop = function (force = 0) {
                 self.ChangeStatus(Code.ServiceStatus.stop);
 
                 if (force) {
-                    await execFn(self.dbAccess.CloseDB);
-                    process.exit(0);
+                    setTimeout(async function () {
+                        await execFn(self.dbAccess.CloseDB);
+                        process.exit(0);
+                    }, 2500);
                 }
             })
         });
