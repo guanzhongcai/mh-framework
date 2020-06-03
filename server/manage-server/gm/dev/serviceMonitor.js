@@ -54,10 +54,28 @@ function configGet() {
     })
 }
 
+let _serviceAll = {};
+
+function fetchOneAddress(type) {
+
+    const all = _serviceAll[type];
+    if (all) {
+        const values = Object.values(all);
+        if (values.length > 0) {
+            const index = Math.floor(Math.random() * values.length);
+            const {address} = values[index];
+            return address;
+        }
+    }
+
+    return `http://localhost:6401`;
+}
+
 function serviceGetAll() {
     // alert(`monitorAddress=${monitorAddress}`);
     relayRequest(monitorAddress, '/service/getAll', {}, function (err, serviceAll) {
         let services = [];
+        _serviceAll = serviceAll;
         for (let type in serviceAll) {
             const all = serviceAll[type];
             for (let key in all) {
@@ -77,37 +95,28 @@ const PAGE_SIZE = 30;
 
 function healthCheck() {
 
-    const url = "http://0.0.0.0:6401/admin/healthCheck";
-    requestService(url, {});
+    const address = fetchOneAddress(SERVER_TYPE.game);
+    relayRequest(address, '/admin/healthCheck', {});
 }
 
 function fetchservertime() {
 
-    const url = "http://0.0.0.0:6401/fetchservertime";
-    requestService(url, {});
+    const address = fetchOneAddress(SERVER_TYPE.game);
+    relayRequest(address, '/fetchservertime', body);
 }
 
 function stopService() {
 
-    const url = "http://0.0.0.0:6401/admin/stopService";
-    requestService(url, {force: 0});
+    const address = fetchOneAddress(SERVER_TYPE.game);
+    relayRequest(address, '/admin/stopService', {force: 0});
+
 }
 
 function getOneService() {
 
-    const url = "http://0.0.0.0:6501/getOneService";
+    const address = fetchOneAddress(SERVER_TYPE.gateway);
     const body = {type: "game", lastAddress: "http://host:port"};
-    requestService(url, body);
-}
-
-/**
- *
- * @param url string
- * @param body object
- */
-function requestService(url, body) {
-
-    relayRequest(url, '', body);
+    relayRequest(address, '/getOneService', body);
 }
 
 //{"loginServInfo":{"host":"192.168.188.224","port":8120},
@@ -115,29 +124,35 @@ function requestService(url, body) {
 // "httpuuid":"0","uuid":18808031,"code":200}
 function gatewayGet() {
 
-    const url = "http://0.0.0.0:6501/gateway";
+    const address = fetchOneAddress(SERVER_TYPE.gateway);
     const body = {
         httpuuid: 0,
         openid: "112233",
         platform: "win32",
     };
-    requestService(url, body);
+    relayRequest(address, '/gateway', body);
 }
 
 function relayRequest(address, path, body, cb) {
     let url = address + path;
-    url = prompt('请确认请求url:', url);
-    if (!url) {
-        return;
+    if (path === '/service/getAll') {
+        body = JSON.stringify(body);
+    } else {
+        url = prompt('请确认请求url:', url);
+        if (!url) {
+            return;
+        }
+        body = prompt("请确认JSON请求消息体:", JSON.stringify(body));
+        if (!body) {
+            return;
+        }
     }
-
-    body = prompt("请确认JSON请求消息体:", JSON.stringify(body));
     try {
         body = JSON.parse(body);
         sendRequest('/relayRequest', {url, body}, function (err, result) {
-            let str = `请求: url= ${url}, body= ` + JSON.stringify(body);
+            let str = `【请求】url= ${url}, body= ` + JSON.stringify(body);
             str += '<br>';
-            str += `回应: ` + JSON.stringify(result);
+            str += `【回应:】` + JSON.stringify(result);
             $("#text_span").html(str);
             if (typeof cb === 'function') {
                 cb(err, result);
