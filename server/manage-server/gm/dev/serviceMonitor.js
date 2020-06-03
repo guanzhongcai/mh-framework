@@ -47,6 +47,7 @@ function configGet() {
 
     sendRequest('/config', {}, function (err, result) {
         monitorAddress = result['monitorAddress'];
+        console.log(`monitorAddress=${monitorAddress}`);
         if (!monitorAddress) {
             alert(JSON.stringify(result));
         }
@@ -76,19 +77,19 @@ const PAGE_SIZE = 30;
 
 function healthCheck() {
 
-    const url = "http://0.0.0.0:8130/admin/healthCheck";
+    const url = "http://0.0.0.0:6401/admin/healthCheck";
     requestService(url, {});
 }
 
 function fetchservertime() {
 
-    const url = "http://0.0.0.0:8130/fetchservertime";
+    const url = "http://0.0.0.0:6401/fetchservertime";
     requestService(url, {});
 }
 
 function stopService() {
 
-    const url = "http://0.0.0.0:8130/admin/stopService";
+    const url = "http://0.0.0.0:6401/admin/stopService";
     requestService(url, {force: 0});
 }
 
@@ -106,27 +107,11 @@ function getOneService() {
  */
 function requestService(url, body) {
 
-    url = prompt('请输入请求url:', url);
-    if (!url) {
-        return;
-    }
-
-    body = prompt("请输入JSON请求消息体:", JSON.stringify(body));
-    try {
-        body = JSON.parse(body);
-        relayRequest(url, '', body, function (err, result) {
-            let str = `请求: url= ${url}, body= ` + JSON.stringify(body);
-            str += '<br>';
-            str += `回应: ` + JSON.stringify(result);
-            $("#text_span").html(str);
-        });
-    } catch (e) {
-        alert(`JSON格式不合法，发送失败！请确认！\n` + body);
-    }
+    relayRequest(url, '', body);
 }
 
 //{"loginServInfo":{"host":"192.168.188.224","port":8120},
-// "gameServInfo":{"host":"192.168.188.224","port":8130},
+// "gameServInfo":{"host":"192.168.188.224","port":6401},
 // "httpuuid":"0","uuid":18808031,"code":200}
 function gatewayGet() {
 
@@ -140,12 +125,27 @@ function gatewayGet() {
 }
 
 function relayRequest(address, path, body, cb) {
-    const request = {
-        url: address + path,
-        body: body,
-    };
-    console.log(`body`, body, typeof body, `request`, request, typeof request);
-    sendRequest('/relayRequest', request, cb);
+    let url = address + path;
+    url = prompt('请确认请求url:', url);
+    if (!url) {
+        return;
+    }
+
+    body = prompt("请确认JSON请求消息体:", JSON.stringify(body));
+    try {
+        body = JSON.parse(body);
+        sendRequest('/relayRequest', {url, body}, function (err, result) {
+            let str = `请求: url= ${url}, body= ` + JSON.stringify(body);
+            str += '<br>';
+            str += `回应: ` + JSON.stringify(result);
+            $("#text_span").html(str);
+            if (typeof cb === 'function') {
+                cb(err, result);
+            }
+        });
+    } catch (e) {
+        alert(`JSON格式不合法，发送失败！请确认！\n` + body);
+    }
 }
 
 function getError() {
@@ -244,10 +244,7 @@ function getProfile() {
 
 function commandMetricGet() {
 
-    const address = prompt('请输入服务address:', "http://localhost:8130");
-    if (!address) {
-        return;
-    }
+    const address = "http://localhost:6401";
     relayRequest(address, '/admin/commandMetricGet', {}, function (err, result) {
 
         const {data} = result;
