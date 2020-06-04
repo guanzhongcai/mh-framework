@@ -184,7 +184,10 @@ function getError() {
     const projection = {_id: 0, __v: 0};
     const options = {limit: PAGE_SIZE, sort: {time: -1}, skip: PAGE_SIZE * (page - 1)};
     const params = {condition, projection, options};
-    relayRequest(monitorAddress, `/error/get`, params, function (err, docs) {
+    const url = monitorAddress + '/error/get';
+    const body = {url, body: params};
+    sendRequest('/relayRequest', body, function (err, docs) {
+    // relayRequest(monitorAddress, `/error/get`, params, function (err, docs) {
         if (docs.length === 0) {
             return alert('查无记录');
         }
@@ -275,13 +278,13 @@ function commandMetricGet() {
         }
         const keyName = {
             route: "调用路由",
-            avg: "平均处理",
-            min: "最短时间",
-            max: "最长时间",
+            avg: "平均响应/毫秒",
+            min: "最短响应/毫秒",
+            max: "最长响应/毫秒",
             count: "调用次数",
         };
         for (let o of array) {
-            o.avg = Math.round(o.total / o.count) + 'ms';
+            o.avg = Math.round(o.total / o.count);
             delete o.total;
         }
         array.sort(function (a, b) {
@@ -294,18 +297,18 @@ function commandMetricGet() {
 
 /**
  *
- * @param url string
- * @param data object
+ * @param url_gm string send to gm server
+ * @param url string send to real server
+ * @param body object msg relay to real server
  * @param cb
- * @private
  */
-function sendRequest(url, data, cb) {
+function sendRequest(url_gm, {url, body}, cb) {
 
     $.ajax({
-        url: url,
+        url: url_gm,
         type: "GET",
         dataType: "JSON",
-        data: data,
+        data: {url, body},
         success: function (result) {//设置请求成功后的回调函数
             if (cb && typeof (cb) === "function") {
                 cb(null, result);

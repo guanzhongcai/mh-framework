@@ -12,11 +12,30 @@ router.post('/add', function (req, res, next) {
     });
 });
 
+function changeNumber(obj) {
+    if (typeof obj !== 'object') {
+        return
+    }
+
+    for (const key in obj) {
+        if (typeof (obj[key]) === "object") {
+            changeNumber(obj[key]);
+        } else {
+            if (!isNaN(obj[key])) {
+                obj[key] = Number(obj[key]);
+            }
+        }
+    }
+}
+
 router.post('/get', function (req, res, next) {
 
     let {condition, projection, options} = req.body;
+    changeNumber(condition);
+    changeNumber(projection);
+    changeNumber(options);
     monitorMongo.models.ErrorReport.find(condition, projection, options, function (err, docs) {
-
+        console.log('docs', docs, err);
         res.json(docs);
     });
 });

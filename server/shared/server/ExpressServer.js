@@ -65,7 +65,7 @@ ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) 
 
     this.dbAccess = dbAccess || {};
     this.serverStatus = Code.ServiceStatus.launching;
-    self = this;
+    let self = this;
     let {serverType, listen} = self;
     const name = ServiceAccess.Name(serverType, listen.host, listen.port);
 
