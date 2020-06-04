@@ -49,6 +49,7 @@ ExpressServer.prototype.UpdateListen = function ({host, port}) {
     if (!!port) {
         this.listen.port = port;
     }
+    this._serviceId = ServiceAccess.Name(this.serverType, this.listen.host, this.listen.port);
     console.debug(`UpdateListen: %j`, this.listen);
 };
 
