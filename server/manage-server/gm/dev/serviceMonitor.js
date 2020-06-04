@@ -102,7 +102,7 @@ function healthCheck() {
 function fetchservertime() {
 
     const address = fetchOneAddress(SERVER_TYPE.game);
-    relayRequest(address, '/fetchservertime', body);
+    relayRequest(address, '/fetchservertime', {});
 }
 
 function stopService() {
@@ -152,10 +152,13 @@ function relayRequest(address, path, body, cb) {
         sendRequest('/relayRequest', {url, body}, function (err, result) {
             let str = `【请求】url= ${url}, body= ` + JSON.stringify(body);
             str += '<br>';
-            str += `【回应:】` + JSON.stringify(result);
-            $("#text_span").html(str);
+            str += `【回应】` + JSON.stringify(result).substring(0, 200);
+            console.log(JSON.stringify(result));
+            // $("#text_span").html(str);
             if (typeof cb === 'function') {
                 cb(err, result);
+            } else {
+                alert(JSON.stringify(result));
             }
         });
     } catch (e) {
