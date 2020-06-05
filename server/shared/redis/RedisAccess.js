@@ -46,7 +46,7 @@ class RedisAccess {
                     self._execOK += 1;
                 }
 
-                debug(`err=%j, res=%j`, err, res);
+                debug(`command=${command}, args=%j, err=%j, res=%j`, args, err, res);
                 return cb && cb(err, res);
             });
         });
