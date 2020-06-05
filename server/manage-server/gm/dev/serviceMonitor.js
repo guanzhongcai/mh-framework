@@ -119,6 +119,12 @@ function getOneService() {
     relayRequest(address, '/getOneService', body);
 }
 
+function newtype_checkviewrespects() {
+    const address = fetchOneAddress(SERVER_TYPE.game);
+    const body = {"onlinestatus":1,"luaversion":"1.3.33262","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE5MDI3MDAwMDAsImRhdGEiOjE4ODA4MDMyLCJpYXQiOjE1OTEzNDc3Nzd9.GUnxr17f54yt12yyxN-Y28xl_SqnunZvnrRUCuxiNrY","uuid":18808032,"httpuuid":460};
+    relayRequest(address, '/newtype_checkviewrespects', body);
+}
+
 //{"loginServInfo":{"host":"192.168.188.224","port":8120},
 // "gameServInfo":{"host":"192.168.188.224","port":6401},
 // "httpuuid":"0","uuid":18808031,"code":200}
@@ -417,6 +423,7 @@ const options = {
     fetchservertime,
     gatewayGet,
     getOneService,
+    newtype_checkviewrespects,
 };
 
 function initOptionSelect() {

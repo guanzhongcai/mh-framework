@@ -17,6 +17,7 @@ class RedisAccess {
         this._pool = require('./rdb-pool').createRedisPool(redisConfig);
 
         this.exec('PING', [], function (err, PONG) {
+            debug("PONE", err, PONG);
             if (cb && typeof (cb) === "function") {
                 cb(err);
             }
