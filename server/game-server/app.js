@@ -29,6 +29,9 @@ function loadConfig() {
     }
 }
 
+/**
+ * 加载指定的监听端口
+ */
 function loadArgs() {
 
     const args = process.argv.splice(2);
@@ -48,10 +51,9 @@ configData.Init(serverType, serverConfig.address.config, function (err) {
     loadConfig();
     loadArgs();
     server.UpdateListen({host: serverConfig.publicIP, port});
-    require('./index.app.js').startServer(server.app, function (err) {
+    require('./index.app.js').startServer(server, function (err) {
 
-        const discoverServers = [];
-        server.InitServer(dbAccess, discoverServers).then(async function () {
+        server.InitServer(dbAccess, []).then(async function () {
 
             server.EnableErrorHandler();
         }).catch(console.error);

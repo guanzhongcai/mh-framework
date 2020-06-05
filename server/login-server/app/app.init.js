@@ -1,5 +1,4 @@
-exports.startServer = function (app, cb) {
-    const express = require('express');
+exports.startServer = function (server, cb) {
 
     //const cookieParser = require('cookie-parser');
     //const bodyParser = require('body-parser');
@@ -39,6 +38,7 @@ exports.startServer = function (app, cb) {
     });
     */
 
+    let app = server.app;
     app.set('host', config.host);
     app.set('port', config.port);
 
@@ -99,6 +99,7 @@ exports.startServer = function (app, cb) {
     if (config.debug)
         app.use(morgan('short'));
 
+    server.loadResponseTime();
     // router
     routes.mapping(app);
 

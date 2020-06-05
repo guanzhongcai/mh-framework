@@ -51,10 +51,9 @@ ServiceAccess.prototype.register = async function (type, server, protocol = "htt
 /**
  * 服务发现
  * @param type string
- * @param cb function
  * @returns {Promise<*>}
  */
-ServiceAccess.prototype.discover = async function (type, cb) {
+ServiceAccess.prototype.discover = async function (type) {
 
     const self = this;
 
@@ -68,24 +67,16 @@ ServiceAccess.prototype.discover = async function (type, cb) {
             switch (event) {
                 case "put":
                     server[key] = value;
-                    if (cb) {
-                        cb(result);
-                    }
                     break;
 
                 case "delete":
                     delete server[key];
-                    if (cb) {
-                        cb(result);
-                    }
                     break;
 
                 default:
                     console.error(`未处理 %j`, result);
                     break;
             }
-        } else {
-            //TODO 异常处理
         }
     });
 

@@ -1,4 +1,4 @@
-exports.startServer = function (app, cb) {
+exports.startServer = function (server, cb) {
 
     const compression = require('compression');
     const morgan = require('morgan');
@@ -9,6 +9,7 @@ exports.startServer = function (app, cb) {
     const cacheHelper = new redisHelper(config.redis);
     exports.CacheHelper = cacheHelper;
 
+    let app = server.app;
     app.use(compression());
     if (config.debug) app.use(morgan('short'));
 
@@ -51,6 +52,7 @@ exports.startServer = function (app, cb) {
         }
     });
 
+    server.loadResponseTime();
     const routeMapping = require('./app/routes');
     routeMapping(app);
 

@@ -3,6 +3,7 @@
  */
 const reportFormat = require('../metrics/reportFormat');
 const command = require('../metrics/command');
+const debug = require('debug')('responseTime');
 
 /**
  *
@@ -19,6 +20,7 @@ module.exports = function (app) {
         if (req.__begintime__) {
             const span = Date.now() - req.__begintime__;
             if (span > 1000) {
+                debug(req.originalUrl, req.__begintime__, span, '毫秒');
                 const report = reportFormat.Timeout(app._serviceId, req, span);
                 app.NotifyMonitor('/error/add', report);
             }

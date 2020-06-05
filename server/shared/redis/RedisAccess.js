@@ -17,7 +17,6 @@ class RedisAccess {
         this._pool = require('./rdb-pool').createRedisPool(redisConfig);
 
         this.exec('PING', [], function (err, PONG) {
-            debug("PONE", err, PONG);
             if (cb && typeof (cb) === "function") {
                 cb(err);
             }
@@ -134,7 +133,7 @@ RedisAccess.prototype.hmset = function (key, fieldValue, cb) {
  * @param cb
  */
 RedisAccess.prototype.hmget = function (key, fields, cb) {
-    this.exec('hmset', [key].concat(fields), cb)
+    this.exec('hmget', [key].concat(fields), cb)
 };
 
 RedisAccess.prototype.hgetall = function (key, cb) {
@@ -169,6 +168,7 @@ RedisAccess.prototype.multi = function (actions, cb) {
     const self = this;
     let results = [];
 
+    debug('multi: %j', actions);
     async.eachLimit(actions, 1, function (action, callback) {
         const [command, key] = action;
         if (command !== 'hmset') {
@@ -179,7 +179,7 @@ RedisAccess.prototype.multi = function (actions, cb) {
             });
         } else {
             const fields = action.slice(2);
-            self.hmget(key, fields, function (err, result) {
+            self.hmset(key, fields, function (err, result) {
                 results.push(result);
                 callback(err);
             });

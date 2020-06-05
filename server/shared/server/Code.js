@@ -14,9 +14,4 @@ module.exports = {
         config: "config",
         monitor: "monitor",
     },
-    ServiceStatus: {
-        launching: "launching", //启动中
-        running: "running", //服务在线，可用中
-        stopped: "stopped" //停止服务，不可用
-    }
 };

@@ -1,5 +1,5 @@
 
-exports.startServer = function(app, cb) {
+exports.startServer = function(server, cb) {
 
     const compression = require('compression');
     const morgan = require('morgan');
@@ -52,6 +52,7 @@ exports.startServer = function(app, cb) {
     // 初始化
     global.FIX_INIT_TASKDATA = FIX_TASK.initTask()
 
+    let app = server.app;
     app.set('host', config.host);
     app.set('port', config.port);
     let conn = require('./app/log/KafkaProducer')
@@ -175,6 +176,8 @@ exports.startServer = function(app, cb) {
         })
         req_domain.run(next)
     })
+
+    server.loadResponseTime();
 
     const RouteMapping = require('./app/mapping');
     RouteMapping(app);

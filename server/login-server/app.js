@@ -31,7 +31,7 @@ function loadConfig() {
 configData.Init(serverType, serverConfig.address.config, function (err) {
 
     loadConfig();
-    require('./app/app.init').startServer(server.app, function (err) {
+    require('./app/app.init').startServer(server, function (err) {
 
         const discoverServers = [
         ];

@@ -42,6 +42,14 @@ class ExpressServer {
     }
 }
 
+/**
+ * 加载响应时间中间件
+ */
+ExpressServer.prototype.loadResponseTime = function() {
+
+    this.app.use(require('../middleware/responseTime')(this));
+};
+
 ExpressServer.prototype.UpdateListen = function ({host, port}) {
     if (!!host) {
         this.listen.host = host;
@@ -64,7 +72,6 @@ ExpressServer.prototype.UpdateListen = function ({host, port}) {
 ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) {
 
     this.dbAccess = dbAccess || {};
-    this.serverStatus = Code.ServiceStatus.launching;
     let self = this;
     let {serverType, listen} = self;
     const name = ServiceAccess.Name(serverType, listen.host, listen.port);
@@ -73,14 +80,14 @@ ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) 
     //初始化service注册etcd中心
     this.serviceAccess = new ServiceAccess(configData.etcd);
 
-    discoverServers.push(Code.ServiceType.monitor);
     for (let server of discoverServers) {
         await this.serviceAccess.discover(server);
     }
+    await this.serviceAccess.discover(Code.ServiceType.monitor);
 
     this._initMonitor();
 
-    this.app.use(require('../middleware/responseTime')(this));
+    // this.app.use(require('../middleware/responseTime')(this));
 
     let admin = require('./routes/admin');
     this.app.use("/admin", admin);
@@ -90,7 +97,6 @@ ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) 
     await this.serviceAccess.register(serverType, listen);
 
     console.debug(`service start success: ${name}`);
-    this.ChangeStatus(Code.ServiceStatus.running);
 };
 
 function execFn(fn) {
@@ -165,6 +171,7 @@ ExpressServer.prototype.InitMiddleware = function () {
 
     //签名检查
     app.use(checkSign);
+    this.loadResponseTime();
 };
 
 ExpressServer.prototype.EnableSerialTask = function (timeoutMs = 20) {
@@ -254,7 +261,6 @@ ExpressServer.prototype.GracefulStop = function (force = 0) {
             self._server.close(async function (err) {
                 console.debug(`[listen] close`);
                 console.log('Graceful Stop');
-                self.ChangeStatus(Code.ServiceStatus.stop);
 
                 if (force) {
                     setTimeout(async function () {
@@ -272,21 +278,6 @@ ExpressServer.prototype.GracefulStop = function (force = 0) {
             process.exit(0);
         }, 3000);
     }
-};
-
-ExpressServer.prototype.ChangeStatus = function (status) {
-
-    this.serverStatus = status;
-};
-
-/**
- * 按类型获取某组服务器
- * @param type string
- * @returns object
- */
-ExpressServer.prototype.getTypeServer = function (type) {
-
-    return this.serviceAccess.servers[type];
 };
 
 /**
