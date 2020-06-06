@@ -415,20 +415,21 @@ function array2table(arr, keyname = {}) {
 
 
 const options = {
-    serviceGetAll,
-    commandMetricGet,
-    getProfile,
-    stopService,
-    healthCheck,
-    fetchservertime,
-    gatewayGet,
-    getOneService,
-    newtype_checkviewrespects,
+    serviceGetAll: "获取当前正在运行的所有服务list",
+    commandMetricGet: "获取某个服务的响应时间统计信息",
+    getProfile: "获取当前所有服务runtime的profile信息",
+    stopService: "某个服务的优雅停止",
+    healthCheck: "某个服务的健康检查",
+    gatewayGet: "gateway服的gateway接口测试",
+    getOneService: "gateway服的获取单个服务接口测试",
+    fetchservertime: "game服的fetchservertime接口测试",
+    newtype_checkviewrespects: "game服的newtype_checkviewrespects接口测试",
 };
 
 function initOptionSelect() {
     for (const key in options) {
-        const option = `<option value=${key}>${key}</option>`;
+        const value = options[key];
+        const option = `<option value=${key}>${value}</option>`;
         $("#option_select").append($(option));
     }
 }
