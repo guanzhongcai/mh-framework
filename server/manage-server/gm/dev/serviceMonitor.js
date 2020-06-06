@@ -93,25 +93,6 @@ function serviceGetAll() {
 
 const PAGE_SIZE = 30;
 
-function healthCheck() {
-
-    const address = fetchOneAddress(SERVER_TYPE.game);
-    relayRequest(address, '/admin/healthCheck', {});
-}
-
-function fetchservertime() {
-
-    const address = fetchOneAddress(SERVER_TYPE.game);
-    relayRequest(address, '/fetchservertime', {});
-}
-
-function stopService() {
-
-    const address = fetchOneAddress(SERVER_TYPE.game);
-    relayRequest(address, '/admin/stopService', {force: 0});
-
-}
-
 function getOneService() {
 
     const address = fetchOneAddress(SERVER_TYPE.gateway);
@@ -415,21 +396,54 @@ function array2table(arr, keyname = {}) {
 
 
 const options = {
-    serviceGetAll: "获取当前正在运行的所有服务list",
-    commandMetricGet: "获取某个服务的响应时间统计信息",
-    getProfile: "获取当前所有服务runtime的profile信息",
-    stopService: "某个服务的优雅停止",
-    healthCheck: "某个服务的健康检查",
-    gatewayGet: "gateway服的gateway接口测试",
-    getOneService: "gateway服的获取单个服务接口测试",
-    fetchservertime: "game服的fetchservertime接口测试",
-    newtype_checkviewrespects: "game服的newtype_checkviewrespects接口测试",
+    serviceGetAll: {
+        name: "获取当前正在运行的所有服务list",
+        func: serviceGetAll
+    },
+    commandMetricGet: {
+        name: "获取某个服务的响应时间统计信息",
+        func: commandMetricGet,
+    },
+    getProfile: {
+        name: "获取当前所有服务runtime的profile信息",
+        func: getProfile,
+    },
+    stopService: {
+        name: "某个服务的优雅停止",
+        func: function () {
+            relayRequest(fetchOneAddress(SERVER_TYPE.game), '/admin/stopService', {force: 0})
+        },
+    },
+    healthCheck: {
+        name: "某个服务的健康检查",
+        func: function () {
+            relayRequest(fetchOneAddress(SERVER_TYPE.game), '/admin/healthCheck', {});
+        },
+    },
+    gatewayGet: {
+        name: "gateway服的gateway接口测试",
+        func: gatewayGet
+    },
+    getOneService: {
+        name: "gateway服的获取单个服务接口测试",
+        func: getOneService,
+    },
+    fetchservertime: {
+        name: "game服的fetchservertime接口测试",
+        func: function () {
+            relayRequest(fetchOneAddress(SERVER_TYPE.game), '/fetchservertime', {})
+        },
+    },
+    newtype_checkviewrespects: {
+        name: "game服的newtype_checkviewrespects接口测试",
+        func: newtype_checkviewrespects,
+    },
 };
 
 function initOptionSelect() {
     for (const key in options) {
-        const value = options[key];
-        const option = `<option value=${key}>${value}</option>`;
+        const {name} = options[key];
+        const option = `<option value=${key}>${name}</option>`;
         $("#option_select").append($(option));
     }
 }
@@ -437,5 +451,5 @@ function initOptionSelect() {
 function onButtonOption() {
 
     const key = $("#option_select").val();
-    options[key]();
+    options[key].func();
 }
