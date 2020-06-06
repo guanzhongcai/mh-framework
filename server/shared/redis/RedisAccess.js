@@ -158,9 +158,18 @@ RedisAccess.prototype.smembers = function (key, cb) {
     this.exec('smembers', [key], cb);
 };
 
+const cmd = {
+    1: "set",
+    2: "hset",
+    3: "hmset",
+    4: "zadd",
+    5: "hdel"
+};
 /**
  * multi
  * @param actions array object [['hmset','tableName',{'key1':'value1','key2':'value2'}],['set','tableName3',JSON.stringify({'key1':'value1'})],['zadd','tableName2',[100,'value2']]]
+ *
+ * [[1,"SoulGameData:18808032","{\"soulCount\":5,\"soulBuyCount\":0,\"soulUpTime\":0,\"themeId\":1,\"uuid\":18808032,\"themeUsed\":[1],\"costInfo\":{\"linggAp\":0,\"skillChargingPoint\":0,\"gachaCount\":0,\"items\":[],\"skinitems\":[],\"currency\":[0,0,0],\"heros\":[],\"attrs\":{\"energy\":0,\"feel\":0,\"cleany\":0,\"jiaoy\":0,\"emotion\":0,\"hungry\":0,\"lingg\":0,\"exp\":0,\"skillpoint\":0},\"buff\":[],\"activeDegreeValue\":0}}"]]
  * @param cb
  */
 RedisAccess.prototype.multi = function (actions, cb) {
@@ -170,7 +179,8 @@ RedisAccess.prototype.multi = function (actions, cb) {
 
     debug('multi: %j', actions);
     async.eachLimit(actions, 1, function (action, callback) {
-        const [command, key] = action;
+        const [commandID, key] = action;
+        const command = cmd[commandID];
         if (command !== 'hmset') {
             const args = action.slice(1);
             self.exec(command, args, function (err, result) {

@@ -25,3 +25,12 @@ redis使用[混合存储型实例](https://help.aliyun.com/document_detail/12665
 - redis采用混合存储型实例
 - 提供新的redis访问模块，兼容现在的业务API使用
 - mongo只做数据落地，暂还以redis数据为准
+
+
+0606
+===========
+- 远程部署报错
+- game服务正在处理的请求数同步到etcd
+- gateway分配game根据正在请求数
+- 客户端需要根据服务器负载分配
+- etcd
