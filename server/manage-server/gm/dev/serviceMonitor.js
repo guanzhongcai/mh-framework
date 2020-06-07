@@ -93,13 +93,6 @@ function serviceGetAll() {
 
 const PAGE_SIZE = 30;
 
-function getOneService() {
-
-    const address = fetchOneAddress(SERVER_TYPE.gateway);
-    const body = {type: "game", lastAddress: "http://host:port"};
-    relayRequest(address, '/getOneService', body);
-}
-
 function newtype_checkviewrespects() {
     const address = fetchOneAddress(SERVER_TYPE.game);
     const body = {"onlinestatus":1,"luaversion":"1.3.33262","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE5MDI3MDAwMDAsImRhdGEiOjE4ODA4MDMyLCJpYXQiOjE1OTEzNDc3Nzd9.GUnxr17f54yt12yyxN-Y28xl_SqnunZvnrRUCuxiNrY","uuid":18808032,"httpuuid":460};
@@ -423,10 +416,6 @@ const options = {
     gatewayGet: {
         name: "gateway服的gateway接口测试",
         func: gatewayGet
-    },
-    getOneService: {
-        name: "gateway服的获取单个服务接口测试",
-        func: getOneService,
     },
     fetchservertime: {
         name: "game服的fetchservertime接口测试",

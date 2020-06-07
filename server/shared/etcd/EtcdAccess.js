@@ -33,7 +33,7 @@ EtcdAccess.prototype.init = function({hosts, username, password, ttl}){
     this._ttl = ttl || 10;
     this._client = new Etcd3(options);
     this.grantLease();
-    console.debug(`${MODULE} %j`, options);
+    console.debug(`${MODULE} init %j`, options);
 
     return this;
 };
@@ -116,7 +116,7 @@ EtcdAccess.prototype.watch = function (key, cb) {
                         key: res.key.toString(),
                         value: res.value.toString()
                     };
-                    console.debug(`${MODULE} ${getDateTime()}:: event=${result.event}, ${result.key}, ${result.value}`);
+                    // console.debug(`${MODULE} ${getDateTime()}:: event=${result.event}, ${result.key}, ${result.value}`);
                     cb(null, result);
                 })
                 .on('delete', res => {
@@ -158,7 +158,7 @@ EtcdAccess.prototype.watchPrefix = function (keyPrefix, cb) {
                         key: res.key.toString(),
                         value: res.value.toString()
                     };
-                    console.debug(`${MODULE} ${getDateTime()}:: event=${result.event}, ${result.key}, ${result.value}`);
+                    // console.debug(`${MODULE} ${getDateTime()}:: event=${result.event}, ${result.key}, ${result.value}`);
                     cb(null, result);
                 })
                 .on('delete', res => {

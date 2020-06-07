@@ -5,6 +5,6 @@
   "max_memory_restart": "800M",
   "args": "port=6401",
   "env": {
-    "DEBUG": "RedisAccess responseTime processingCheck"
+    "DEBUG": "RedisAccess responseTime processingCheck ServiceAccess"
   }
 }

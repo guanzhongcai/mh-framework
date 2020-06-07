@@ -67,7 +67,7 @@ ServiceAccess.prototype.discover = async function (type) {
             const {event, key, value} = result;
             switch (event) {
                 case "put":
-                    server[key] = value;
+                    server[key] = JSON.parse(value);
                     break;
 
                 case "delete":
@@ -85,36 +85,11 @@ ServiceAccess.prototype.discover = async function (type) {
 };
 
 /**
- * 获取所有同类型不同host的server
- * @param type
- */
-ServiceAccess.prototype.getDiffHostServers = function (type) {
-    const server = this.servers[type];
-    if (!server) {
-        return console.error(`未配置服务发现type=${type}`);
-    }
-
-    let set = new Set();
-    let servers = [];
-    for (let id in server) {
-        const {host, port} = JSON.parse(server[id]);
-        if (set.has(host)) {
-            continue;
-        }
-        set.add(host);
-        servers.push({host, port});
-    }
-
-    return servers;
-};
-
-/**
  * 获取所有此类型的服务
  * @param type string
- * @param lastAddress 上次用的服务地址
  * @returns {*} object
  */
-ServiceAccess.prototype.getOneRandServer = function (type, lastAddress = "") {
+ServiceAccess.prototype.getOne = function (type) {
     const server = this.servers[type];
     if (!server) {
         return console.error(`未配置服务发现type=${type}`);
@@ -122,44 +97,18 @@ ServiceAccess.prototype.getOneRandServer = function (type, lastAddress = "") {
 
     let array = Object.values(server);
     let size = array.length;
-    //去除上次的
-    //如果当前只有1个 不去除之前的
-    if (array.length > 1 && !!lastAddress && lastAddress.length > 0) {
-        for (let i=0; i < size; i++) {
-            const s = array[i];
-            if (s.address === lastAddress) {
-                array.splice(i, 1);
-                size--;
-                break;
-            }
-        }
-    }
     if (size === 0) {
         // console.warn(`当前没有可用的服务！type=${type}`);
         return
     }
 
-    let idx = 0;
     if (size > 1) {
-        idx = Math.floor(Math.random() * size);
+        array.sort(function (a, b) {
+            return a.processing - b.processing;
+        });
     }
-    const {host, port, address} = JSON.parse(array[idx]);
+    const {host, port, address} = array[0];
     return {host, port, address};
-};
-
-/**
- * 获取某服务类型的所有服务
- * @param type string 服务类型
- * @returns {Array}
- */
-ServiceAccess.prototype.getTypeServers = function (type) {
-
-    const server = this.servers[type];
-    let array = [];
-    for (let key in server) {
-        array.push(JSON.parse(server[key]));
-    }
-    return array;
 };
 
 /**
