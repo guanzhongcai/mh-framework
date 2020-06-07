@@ -5,6 +5,7 @@
 
 const EtcdAccess = require('./EtcdAccess');
 const Code = require('../server/Code');
+const debug = require('debug')('ServiceAccess');
 
 class ServiceAccess extends EtcdAccess {
 
@@ -45,7 +46,7 @@ ServiceAccess.prototype.register = async function (type, server, protocol = "htt
     server.address = `${protocol}://${host}:${port}`;
     const key = ServiceAccess.Name(type, host, port);
     await this.putWithLease(key, JSON.stringify(server));
-    console.debug(`service register:: ${key} %j`, server);
+    debug(`service register:: ${key} %j`, server);
 };
 
 /**
@@ -58,7 +59,7 @@ ServiceAccess.prototype.discover = async function (type) {
     const self = this;
 
     let server = self.servers[type] = await self.getAll(type);
-    console.debug(`service discover:: ${type}`, server);
+    debug(`service discover:: ${type}`, server);
 
     const key = type + "@";
     self.watchPrefix(key, function (err, result) {

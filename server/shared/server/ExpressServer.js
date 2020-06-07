@@ -12,6 +12,7 @@ const reportFormat = require('../metrics/reportFormat');
 const requestHttp = require('../http/requestHttp');
 const Code = require('./Code');
 const utils = require('../util/utils');
+const processingCheck = require('../middleware/processingCheck');
 
 let checkSign = require('../middleware/checkSign');
 
@@ -29,6 +30,7 @@ class ExpressServer {
         this.listen = {
             host: host || "0.0.0.0",
             port: port,
+            processing: 0,
         };
 
         this.app = express();
@@ -45,7 +47,7 @@ class ExpressServer {
 /**
  * 加载响应时间中间件
  */
-ExpressServer.prototype.loadResponseTime = function() {
+ExpressServer.prototype.loadResponseTime = function () {
 
     this.app.use(require('../middleware/responseTime')(this));
     this.app.use(require('../middleware/processingCheck').check());
@@ -145,7 +147,12 @@ ExpressServer.prototype._initMonitor = function () {
             profile.serviceId = self._serviceId;
             // console.log(`profile %j`, profile);
             self.NotifyMonitor('/profile/add', profile);
-        })
+        });
+
+        //更新处理中的请求数到etcd
+        self.listen.processing = processingCheck.get();
+        self.serviceAccess.register(self.serverType, self.listen).catch(console.error);
+
     }, 30 * 1000);
 };
 
@@ -155,7 +162,7 @@ ExpressServer.prototype._initMonitor = function () {
  */
 ExpressServer.prototype.InitMiddleware = function () {
 
-    const {serverType, listen, app} = this;
+    const {app} = this;
 
     //终端日志
     app.use(require('../middleware/logger'));
