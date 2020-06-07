@@ -33,4 +33,3 @@ redis使用[混合存储型实例](https://help.aliyun.com/document_detail/12665
 - game服务正在处理的请求数同步到etcd
 - gateway分配game根据正在请求数
 - 客户端需要根据服务器负载分配
-- etcd

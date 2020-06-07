@@ -33,10 +33,7 @@ configData.Init(serverType, serverConfig.address.config, function (err) {
     loadConfig();
     require('./app/app.init').startServer(server, function (err) {
 
-        const discoverServers = [
-        ];
-
-        server.InitServer(dbAccess, discoverServers).then(async function () {
+        server.InitServer(dbAccess, []).then(async function () {
 
             server.EnableErrorHandler();
 
