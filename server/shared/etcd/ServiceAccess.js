@@ -58,8 +58,8 @@ ServiceAccess.prototype.discover = async function (type) {
 
     const self = this;
 
-    let server = self.servers[type] = await self.getAll(type);
-    debug(`service discover:: ${type}`, server);
+    let server = self.servers[type] = await self.getAllJson(type);
+    console.debug(`service discover:: ${type} %j`, server);
 
     const key = type + "@";
     self.watchPrefix(key, function (err, result) {
