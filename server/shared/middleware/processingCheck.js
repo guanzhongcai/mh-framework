@@ -2,6 +2,7 @@
 * GZC created on 2020/6/7
 * 当前正在处理的请求数目预检
 * */
+const debug = require('debug')('processingCheck');
 
 let _processing = 0;
 let _limit = 1000;
@@ -18,8 +19,11 @@ exp.check = function (limit = 1000) {
     _limit = limit;
     return function (req, res, next) {
         if (_processing >= _limit) {
-            res.status(401).json({code: 401, msg: `_processing is over ${_limit}`});
-            return
+            debug(`_processing is over ${_limit}`);
+            if (req.originalUrl.indexOf('/admin/') === -1) {
+                res.status(401).json({code: 401, msg: `_processing is over ${_limit}`});
+                return
+            }
         }
         _processing += 1;
         next();

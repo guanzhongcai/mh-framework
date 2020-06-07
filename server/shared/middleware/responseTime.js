@@ -3,7 +3,7 @@
  */
 const reportFormat = require('../metrics/reportFormat');
 const command = require('../metrics/command');
-const loadCheck = require('./loadCheck');
+const processingCheck = require('./processingCheck');
 const debug = require('debug')('responseTime');
 const onHeaders = require('on-headers');
 
@@ -30,7 +30,7 @@ module.exports = function (server) {
                 server.NotifyMonitor('/error/add', report);
             }
             command.record(req.originalUrl, span);
-            loadCheck.decrease();
+            processingCheck.decrease();
         });
 
         next();

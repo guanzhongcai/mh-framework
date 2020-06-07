@@ -48,7 +48,7 @@ class ExpressServer {
 ExpressServer.prototype.loadResponseTime = function() {
 
     this.app.use(require('../middleware/responseTime')(this));
-    this.app.use(require('../middleware/loadCheck').check());
+    this.app.use(require('../middleware/processingCheck').check());
 };
 
 ExpressServer.prototype.UpdateListen = function ({host, port}) {
