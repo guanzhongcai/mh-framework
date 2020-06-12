@@ -3,10 +3,12 @@
  */
 const async = require('async');
 const debug = require('debug')("RedisAccess");
+const EventEmitter = require('events').EventEmitter;
 
-class RedisAccess {
+class RedisAccess extends EventEmitter {
 
     constructor() {
+        super();
         this._execOK = 0;
         this._execFail = 0;
     }
@@ -20,7 +22,7 @@ class RedisAccess {
             if (cb && typeof (cb) === "function") {
                 cb(err);
             }
-        })
+        });
     }
 
     exec(command, args, cb) {
@@ -183,12 +185,14 @@ RedisAccess.prototype.multi = function (actions, cb) {
         const command = cmd[commandID];
         if (command !== 'hmset') {
             const args = action.slice(1);
+            self.emit('modify', command, args);
             self.exec(command, args, function (err, result) {
                 results.push(result);
                 callback(err);
             });
         } else {
             const fields = action.slice(2);
+            // self.emit('modify', command, fields);
             self.hmset(key, fields, function (err, result) {
                 results.push(result);
                 callback(err);

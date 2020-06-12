@@ -9,6 +9,6 @@ hostNum=${#hosts[*]}
 
 for ((i=0;i<hostNum;i++)) do
   host=${hosts[i]}
-  echo "执行主机${i}：${host}"
+  echo "执行主机$((i+1))：${host}"
   ssh root@${host} -p ${port} 'bash -s' < exec_script.sh
 done

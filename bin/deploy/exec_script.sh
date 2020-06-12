@@ -17,7 +17,8 @@ git log -1
 serviceNum=${#services[*]}
 for ((i=0;i<serviceNum;i++)) do
   service=${services[i]}
-  echo "重启服务${i}：${service}"
-  bash -i ${pm2} restart ${service}
+  echo "重启服务$((i+1))：${service}"
+#  bash -i ${pm2} restart ${service}
+  bash -i ${pm2} info ${service}
 done
 

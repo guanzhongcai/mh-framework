@@ -4,6 +4,11 @@ let redisAccess = require('./redisAccess');
 
 exports.InitDB = function (cb) {
 
+    redisAccess.on('modify', function (command, args) {
+        console.debug(`redis_modify_event: command=${command}, args=%j`, args);
+        //todo mongo update
+    });
+
     redisAccess.Init({
         host: redisConfig.url,
         port: redisConfig.port,
