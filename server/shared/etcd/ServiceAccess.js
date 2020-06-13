@@ -103,12 +103,19 @@ ServiceAccess.prototype.getOne = function (type) {
     }
 
     if (size > 1) {
+        //当前服务列表按处理数升序排序
         array.sort(function (a, b) {
             return a.processing - b.processing;
         });
+        //取当前处理数服务最小的前20%
+        const num = Math.ceil(size * 0.2);
+        //在这前20%里随机取一个
+        const index = Math.floor(Math.random() * num);
+        return array[index];
+    } else {
+        const {host, port, address} = array[0];
+        return {host, port, address};
     }
-    const {host, port, address} = array[0];
-    return {host, port, address};
 };
 
 /**
