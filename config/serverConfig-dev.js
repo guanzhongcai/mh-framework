@@ -11,7 +11,7 @@ module.exports = {
     },
     "address": {    //服务地址
         "config": "http://localhost:6101",  //配置服务中心地址
-        "monitor": "http://localhost:6301"  //监控服务中心地址
+        "monitor": "http://47.100.205.134:6301"  //监控服务中心地址
     },
     "etcd": {   //服务发现中间件配置信息
         "hosts": [  //主机信息
@@ -30,10 +30,11 @@ module.exports = {
                 "reconnectInterval": 1000,
                 "poolSize": 100,
                 "bufferMaxEntries": 0,
-                "useNewUrlParser": true
+                "useUnifiedTopology": true,
+                "useNewUrlParser": true,
             }
         }
-    }
+    },
     "monitor": {    //监控中心的配置信息
         "mongo": {  //mongo数据库信息
             "uri": "mongodb://localhost:27017/monitor",
@@ -43,6 +44,7 @@ module.exports = {
                 "reconnectInterval": 1000,
                 "poolSize": 100,
                 "bufferMaxEntries": 0,
+                "useUnifiedTopology": true,
                 "useNewUrlParser": true
             }
         }
