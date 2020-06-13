@@ -1,5 +1,4 @@
 const MongoAccess = require("../../shared/mongo/MongoAccess");
-const modelData = require('../models/modelData');
 
 let gameMongo = new MongoAccess();
 
@@ -8,14 +7,26 @@ module.exports = gameMongo;
 //数据表模型
 let DataSchema = new gameMongo.Schema({
     uuid: {type: Number, unique: true}, //玩家编号
-    data: {},
+    data: {}, //对象结构数据
 });
 
 gameMongo.models = {
     demo: DataSchema,
 };
 
-for (let key in modelData.Table) {
-    const table = modelData.Table[key];
-    gameMongo[table] = DataSchema;
-}
+/**
+ *
+ * @param model string table name
+ */
+gameMongo.checkModel = function (model) {
+
+    let models = gameMongo.models;
+    if (!models[model]) {
+        models[model] = DataSchema;
+
+        const name = model.toLowerCase();
+        const schema = models[model];
+        models[model] = gameMongo._connection.model(model, schema, name);
+        console.debug(`construct mongo model success: table=${model}`);
+    }
+};

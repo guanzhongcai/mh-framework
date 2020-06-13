@@ -107,7 +107,7 @@ ServiceAccess.prototype.getOne = function (type) {
         array.sort(function (a, b) {
             return a.processing - b.processing;
         });
-        //取当前处理数服务最小的前20%
+        //取当前处理数最小的前20%
         const num = Math.ceil(size * 0.2);
         //在这前20%里随机取一个
         const index = Math.floor(Math.random() * num);

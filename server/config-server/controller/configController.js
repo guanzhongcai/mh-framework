@@ -25,8 +25,17 @@ logic.getConfig = function ({type}, cb) {
         });
     }
 
-    if (type === Code.ServiceType.monitor) {
-        result.mongo = serverConfig.monitor.mongo;
+    switch (type) {
+        case Code.ServiceType.monitor:
+            result.mongo = serverConfig.monitor.mongo;
+            break;
+
+        case Code.ServiceType.game:
+            result.mongo = serverConfig.game.mongo;
+            break;
+
+        default:
+            break;
     }
 
     cb(null, result);

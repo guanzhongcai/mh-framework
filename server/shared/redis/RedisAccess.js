@@ -185,10 +185,12 @@ RedisAccess.prototype.multi = function (actions, cb) {
         const command = cmd[commandID];
         if (command !== 'hmset') {
             const args = action.slice(1);
-            self.emit('modify', command, args);
             self.exec(command, args, function (err, result) {
                 results.push(result);
                 callback(err);
+                if (!err) {
+                    self.emit('modify', command, args);
+                }
             });
         } else {
             const fields = action.slice(2);

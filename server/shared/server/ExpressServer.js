@@ -271,10 +271,8 @@ ExpressServer.prototype.GracefulStop = function (force = 0) {
                 console.log('Graceful Stop');
 
                 if (force) {
-                    setTimeout(async function () {
-                        await execFn(self.dbAccess.CloseDB);
-                        process.exit(0);
-                    }, 2500);
+                    await execFn(self.dbAccess.CloseDB);
+                    process.exit(0);
                 }
             })
         });
