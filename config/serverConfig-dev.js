@@ -21,6 +21,19 @@ module.exports = {
         "password": "", //密码
         "ttl": 10   //租约过期时间
     },
+    "game": {    //游戏服的配置信息
+        "mongo": {  //mongo数据库信息
+            "uri": "mongodb://localhost:27017/game",
+            "options": {
+                "autoIndex": true,
+                "reconnectTries": 86400,
+                "reconnectInterval": 1000,
+                "poolSize": 100,
+                "bufferMaxEntries": 0,
+                "useNewUrlParser": true
+            }
+        }
+    }
     "monitor": {    //监控中心的配置信息
         "mongo": {  //mongo数据库信息
             "uri": "mongodb://localhost:27017/monitor",

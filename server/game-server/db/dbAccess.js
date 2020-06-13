@@ -73,6 +73,15 @@ function syncMongo(table, uuid, dataStr) {
     }
 }
 
+function dbTest() {
+    const actions = [[1, "SoulGameData:18808032", "{\"soulCount\":5,\"soulBuyCount\":0,\"soulUpTime\":0,\"themeId\":1,\"uuid\":18808032,\"themeUsed\":[1],\"costInfo\":{\"linggAp\":0,\"skillChargingPoint\":0,\"gachaCount\":0,\"items\":[],\"skinitems\":[],\"currency\":[0,0,0],\"heros\":[],\"attrs\":{\"energy\":0,\"feel\":0,\"cleany\":0,\"jiaoy\":0,\"emotion\":0,\"hungry\":0,\"lingg\":0,\"exp\":0,\"skillpoint\":0},\"buff\":[],\"activeDegreeValue\":0}}"]];
+    redisAccess.multi(actions, function (err, result) {
+        console.debug(`mulit_result::`, err, result);
+    })
+}
+
+// setTimeout(dbTest, 3000);
+
 exports.CloseDB = function (cb) {
 
     redisAccess.shutdown(function (err) {
