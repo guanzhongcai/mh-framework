@@ -26,8 +26,6 @@ module.exports = {
             "uri": "mongodb://localhost:27017/game",
             "options": {
                 "autoIndex": true,
-                "reconnectTries": 86400,
-                "reconnectInterval": 1000,
                 "poolSize": 100,
                 "bufferMaxEntries": 0,
                 "useUnifiedTopology": true,
@@ -40,8 +38,6 @@ module.exports = {
             "uri": "mongodb://localhost:27017/monitor",
             "options": {
                 "autoIndex": true,
-                "reconnectTries": 86400,
-                "reconnectInterval": 1000,
                 "poolSize": 100,
                 "bufferMaxEntries": 0,
                 "useUnifiedTopology": true,

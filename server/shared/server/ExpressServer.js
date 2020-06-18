@@ -97,7 +97,10 @@ ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) 
     admin.bindServer(this);
 
     await this._initListen();
-    await this.serviceAccess.register(serverType, listen);
+    if (serverType !== Code.ServiceType.gateway) {
+        console.debug(`gateway not register in etcd`);
+        await this.serviceAccess.register(serverType, listen);
+    }
 
     console.debug(`service start success: ${name}`);
 };
