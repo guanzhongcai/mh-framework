@@ -25,26 +25,28 @@ module.exports = {
     },
     "game": {    //游戏服的配置信息
         "mongo": {  //mongo数据库信息
-            "uri": "",
+            "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/game?authSource=admin",
             "options": {
                 "autoIndex": true,
                 "reconnectTries": 86400,
                 "reconnectInterval": 1000,
                 "poolSize": 100,
                 "bufferMaxEntries": 0,
+                "useUnifiedTopology": true,
                 "useNewUrlParser": true
             }
         }
     },
     "monitor": {    //监控中心的配置信息
         "mongo": {  //mongo数据库信息
-            "uri": "",
+            "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/monitor?authSource=admin",
             "options": {
                 "autoIndex": true,
                 "reconnectTries": 86400,
                 "reconnectInterval": 1000,
                 "poolSize": 100,
                 "bufferMaxEntries": 0,
+                "useUnifiedTopology": true,
                 "useNewUrlParser": true
             }
         }

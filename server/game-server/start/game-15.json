@@ -1,0 +1,7 @@
+{
+  "name": "game-15",
+  "script": "app.js",
+  "cwd": "../",
+  "max_memory_restart": "800M",
+  "args": "port=6415"
+}
