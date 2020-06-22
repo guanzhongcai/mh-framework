@@ -25,7 +25,7 @@ module.exports = {
     },
     "game": {    //游戏服的配置信息
         "mongo": {  //mongo数据库信息
-            "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/game?authSource=admin",
+            "uri": "mongodb://localhost:27017localhost:27017/game?authSource=admin",
             "options": {
                 "autoIndex": true,
                 "reconnectTries": 86400,
@@ -39,7 +39,7 @@ module.exports = {
     },
     "monitor": {    //监控中心的配置信息
         "mongo": {  //mongo数据库信息
-            "uri": "mongodb://root:gotech123@dds-bp1e1d0920c9f5641886-pub.mongodb.rds.aliyuncs.com:3717/monitor?authSource=admin",
+            "uri": "mongodb://localhost:27017localhost:27017/monitor?authSource=admin",
             "options": {
                 "autoIndex": true,
                 "reconnectTries": 86400,

@@ -35,7 +35,7 @@ module.exports = {
     },
     "monitor": {    //监控中心的配置信息
         "mongo": {  //mongo数据库信息
-            "uri": "mongodb://root:%40wGdnd7f%24Xl!WZ%5E%26@dds-uf660a433931fed41.mongodb.rds.aliyuncs.com:3717,dds-uf660a433931fed42.mongodb.rds.aliyuncs.com:3717,dds-uf660a433931fed43.mongodb.rds.aliyuncs.com:3717/game?authSource=monitor&replicaSet=mgset-31564573",
+            "uri": "mongodb://root:%40wGdnd7f%24Xl!WZ%5E%26@dds-uf660a433931fed41.mongodb.rds.aliyuncs.com:3717,dds-uf660a433931fed42.mongodb.rds.aliyuncs.com:3717,dds-uf660a433931fed43.mongodb.rds.aliyuncs.com:3717/monitor?authSource=admin&replicaSet=mgset-31564573",
             "options": {
                 "autoIndex": true,
                 "poolSize": 100,
