@@ -4,25 +4,18 @@ exports.startServer = function(server, cb) {
     const compression = require('compression');
     const morgan = require('morgan');
     const validator = require('validator');
-    const config = require('./configs/server.json'); //require('./dataWrapper/configuration.json');
+    const config = require('./configs/server.json');
 
-//const handles = require('./handle');
     const zlib = require('zlib');
     const protocol = require('./app/common/protocol');
-// const errorCode = require('')
     const helmet = require('helmet')
     const limit = require('express-rate-limit')
-// const Database = require('./app/common/database');
-// const GameDB = new Database(config.gamedb.url, config.gamedb.dbname, config.gamedb.options);
-//const FixedDB = new Database(config.fixedDB.url, config.fixedDB.dbName, config.fixedDB.dbOpts);
 
-    /*
-    const mongoHelper = require('./app/common/mongoHelper');
-    const GameDBHelper = new mongoHelper(config.gamedb);
-    exports.GameDBHelper = GameDBHelper;*/
     const tokenHelper = require('./app/common/token')
     const redisHelper = require('./app/common/redisHelper');
+    const guideController = require ('./app/scripts/controllers/guideController');
     const fixTask = require('./app/scripts/controllers/fixTaskController')
+    const fixAchievement = require('./app/scripts/controllers/fixAchievementController')
     const GameRedisHelper = new redisHelper(config.gameRedis);
     exports.GameRedisHelper = GameRedisHelper;
     const fs = require('fs')
@@ -47,8 +40,11 @@ exports.startServer = function(server, cb) {
     })
     global.FIXDB = FIXDB
     //配置表加载完成...
-    let FIX_TASK = new fixTask()
-    global.FIX_TASK = FIX_TASK.loadFixData()
+    let FIX_TASK = new fixTask();
+    global.FIX_TASK = FIX_TASK.loadFixData();
+    
+    let FIX_ACHIEVEMENT= new fixAchievement();
+    global.FIX_ACHIEVEMENT = FIX_ACHIEVEMENT.initAchievement()
     // 初始化
     global.FIX_INIT_TASKDATA = FIX_TASK.initTask()
 
@@ -157,6 +153,16 @@ exports.startServer = function(server, cb) {
         }
     });
 
+app.use(function (req, res, next) {
+    if (!!req.body.guideinfo) {
+        console.log("save user guide info", req.body.guideinfo)
+        let guide = new guideController (req.body.uuid, req.multiController, req.taskController);
+        guide.saveUseGuideData (req.body.guideinfo);
+        next ()
+    }else {
+        next ()
+    }
+});
     app.use(compression());
 
 // exports.GameDB = GameDB;
