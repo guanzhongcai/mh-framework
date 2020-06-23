@@ -17,7 +17,8 @@
 		"url": "127.0.0.1",
 		"port": 6379,
 		"db":0,
-		"password": "mhpass123456",
+		"password-mh": "mhpass123456",
+		"password": "gotech123",
         "syncdata": "UserSyncData"
 	}
 }

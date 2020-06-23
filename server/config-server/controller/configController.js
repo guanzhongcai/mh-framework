@@ -7,7 +7,9 @@ let logic = module.exports;
 const configServices = [
     Code.ServiceType.login,
     Code.ServiceType.gateway,
-    Code.ServiceType.game
+    Code.ServiceType.game,
+    Code.ServiceType.pay,
+    // Code.ServiceType.sdk,
 ];
 
 logic.getConfig = function ({type}, cb) {
