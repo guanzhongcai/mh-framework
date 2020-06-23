@@ -90,9 +90,7 @@ class AwaitQueue
                     // 保存等待队列数据
                     cacheHelper.setHashFieldValue(this.tblname_, this.fieldGameAwaitQueueData_, JSON.stringify(this.data_), () => {
                         // 保存优先登录数据
-                        //cacheHelper.setHashFieldValue(this.tblname_, this.fieldGamePriorLoginData_, JSON.stringify(this.priorLoginData_), () => {
-                            callback();
-                        //});
+                        callback();
                     });
                 } else {
                     console.warn("[AwaitQueue] Data is not type of array:", this.data_);
@@ -208,13 +206,6 @@ class AwaitQueue
      */
     getCurrWaitNo(uuid)
     {
-        /*
-        for (let i in this.data_) {
-            if (this.data_[i].uid === uuid) {
-                return (Number(i) + 1);
-            }
-        }*/
-
         // 需要过滤掉可登录状态的排队玩家
         var waitLis = this.data_.filter((a) => { return a.stat == 0 });
         for (let i in waitLis) {
@@ -290,13 +281,10 @@ class AwaitQueue
     updateAwaitQueue()
     {
         if (this.isEnabled()) {
-
             // 剔除在等待队列中的离线玩家
             this.clearAwaitQueueByUpTime();
-
             if (this.size() > 0 && !this.isOnlineMax()) {
                 // 有玩家在等待且上线人数未达到最大
-
                 // 根据可登人数移除队前玩家
                 var passCount = playerAwaitConfig.onlineCountMax - this.currOnlineCount_;
                 if (passCount > 0) {
@@ -304,22 +292,17 @@ class AwaitQueue
                     var s = this.data_.length - this.size() - 1, e = this.data_.length;
                     if (s < 0) s = 0;
                     var safeCounter = 0;
-
                     while (passCount--) {
                         if (s < e) {
                             if (this.data_[s]) {
                                 this.data_[s].stat = 1; // 通过(用于优先进入)
                             }
-
                             ++s;
                         }
-
                         if (++safeCounter > 9999) {
                             break;
                         }
                     }
-
-                    //this.data_.splice(0, passCount);
                     this.save_ = true;
                 }
             }

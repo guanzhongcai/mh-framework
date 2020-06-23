@@ -5,6 +5,14 @@ const validator = require('validator');
 const initUUID = require('./../../../configs/server.config.json').uuid_index;
 const promise = require('util').promisefy
 
+
+function isSameDay(tim)
+{
+	var ndate = new Date().toLocaleDateString(),
+		tdate = new Date(tim).toLocaleDateString();
+	return (ndate == tdate);
+}
+
 function createUUID(callback, gwUUID=0)
 {
 	if (gwUUID > 0) {
@@ -31,9 +39,7 @@ function newPlayer(token, callback, db=null, gwUUID=0)
 		accountDefault.uuid 			= newUUID;
 		accountDefault.createtime 		= (new Date()).getTime();
 		accountDefault.lastlogintime 	= (new Date()).getTime();
-
 		LoginRedisHelper.setHashFieldValue('UserData', newUUID, JSON.stringify(accountDefault), () => {
-		//GameDBHelper.insertOne(db, 'UserData', accountDefault, () => {
 			createItemData(newUUID, itemData => {
 				createMapData(newUUID, mapData => {
 					createHeroData(newUUID, heroData => {
@@ -49,7 +55,6 @@ function newPlayer(token, callback, db=null, gwUUID=0)
 					}, db);
 				}, db);
 			}, db);
-		//});
 		});
 	}, gwUUID);
 }
@@ -58,10 +63,17 @@ function getPlayerData(uuid, callback, db=null)
 {
 	var now = (new Date()).getTime();
 	LoginRedisHelper.getHashFieldValue('UserData', uuid, sPlayerData => {
-		var playerData = JSON.parse(sPlayerData);
-	//GameDBHelper.findAndModify(db, 'UserData', [], { uuid: uuid }, { $set: { lastlogintime: now, token: now } }, playerData => {
+		let playerData = JSON.parse(sPlayerData);
+		if (playerData.lastlogintime == null || playerData.lastlogintime === 0) {
+			playerData.lastlogintime = now;
+		}
+		if (!isSameDay(playerData.lastlogintime)) {
+			if (playerData.DailyLoginInfo == null) {
+				playerData.DailyLoginInfo = {}
+			}
+			playerData.DailyLoginInfo.loginDayCnt += 1; //增加登陆次数
+		}
 		playerData.token = now;
-		//playerData.lastlogintime =  now;
 		LoginRedisHelper.setHashFieldValue('UserData', uuid, JSON.stringify(playerData), () => {
 			getMapData(uuid, mapData => {
 				getDormData(uuid, dormData => {
@@ -69,13 +81,16 @@ function getPlayerData(uuid, callback, db=null)
 						getMailData(uuid, mailData => {
 							getItemData(uuid, itemData => {
 								getHeroData(uuid, heroData => {
-									playerData.MapData 		= mapData;
-									playerData.Dorm 		= dormData;
-									playerData.Stock 		= stockData;
-									playerData.Mails 		= mailData;
-									playerData.ItemData 	= itemData;
-									playerData.HeroData 	= heroData;
-									callback(playerData);
+									getUserGuideInfo(uuid, guideData => {
+										playerData.MapData 		= mapData;
+										playerData.Dorm 		= dormData;
+										playerData.Stock 		= stockData;
+										playerData.Mails 		= mailData;
+										playerData.ItemData 	= itemData;
+										playerData.HeroData 	= heroData;
+										playerData.GuideData  	= guideData;
+										callback(playerData);
+									});
 								}, db);
 							}, db);
 						}, db);
@@ -86,52 +101,20 @@ function getPlayerData(uuid, callback, db=null)
 	});
 }
 
+
 function createItemData(uuid, callback, db=null)
 {
 	var itemDefault = playerDefault.gamedata().items;
-	/*
-	for (let i = 0; i < itemDefault.length; i++) {
-		var itemIdLis = [];
-		LoginRedisHelper.setHash('ItemData:' + uuid + ':' + itemDefault[i].id, itemDefault[i], () => {
-			itemIdLis.push(itemDefault[i].id);
-			if ((i+1) === itemDefault.length) {
-				LoginRedisHelper.addSetValues('ItemIndex:' + uuid, itemIdLis, () => {
-					callback(itemDefault);
-				});
-			}
-		});
-	}*/
 	LoginRedisHelper.setHashFieldValue('ItemData', uuid, JSON.stringify(itemDefault), () => {
 		callback(itemDefault);
 	});
-	/*
-	GameDBHelper.insertOne(db, 'ItemData', { uuid: uuid, items: itemDefault }, () => {
-		callback(itemDefault);
-	});*/
 }
 
 function getItemData(uuid, callback, db=null)
 {
-	/*
-	LoginRedisHelper.getSetMembers('ItemIndex:' + uuid, keyLis => {
-		var itemLis = [];
-		for (let i = 0; i < keyLis.length; i++) {
-			LoginRedisHelper.getHash('ItemData:' + uuid + ':' + keyLis[i], itemNode => {
-				itemLis.push(itemNode);
-
-				if ((i+1) === keyLis.length) {
-					callback(itemLis);
-				}
-			});
-		}
-	});*/
 	LoginRedisHelper.getHashFieldValue('ItemData', uuid, sItemLis => {
 		callback(sItemLis ? JSON.parse(sItemLis) : []);
 	});
-	/*
-	GameDBHelper.findOne(db, 'ItemData', ['items'], { uuid: uuid }, doc => {
-		callback(doc && doc.items ? doc.items : []);
-	});*/
 }
 
 function createMapData(uuid, callback, db=null)
@@ -142,18 +125,10 @@ function createMapData(uuid, callback, db=null)
 	LoginRedisHelper.setHashFieldValue('MapData', uuid, JSON.stringify(mapData), () => {
 		callback(mapDefault);
 	});
-
-	/*GameDBHelper.insertOne(db, 'MapData', { uuid: uuid, maps: mapDefault }, () => {
-		callback(mapDefault);
-	});*/
 }
 
 function getMapData(uuid, callback)
 {
-	/*GameDBHelper.findOne(db, 'MapData', ['maps'], { uuid: uuid }, doc => {
-		callback(doc && doc.maps ? doc.maps : []);
-	});*/
-
 	LoginRedisHelper.getHashFieldValue('MapData', uuid, sMapLis => {
 		let doc = sMapLis ? JSON.parse(sMapLis) : null;
 		if (doc && doc.maps) {
@@ -172,10 +147,6 @@ function createHeroData(uuid, callback)
 	LoginRedisHelper.setHashFieldValue('HeroData', uuid, JSON.stringify(heroData), () => {
 		callback(heroDefault);
 	});
-
-	/*GameDBHelper.insertOne(db, 'HeroData', { uuid: uuid, mhdatas: heroDefault }, () => {
-		callback(heroDefault);
-	});*/
 }
 
 function verifyHeroWorkStat(uuid, heroLis, callback)
@@ -205,7 +176,6 @@ function verifyHeroWorkStat(uuid, heroLis, callback)
 				break;
 			}
 		}
-
 		// 获取生产数据
 		var buildingLis = [];
 		LoginRedisHelper.getHashFieldValue('WorkData', uuid, workRes => {
@@ -213,7 +183,6 @@ function verifyHeroWorkStat(uuid, heroLis, callback)
 				var workData = JSON.parse(workRes);
 				buildingLis = workData.buildings;
 			}
-
 			for (let i = 0; i < workStatHeroLis.length; i++) {
 				// 遍历建筑及旗下墨魂队列
 				var isFind = false;
@@ -226,17 +195,14 @@ function verifyHeroWorkStat(uuid, heroLis, callback)
 							break;
 						}
 					}
-
 					if (isFind)
 						break;
 				}
-
 				if (isFind) {
 					workStatHeroLis.splice(i, 1);
 					--i;
 				}
 			}
-
 			if (workStatHeroLis.length == 0) {
 				// 没有嫌疑
 				callback();
@@ -248,7 +214,6 @@ function verifyHeroWorkStat(uuid, heroLis, callback)
 						}
 					}
 				}
-
 				LoginRedisHelper.setHashFieldValue('HeroData', uuid, JSON.stringify({ mhdatas: heroLis }), () => {
 					callback();
 				});
@@ -259,19 +224,20 @@ function verifyHeroWorkStat(uuid, heroLis, callback)
 
 function getHeroData(uuid, callback)
 {
-	/*GameDBHelper.findOne(db, 'HeroData', ['mhdatas'], { uuid: uuid }, doc => {
-		callback(doc && doc.mhdatas ? doc.mhdatas : []);
-	});*/
-
 	LoginRedisHelper.getHashFieldValue('HeroData', uuid, sHeroLis => {
 		let doc = sHeroLis ? JSON.parse(sHeroLis) : null;
 		if (doc && doc.mhdatas) {
-			verifyHeroWorkStat(uuid, doc.mhdatas, () => {
-				callback (doc.mhdatas);
-			});
+			callback (doc.mhdatas);
 		}else {
 			callback ([]);
 		}
+	});
+}
+
+function getUserGuideInfo(uuid, callback) {
+	LoginRedisHelper.getHashFieldValue('UserGuideData', uuid, guideData => {
+		let doc = guideData ? JSON.parse(guideData) : {};
+		callback (doc);
 	});
 }
 
@@ -283,16 +249,10 @@ function createDormData(uuid, callback)
 	LoginRedisHelper.setHashFieldValue('Dorm', uuid, JSON.stringify(dormData), () => {
 		callback(dormDefault);
 	});
-	/*GameDBHelper.insertOne(db, 'Dorm', { uuid: uuid, dorminfos: dormDefault }, () => {
-		callback(dormDefault);
-	});*/
 }
 
 function getDormData(uuid, callback)
 {
-	/*GameDBHelper.findOne(db, 'Dorm', ['dorminfos'], { uuid: uuid }, doc => {
-		callback(doc && doc.dorminfos ? doc.dorminfos : []);
-	});*/
 	LoginRedisHelper.getHashFieldValue('Dorm', uuid, sDormLis => {
 		let doc = sDormLis ? JSON.parse(sDormLis) : null;
 		if (doc && doc.dorminfos) {
@@ -309,18 +269,10 @@ function createMailData(uuid, callback)
 	LoginRedisHelper.setHashFieldValue('Mails', uuid, JSON.stringify(mailDefault), () => {
 		callback(mailDefault);
 	});
-	/*
-	GameDBHelper.insertOne(db, 'Mails', { uuid: uuid, mails: mailDefault }, () => {
-		callback(mailDefault);
-	});*/
 }
 
 function getMailData(uuid, callback)
 {
-	/*
-	GameDBHelper.findOne(db, 'Mails', ['mails'], { uuid: uuid }, doc => {
-		callback(doc && doc.mails ? doc.mails : []);
-	});*/
 	LoginRedisHelper.getHashFieldValue('Mails', uuid, sMailLis => {
 		callback(sMailLis ? JSON.parse(sMailLis) : []);
 	});
@@ -328,9 +280,6 @@ function getMailData(uuid, callback)
 
 function getStockData(uuid, callback)
 {
-	/*GameDBHelper.findOne(db, 'Stock', ['stocks'], { uuid: uuid }, doc => {
-		callback(doc && doc.stocks ? doc.stocks : []);
-	});*/
 	LoginRedisHelper.getHashFieldValue('Stock', uuid, sStockLis => {
 		let doc = sStockLis ? JSON.parse(sStockLis) : {};
 		callback (doc);

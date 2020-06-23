@@ -3,11 +3,6 @@ const LoginRedisHelper = require('./../../app.init').LoginRedisHelper;
 
 function checkServStatValid(platform, callback)
 {
-	/*
-	LoginRedisHelper.getHashFieldValue('GameServerStatus:'+ platform, 'status', status => {
-		callback(status);
-	});*/
-
 	if ('string' === typeof platform) {
 		callback(platform in manifest.serverStatus ? manifest.serverStatus[platform].status : null);
 	} else if ('number' === typeof platform) {
