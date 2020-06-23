@@ -92,7 +92,7 @@ async function TaskGetAwards(request, response)
         return
     }else {
         
-        if(taskNode.status === 2){
+        if(taskNode.status === CONSTANTS.TASK_STATUS.REWARDED){
             respData.code = ERRCODES().TASK_AWARD_GETED;
             protocol.responseSend(response, respData);
             return ;
@@ -116,6 +116,7 @@ async function TaskGetAwards(request, response)
             //TODO 任务相关
         }
         
+        //更新相关任务状态， 主&子
         request.taskController.updateTaskStatus(request.body.taskId,taskGroup)
         let {BonusData, BonusExp} = await request.taskController.getTaskBonus(request.body.taskId);
         let player = new playerController(request.body.uuid,request.multiController, request.taskController);

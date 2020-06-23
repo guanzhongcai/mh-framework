@@ -334,7 +334,70 @@ class Tasks
 
         return taskObj;
     }
-
+    
+    
+    
+    
+    // 获取任务配置数据
+    static getTaskConfigById(taskId)
+    {
+        if(!FIXED_TASKS){FIXED_TASKS = global.FIXDB.FIXED_TASKS}
+        if(!FIXED_MAIN_TASKS){FIXED_MAIN_TASKS = global.FIXDB.FIXED_MAINTASKS}
+        function doTaskNode(taskNode) {
+            if (taskNode) {
+                var newNode = {
+                    TaskID: taskNode.TaskID,
+                    
+                    Type: taskNode.Type,
+                    
+                    // 任务组相关
+                    SubTaskFlag: taskNode.SubTaskFlag,
+                    GroupID: taskNode.GroupID,
+                    GroupNum: taskNode.GroupNum,
+                    TriggerCounterFlag: taskNode.TriggerCounterFlag,
+                    
+                    // 时间相关
+                    StartedAt: (typeof taskNode.StartedAt === 'string' && taskNode.StartedAt.includes('-')) ? taskNode.StartedAt : null,
+                    ExpiredAt: (typeof taskNode.ExpiredAt === 'string' && taskNode.ExpiredAt.includes('-')) ? taskNode.ExpiredAt : null,
+                    
+                    // 持续时间（复用ExpiredAt字段）
+                    LongTime: isNaN(taskNode.ExpiredAt) ? 0 : Number(taskNode.ExpiredAt) * 1000,
+                    
+                    // 周期相关
+                    CycleType: taskNode.CycleType,
+                    CycleCompleteCount: taskNode.CycleCompleteCount
+                };
+                
+                // 条件相关
+                for (let k = 1; k <= 3; k++) {
+                    newNode['TriggerCondition' + k] = parseCondition(taskNode['TriggerCondition' + k]);
+                    newNode['FinishCondition' + k] = parseCondition(taskNode['FinishCondition' + k]);
+                }
+                
+                return newNode;
+            } else {
+                return null;
+            }
+        }
+        
+        var node, taskObj = {};
+        node = doTaskNode(FIXED_TASKS[taskId]);
+        if (!node) {
+            // 可能是主线任务
+            node = doTaskNode(FIXED_MAIN_TASKS[taskId]);
+        }
+        
+        return node;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // 获取任务（普通+主线）奖励配置
     static getBonusConfig(taskId, callback)
     {

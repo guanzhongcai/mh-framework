@@ -84,7 +84,7 @@ function AddNewPoetry (request, response)
 
 /**
  * AddNewScene
- * @param {*} request {sceneid, backgrounds, npcs, words, poetry, gitfs}
+ * @param {*} request {sceneid, backgrounds, npcs, words, poetry, gifts}
  * @param {*} response
  */
 function AddNewScene (request, response)
@@ -100,18 +100,19 @@ function AddNewScene (request, response)
         if (request.body.npcs) unlockItem.npcs = request.body.npcs || [];
         if (request.body.words) unlockItem.words = request.body.words;
         if (request.body.poetry) unlockItem.poetry = request.body.poetry;
-        if (request.body.gitfs) unlockItem.gitfs = request.body.gitfs;
+        if (request.body.gifts) unlockItem.gifts = request.body.gifts;
         collect.addNewScene (request.body.sceneid, unlockItem, async (addStatus, unlockData)=> {
             if (addStatus) {
                 //TODO 收集场景
-                request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.Collect_Scene,[{params:[0]}])
+                request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.Collect_Scene, [{params: [0]}])
                 //任务数据处
-                request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.WatchPlot,[{params:[request.body.sceneid]}]);
-                request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.HeroAppointNode,[{params:[request.body.sceneid]}]);
-                if(unlockData.gifts.length){
-                    request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.Collect_Gifts,[{params:[0]}])
+                request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.WatchPlot, [{params: [request.body.sceneid]}]);
+                request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.HeroAppointNode, [{params: [request.body.sceneid]}]);
+
+                if (unlockData.gifts != null && unlockData.gifts.length){
+                    request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.Collect_Gifts, [{params: [0]}])
                 }
-                
+
                 respData.unlockData = unlockData;
                 request.multiController.save(async function(err,data){
                     if(err){

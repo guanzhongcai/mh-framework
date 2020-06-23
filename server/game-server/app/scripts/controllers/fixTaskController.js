@@ -19,14 +19,15 @@ class FixTask {
         const triggerObj = {};
         const finishObj  = {};
         const dailyTasks  = [];
-        const FIXED_TASKS = global.FIXDB.FIXED_TASKS
+        const FIXED_TASKS = global.FIXDB.FIXED_TASKS;
+        const FIXED_MAIN_TASKS = global.FIXDB.FIXED_MAINTASKS;
+        
+        //任务
         for (const item in FIXED_TASKS) {
             let node = FIXED_TASKS[item];
-            
             if(node.Type === 2){
                 dailyTasks.push(node.TaskID);
             }
-            
             for (let i =1,len = triggerNum; i <= len; i++){
                 ['TriggerCondition', 'FinishCondition' ]
                 let triggerKey = `TriggerCondition${i}`;
@@ -59,7 +60,45 @@ class FixTask {
                 }
             }
         }
-      
+    
+        //主线
+        for (const item in FIXED_MAIN_TASKS) {
+            let node = FIXED_MAIN_TASKS[item];
+            for (let i =1,len = triggerNum; i <= len; i++){
+                ['TriggerCondition', 'FinishCondition' ]
+                let triggerKey = `TriggerCondition${i}`;
+                let finishKey = `FinishCondition${i}`;
+                let actId = "";
+                if(node[triggerKey]){
+                    let params = node[triggerKey].split('-');
+                    actId = params[0];
+                    if(actId){
+                        if(triggerObj[actId]){
+                            triggerObj[actId].push(node.TaskID);
+                        }else {
+                            triggerObj[actId] = []
+                            triggerObj[actId].push(node.TaskID);
+                        }
+                    }
+                }
+            
+                if(node[finishKey]){
+                    let params = node[finishKey].split('-');
+                    actId = params[0];
+                    if(actId){
+                        if(finishObj[actId]){
+                            finishObj[actId].push(node.TaskID);
+                        }else {
+                            finishObj[actId] = []
+                            finishObj[actId].push(node.TaskID);
+                        }
+                    }
+                }
+            }
+        }
+    
+    
+    
     
         Object.keys(triggerObj).map(element =>{
             this.triggerMap[element] = _.uniq(triggerObj[element])
@@ -159,8 +198,7 @@ class FixTask {
         let TASK_IDS = taskIds
         let TasksObjConfig = Tasks.getTaskObjByGroupConfigCommon([])
         let initData = {}
-
-        TASK_IDS.map( taskId=> {
+        await Promise.all(TASK_IDS.map(async taskId=> {
             let taskNode = null
             let TaskConfig = TasksObjConfig[taskId];
             if (_.isEmpty(taskNode)) {
@@ -168,8 +206,7 @@ class FixTask {
                 taskNode.cntFlag = (TaskConfig.TriggerCounterFlag === 1);
             }
             initData[taskId] = taskNode
-        })
-
+        }))
         return initData
     }
 }

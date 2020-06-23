@@ -73,15 +73,13 @@ class Task {
     }
     
     
-    
-    async getOpenTasks(uuid){
-        
-        
-        this.OpenTaskList = await this.getOpenTaskList(uuid, OpenTaskList)
-        return this.OpenTaskList;
-    }
-    
-    
+    /**
+     *
+     * @param uuid
+     * @param taskId
+     * @returns {Promise<boolean>}
+     */
+    //判断主线是否开启
     async isOpenTasks(uuid,taskId){
         this.OpenTaskList = await this.getOpenTasks(uuid, OpenTaskList)
         let isOpened = false;
@@ -93,7 +91,22 @@ class Task {
         return isOpened;
     }
     
+    /**
+     *
+     * @param uuid
+     * @returns {Promise<[]>}
+     */
+    //获取主线详情
+    async getOpenTasks(uuid){
+        this.OpenTaskList = await this.getOpenTaskList(uuid, OpenTaskList)
+        return this.OpenTaskList;
+    }
     
+    /**
+     *
+     * @param uuid
+     * @returns {Promise<*[]|any>}
+     */
     async getOpenTaskList(uuid){
         try {
             let openTaskList = await this.redisHelper.getOpenTaskList(uuid, OpenTaskList)
@@ -108,7 +121,12 @@ class Task {
     }
     
     
-    
+    /**
+     * 设置添加主线剧情
+     * @param uuid
+     * @param openTaskList
+     * @returns {Promise<void>}
+     */
     async setOpenTaskList(uuid, openTaskList){
         try {
             await this.redisHelper.setOpenTaskList(uuid, OpenTaskList, JSON.stringify(openTaskList))
@@ -118,7 +136,12 @@ class Task {
     }
     
     
-    
+    /**
+     * 任务初始化
+     * @param uuid
+     * @param times
+     * @returns {Promise<void>}
+     */
     async initTask(uuid, times)
     {
         // 任务初始化
@@ -135,9 +158,12 @@ class Task {
     }
     
     
-    
-
-    
+    /**
+     * 检查任务初始化
+     * @param uuid
+     * @param time
+     * @returns {Promise<boolean>}
+     */
     async checkTaskInit(uuid,time){
         let hasData =  await this.taskCheck(uuid);
         if(!hasData){
@@ -146,24 +172,45 @@ class Task {
         return true;
     }
     
+    /**
+     * 判断任务数据数据是否存在
+     * @param uuid
+     * @returns {Promise<*>}
+     */
     async taskCheck(uuid)
     {
        return await this.redisHelper.taskCheck(uuid,TaskFinishTblName)
     }
     
     
+    /**
+     * 批量提前任务数据 taskList
+     * @param uuid
+     * @returns {Promise<*>}
+     */
     async getTaskListData(uuid)
     {
         return await this.redisHelper.hgetall(uuid,TaskFinishTblName)
     }
     
     
+    /**
+     * 批量提取任务统计数据
+     * @param uuid
+     * @returns {Promise<*>}
+     */
     async getTaskCountData(uuid)
     {
         return await this.redisHelper.hgetall(uuid, TaskTriggerTblName)
     }
     
     
+    /**
+     * 根据id提取统计数据
+     * @param uuid
+     * @param actId
+     * @returns {Promise<*[]|*>}
+     */
     async getCountDataById(uuid, actId){
         try {
             if(this.countData[actId]){
@@ -183,6 +230,11 @@ class Task {
 
     }
     
+    /**
+     * 任务actionPoint format
+     * @param arr
+     * @returns {*}
+     */
     fill(arr)
     {
         if(arr.params.length < 2){
@@ -197,44 +249,27 @@ class Task {
         return arr
     }
     
+    
+    /**
+     * 添加 action 枚举 与触发详情
+     * @param type
+     * @param actions
+     */
     addPointObj(type,actions){
         for(let i of actions){
             this.fill(i)
         }
         if(this.actPoints[type]){
-            this.actPoints[type] = [...actions]
+            this.actPoints[type].push(...actions);
         }
         else {
-            this.actPoints[type] = actions;
+            this.actPoints[type] = [];
+            this.actPoints[type] = [...actions];
         }
     }
     
     
-    async getAchievementData(uuid){
-        try {
-            let sList = [];
-            let rList = [];
-            let scores =  await this.achievementScoreGet(uuid)
-            for (const i in scores) {
-                sList.push({type:i, score:scores[i].num})
-            }
-            
-            let setList = await  this.achievementHashGet(uuid)
-            if(!_.isEmpty(setList)){
-                for (const i in setList) {
-                    rList.push({id:i, time:setList[i]})
-                }
-            }
-            
-            return {sList , rList}
-        }catch (e) {
-            console.log(e)
-        }
-    }
-    
-    
-
-
+ 
     countDataUpdate(){
     
         if(_.isEmpty(this.actPoints)){
@@ -285,7 +320,6 @@ class Task {
                 await this.addMultiCounter(uuid)
                 let taskList = this.adjustTaskList(this.tChangeList);
                 let achievementScores = this.adjustAchievementList();
-                
                 return {taskList, achievementScores , taskEventData : this.cChangeObj,openTask: this.OpenTaskList }
             }
         }catch (e) {
@@ -311,26 +345,6 @@ class Task {
 
     }
     
-    async taskComplete(uuid){
-        try {
-            
-            
-            this.taskRedisData[this.tRewardId];
-    
-            console.log("^^^^^^^^^^^^^^^^^^^^^^^")
-            console.log(this.taskRedisData[this.tRewardId]);
-            
-            
- 
-            return ;
-        }catch (e) {
-            //TODO 后续添加报错
-            console.log(e)
-        }
-        
-    }
-    
-    
     
     async doTaskChange(uuid, key, countData)
     {
@@ -339,7 +353,6 @@ class Task {
             let TasksObjConfig = Tasks.getTaskObjByGroupConfigCommon(tasks)
             return await Promise.all(tasks.map(async taskId=>{
                 let TaskConfig = TasksObjConfig[taskId];
-                
                 let taskNode = {};
                 if(this.taskRedisData[taskId]){
                     taskNode = this.taskRedisData[taskId];
@@ -351,7 +364,7 @@ class Task {
                 
                 if(!_.isEmpty(taskNode)){
                     //TODO 周期任务重置
-                    if(taskNode.status === 0){
+                    if(taskNode.status === CONSTANTS.TASK_STATUS.NORMAL){
                         if (!taskNode.cntFlag) {
                             taskNode.finCntObj =  this.doFinObjUpdate(taskNode.finCntObj, countData, TaskConfig, key);
                         }
@@ -361,12 +374,87 @@ class Task {
                             this.doTaskByFinish(taskNode, TasksObjConfig, TaskConfig, (TaskConfig.TriggerCounterFlag === 1) ? this.countData : taskNode.finCntObj);
                         }
                     }
+                    
                 }
             }));
             
         }catch (e) {
             //TODO 后续添加报错
             console.log(e)
+        }
+    }
+    
+    
+    
+    async taskComplete(uuid){
+        try {
+            let taskNode = this.taskRedisData[this.tRewardId];
+            let TaskCof = Tasks.getTaskConfigById(this.tRewardId)
+            if(TaskCof.CycleCompleteCount > 1 && TaskCof.CycleCompleteCount !== taskNode.cycleCount && taskNode.status === CONSTANTS.TASK_STATUS.COMPLETE){
+                for (const item of taskNode.progress) {
+                    item.count = 0;
+                }
+                taskNode.finCntObj ={};
+                taskNode.cycleCount++;
+                taskNode.status = CONSTANTS.TASK_STATUS.NORMAL;
+            }
+            return ;
+        }catch (e) {
+            //TODO 后续添加报错
+            console.log(e)
+        }
+        
+    }
+    
+    
+
+    
+    // 处理完成计数
+    doTaskByFinish(taskNode, TasksObjConfig, TaskConfig, countData) {
+        var oldProgress = JSON.parse(JSON.stringify(taskNode.progress));
+        let isChange = false;
+        if (taskNode.status === CONSTANTS.TASK_STATUS.NORMAL) {
+            // 未完成的任务才需要处理
+            const ConditionLis = {
+                Condition1: TaskConfig.FinishCondition1,
+                Condition2: TaskConfig.FinishCondition2,
+                Condition3: TaskConfig.FinishCondition3
+            }
+            let counter = 0;
+            taskNode.progress = [];
+            let realTasks = 0;
+            for (let i = 1; i <= 3; i++) {
+                if(ConditionLis['Condition' + i].length){
+                    realTasks++;
+                    var ConditionConfig = ConditionLis['Condition' + i], success, progressLis = [];
+                    [success, progressLis] = this.parserConditionParams(ConditionConfig, countData);
+                    // 更新任务的progress
+                    taskNode.progress = taskNode.progress.concat(progressLis);
+                    if (success) ++counter;
+                }
+                
+            }
+            
+            
+            if (counter === realTasks) {
+                //条件都达成，将任务状态设置未完成
+                isChange = true;
+                taskNode.status = CONSTANTS.TASK_STATUS.COMPLETE;
+            }
+        }
+        
+        taskNode = this.dealTaskGroupWithFinish(taskNode, TasksObjConfig, TaskConfig);
+        
+        // 判断任务的前后progress数据是否一致
+        if (!this.checkProgressEqual(oldProgress,taskNode.progress)) {
+            // 任务前后progress不一致（说明有变化）
+            this.tChangeList[taskNode.taskId] = taskNode;
+            this.taskRedisData[taskNode.taskId] = taskNode;
+        }
+        
+        if(isChange){
+            this.tChangeList[taskNode.taskId] = taskNode;
+            this.taskRedisData[taskNode.taskId] = taskNode;
         }
     }
     
@@ -560,7 +648,6 @@ class Task {
     
     }
     
-    
     async triggerTaskByAct(uuid , actKey){
         try {
             if(global.FIX_TASK.triggerMap[actKey]){
@@ -573,7 +660,6 @@ class Task {
         }
     }
     
-
     async tasksTrigger(uuid, taskList ){
         try {
             let TasksObjConfig = Tasks.getTaskObjByGroupConfigCommon(taskList)
@@ -623,8 +709,6 @@ class Task {
     
     async mainTaskTrigger(uuid){
         try {
-            
-            
             this.OpenTaskList = await this.getOpenTasks(uuid)
             let mainId = this.chapterOpen[0];
             var chapId = MainChapterTaskConfig.getChapterId(mainId), newNode = null;
@@ -666,6 +750,36 @@ class Task {
             console.log(e)
         }
     }
+ 
+ 
+    //##################################### achievement #############################################
+    /**
+     * 成就相关数据
+     * @param uuid
+     * @returns {Promise<{sList: [], rList: []}>}
+     */
+    async getAchievementData(uuid){
+        try {
+            let sList = [];
+            let rList = [];
+            let scores =  await this.achievementScoreGet(uuid)
+            for (const i in scores) {
+                sList.push({type:i, score:scores[i].num})
+            }
+            
+            let setList = await  this.achievementHashGet(uuid)
+            if(!_.isEmpty(setList)){
+                for (const i in setList) {
+                    rList.push({id:i, time:setList[i]})
+                }
+            }
+            
+            return {sList , rList}
+        }catch (e) {
+            console.log(e)
+        }
+    }
+    
     
     
     async achievementDataSet(uuid,aid){
@@ -765,20 +879,20 @@ class Task {
             dt = new Date(sTime),
             cycleType = cycle.CycleType,
             flag = false;
-        if (cycleType === CYCLE_TYPES().DAY) {
+        if (cycleType === CONSTANTS.TASK_CYCLE_TYPES.DAY) {
             if (!(now.getFullYear() === dt.getFullYear() &&
                 now.getMonth() === dt.getMonth() && now.getDate() === dt.getDate())) {
                 flag = true;
             }
-        } else if (cycleType === CYCLE_TYPES().WEEK) {
+        } else if (cycleType === CONSTANTS.TASK_CYCLE_TYPES.WEEK) {
             if (now.getDate() !== dt.getDate() && now.getDay() === dt.getDay()) {
                 flag = true;
             }
-        } else if (cycleType === CYCLE_TYPES().MONTH) {
+        } else if (cycleType === CONSTANTS.TASK_CYCLE_TYPES.MONTH) {
             if (now.getMonth() !== dt.getMonth()) {
                 flag = true;
             }
-        } else if (cycleType === CYCLE_TYPES().YEAR) {
+        } else if (cycleType === CONSTANTS.TASK_CYCLE_TYPES.YEAR) {
             if (now.getFullYear() !== dt.getFullYear()) {
                 flag = true;
             }
@@ -809,32 +923,14 @@ class Task {
         return valid;
     }
     
-    
-    doTaskTriggerCondition(taskNode, taskId, triggerCountData, ConditionListConfig) {
-        // 验证完成的条件索引（触发条件索引或完成条件索引）
-        for (let i = 1; i <= 3; i++) {
-            var ConditionConfig = ConditionListConfig['Condition' + i], success, progressLis = [];
-            if (!this.checkCompleteCondIdxValid(taskNode.tgIdxLis, i)) {
-                // 只对之前未被触发的条件进行判断（注：触发条件不处理progress）
-                [success, progressLis] = this.parserConditionParams(ConditionConfig, triggerCountData);
-                if (success) {
-                    // 成功触发（1条触发条件）
-                    // 将触发条件索引加入保存，主要是为了减少逻辑判断
-                    taskNode.tgIdxLis.push(i);
-                }
-            }
-        }
-        return taskNode
-    }
 
-    
     doTaskByDate(taskNode, TaskConfig) {
         // var now = new Date(), skipFlag = false, dateValid = true;
         var isSkip = false;
         if (taskNode.Type === TASK_TYPES().FAST) {
             // 是紧急任务（需判断持续时间）
             if (taskNode) {
-                if (taskNode.status === TASK_STATS().EXPIRED) {
+                if (taskNode.status === CONSTANTS.TASK_STATUS.EXPIRED) {
                     // 状态为已过期
                     isSkip = true;
                 } else {
@@ -854,55 +950,7 @@ class Task {
         return (JSON.stringify(oldPgs) === JSON.stringify(newPgs));
     }
     
-    // 处理完成计数
-    doTaskByFinish(taskNode, TasksObjConfig, TaskConfig, countData) {
-        var oldProgress = JSON.parse(JSON.stringify(taskNode.progress));
-        let isChange = false;
-        if (taskNode.status === TASK_STATS().NORMAL) {
-            // 未完成的任务才需要处理
-            const ConditionLis = {
-                Condition1: TaskConfig.FinishCondition1,
-                Condition2: TaskConfig.FinishCondition2,
-                Condition3: TaskConfig.FinishCondition3
-            }
-            let counter = 0;
-            taskNode.progress = [];
-            let realTasks = 0;
-            for (let i = 1; i <= 3; i++) {
-                if(ConditionLis['Condition' + i].length){
-                    realTasks++;
-                    var ConditionConfig = ConditionLis['Condition' + i], success, progressLis = [];
-                    [success, progressLis] = this.parserConditionParams(ConditionConfig, countData);
-                    // 更新任务的progress
-                    taskNode.progress = taskNode.progress.concat(progressLis);
-                    if (success) ++counter;
-                }
 
-            }
-    
-            
-            if (counter === realTasks) {
-                //条件都达成，将任务状态设置未完成
-                isChange = true;
-                taskNode.status = TASK_STATS().COMPLETE;
-            }
-        }
-        
-        taskNode = this.dealTaskGroupWithFinish(taskNode, TasksObjConfig, TaskConfig);
-        
-        // 判断任务的前后progress数据是否一致
-        if (!this.checkProgressEqual(oldProgress,taskNode.progress)) {
-            // 任务前后progress不一致（说明有变化）
-            this.tChangeList[taskNode.taskId] = taskNode;
-            this.taskRedisData[taskNode.taskId] = taskNode;
-        }
-
-        if(isChange){
-            this.tChangeList[taskNode.taskId] = taskNode;
-            this.taskRedisData[taskNode.taskId] = taskNode;
-        }
-    }
-    
     
     getSubTaskList(TasksObjCfg, groupId) {
         var subTaskLis = [],
@@ -922,10 +970,10 @@ class Task {
         // 获取子任务列表
         if (TaskConfig.SubTaskFlag === 0) {
             // 子任务
-            if (taskNode.status !== TASK_STATS().COMPLETE) {
+            if (taskNode.status !== CONSTANTS.TASK_STATUS.COMPLETE) {
                 // 子任务未完成父任务不允许是完成状态（有子任务必定存在父任务数据）
                 if (taskNode)
-                    taskNode.status = TASK_STATS().NORMAL;
+                    taskNode.status = CONSTANTS.TASK_STATUS.NORMAL;
             }
         } else {
             // 父任务（遍历玩家任务列表查询子任务是否完成）
@@ -933,26 +981,31 @@ class Task {
             for (let subTaskId of subTaskList) {
                 if (subTaskId !== TaskConfig.TaskID) {
                     if (this.taskRedisData[subTaskId]) {
-                        if (this.taskRedisData[subTaskId].status !== TASK_STATS().COMPLETE) {
+                        if (this.taskRedisData[subTaskId].status !== CONSTANTS.TASK_STATUS.COMPLETE) {
                             // 该子任务未完成
-                            this.taskRedisData[TaskConfig.TaskID].status = TASK_STATS().NORMAL;
+                            this.taskRedisData[TaskConfig.TaskID].status = CONSTANTS.TASK_STATUS.NORMAL;
                         }
                     } else {
                         // 不存在该子任务
-                        this.taskRedisData[TaskConfig.TaskID].status = TASK_STATS().NORMAL;
+                        this.taskRedisData[TaskConfig.TaskID].status = CONSTANTS.TASK_STATUS.NORMAL;
                     }
                 }
             }
         }
         return this.taskRedisData[TaskConfig.TaskID];
     }
-
     
+    
+    /**
+     *
+     * @param taskData
+     * @returns {[]}
+     */
     adjustTaskList(taskData) {
         var lis = [], taskNode, status, taskLis = Object.keys(taskData);
         for (let sTaskId of taskLis) {
             if (taskData[sTaskId] &&
-                taskData[sTaskId].status !== TASK_STATS().EXPIRED) {
+                taskData[sTaskId].status !== CONSTANTS.TASK_STATUS.EXPIRED) {
                 // 有任务数据及已触发及未过期
                 taskNode = {
                     taskId: taskData[sTaskId].taskId,
@@ -967,6 +1020,7 @@ class Task {
         }
         return lis;
     }
+    
     
     adjustAchievementList() {
         let sList =[]
@@ -1146,6 +1200,7 @@ class Task {
     }
     
     
+    
     async getTaskList(uuid)
     {
         return await this.redisHelper.hgetall(uuid, TaskFinishTblName)
@@ -1183,7 +1238,7 @@ class Task {
             await Promise.all(taskGroup.map(async taskIdx =>{
                 let taskNode = await this.getTaskData(uuid, taskIdx);
                 // 只要任务组中有一个子任务为非完成状态，就无法领取
-                if (taskNode.status !== TASK_STATS().COMPLETE) {
+                if (taskNode.status !== CONSTANTS.TASK_STATUS.COMPLETE) {
                     taskStatus = false;
                 }
                 
@@ -1192,7 +1247,7 @@ class Task {
             }))
         } else {
             let taskNode = await this.getTaskData(uuid, taskId);
-            if (taskNode.status !== TASK_STATS().COMPLETE) {
+            if (taskNode.status !== CONSTANTS.TASK_STATUS.COMPLETE) {
                 taskStatus = false;
             }
             this.taskRedisData[taskId] = taskNode;
@@ -1204,12 +1259,50 @@ class Task {
     }
     
     
-    updateTaskStatus(taskId,taskGroup){
-        for (const i of taskGroup) {
-            this.taskRedisData[i].status = 2;
-            this.tChangeList[i] = this.taskRedisData[i];
+    
+//################################################ TaskRefresh ##################################################
+    /**
+     * 更新每日任務 判斷每日任务更新时间 isSameDay
+     * @param uuid
+     * @returns {Promise<*>}
+     */
+    async updateDailyTask(uuid){
+        try {
+            //判断每日任务刷新时间
+            let refreshTimes = await this.getDailyTaskRefreshTime(uuid)
+            if(!Utils.isSameDay(refreshTimes,(new Date().getTime()))){
+                let tasks = global.FIX_TASK.dailyTasks||[];
+                await Promise.all(tasks.map(async taskId=>{
+                    let taskNode = {};
+                    if(this.taskRedisData[taskId]){
+                        taskNode = this.taskRedisData[taskId];
+                    }else {
+                        let cacheTask = await this.getFromCacheOrRedis(uuid,taskId);
+                        taskNode = cacheTask[taskId];
+                    }
+        
+                    if(!_.isEmpty(taskNode)){
+                        taskNode.cycleCount = 0; // 重置周期计数
+                        taskNode.finCntObj = {}; // 重置计数器
+                        taskNode.st = (new Date()).getTime();
+                        taskNode.status = CONSTANTS.TASK_STATUS.NORMAL;
+                        for (let i in taskNode.progress) {
+                            taskNode.progress[i].count = 0;
+                        }
+                        this.taskRedisData[taskId] = taskNode;
+                        this.tChangeList[taskId] = taskNode;
+                    }
+                }));
+                
+                return await this.setDailyTaskRefreshTime(uuid);
+            }else {
+
+      
+            }
+        }catch (e) {
+            //TODO 后续添加报错
+            console.log(e)
         }
-        this.tRewardId = taskId;
     }
     
     
@@ -1233,46 +1326,20 @@ class Task {
     }
     
     
-    async updateDailyTask(uuid){
-        try {
-            //判断每日任务刷新时间
-            let refreshTimes = await this.getDailyTaskRefreshTime(uuid)
-            if(!Utils.isSameDay(refreshTimes,(new Date().getTime()))){
-                let tasks = global.FIX_TASK.dailyTasks||[];
-                await Promise.all(tasks.map(async taskId=>{
-                    let taskNode = {};
-                    if(this.taskRedisData[taskId]){
-                        taskNode = this.taskRedisData[taskId];
-                    }else {
-                        let cacheTask = await this.getFromCacheOrRedis(uuid,taskId);
-                        taskNode = cacheTask[taskId];
-                    }
-        
-                    if(!_.isEmpty(taskNode)){
-                        taskNode.cycleCount = 0; // 重置周期计数
-                        taskNode.finCntObj = {}; // 重置计数器
-                        taskNode.st = (new Date()).getTime();
-                        taskNode.status = TASK_STATS().NORMAL;
-                        for (let i in taskNode.progress) {
-                            taskNode.progress[i].count = 0;
-                        }
-                        this.taskRedisData[taskId] = taskNode;
-                        this.tChangeList[taskId] = taskNode;
-                    }
-                }));
-                
-                return await this.setDailyTaskRefreshTime(uuid);
-            }else {
-
-      
-            }
-        }catch (e) {
-            //TODO 后续添加报错
-            console.log(e)
+    
+    /**
+     * 更新任務狀態
+     * @param taskId
+     * @param taskGroup
+     */
+    updateTaskStatus(taskId,taskGroup){
+        for (const i of taskGroup) {
+            // this.taskRedisData[i].status = CONSTANTS.TASK_STATUS.COMPLETE;
+            this.taskRedisData[i].status = CONSTANTS.TASK_STATUS.REWARDED;
+            this.tChangeList[i] = this.taskRedisData[i];
         }
+        this.tRewardId = taskId;
     }
-    
-    
     
     // 多个行为计数
     async addMultiCounter(uuid)
@@ -1289,28 +1356,21 @@ class Task {
                     this.cChangeObj[key].push(dataChange[key][idx])
                 }
             }
-            
             //dailyTask
             await this.updateDailyTask(uuid)
-            
             //并发处理任务
             await this.taskChange(uuid)
-            //完成任務
-            
+            //周期任务调整
             if(this.tRewardId){
                 await this.taskComplete(uuid)
             }
-            
             //根据行为任务触发
             await this.taskTrigger(uuid)
-            
-            
             //主线章节解锁
             if(this.chapterOpen && this.chapterOpen.length){
                 await this.mainTaskTrigger(uuid)
                 await this.setOpenTaskList(uuid,this.OpenTaskList)
             }
-            
             //成就任务id存储
             if(this.aRewardData.length){
                 if(!this.achievementScores){
@@ -1318,7 +1378,6 @@ class Task {
                 }
                 await this.achievementDataSet(uuid)
             }
-           
             //触发相关数据存储
             let _redisData = {};
             for (const actId in this.countData) {
@@ -1340,7 +1399,6 @@ class Task {
     
     
     async getCDataByTypeAndId(uuid, type, id){
-        
         let triggerRecord = await this.redisHelper.taskGetData(uuid, TaskTriggerTblName,type)
         let retData = {};
         if(triggerRecord[type]){
@@ -1350,7 +1408,6 @@ class Task {
                 }
             }
         }
-        
         //{ ids: [ 410001, 0 ], num: 1850 }
         return  retData;
     }

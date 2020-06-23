@@ -57,12 +57,13 @@ class FixTask {
 		return lis;
 	}
 	
+	
 	async initAchievement()
 	{
 		const FIXED_ACHIEVEMENT = global.FIXDB.FIXED_ACHIEVEMENT
 		let achievementIdx =  Object.keys(FIXED_ACHIEVEMENT);
 		let initData = {}
-		achievementIdx.map(async taskId=> {
+		await Promise.all(achievementIdx.map(async taskId=> {
 			let node =  models.achievementModel(taskId)
 			let recordData = FIXED_ACHIEVEMENT[taskId];
 			node.AchievementId = recordData.AchievementId
@@ -74,7 +75,7 @@ class FixTask {
 			node.StartCntCondition = recordData.StartCntCondition
 			node.IsHideType = recordData.IsHideType
 			initData[taskId] = node
-		})
+		}))
 		return initData
 	}
 }

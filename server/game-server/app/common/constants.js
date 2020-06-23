@@ -250,9 +250,33 @@ const REFRESH_TYPE = {
 	TaskDailyRefresh : "TaskDailyRefresh",
 }
 
+//任务状态枚举
+const TASK_STATUS = {
+	NORMAL: 0,      // 未完成
+	COMPLETE: 1,    // 已完成
+	REWARDED: 2,    // 已领取
+	EXPIRED: 3,     // 已过期
+}
+
+//任务周期相关
+const TASK_CYCLE_TYPES = {
+	NONE: 0,        // 没有周期
+	DAY: 1,         // 每天
+	WEEK: 2,        // 每周
+	MONTH: 3,       // 每月
+	YEAR: 4,        // 每年
+	FOREVER: 5,     // 永久
+}
+
+
 
 const CONSTANTS = {};
+
+//任务相关
 CONSTANTS.TASK_TRIGGER_TYPE = TASK_TRIGGER_TYPE;
+CONSTANTS.TASK_STATUS = TASK_STATUS;
+CONSTANTS.TASK_CYCLE_TYPES = TASK_CYCLE_TYPES;
 CONSTANTS.REFRESH_TYPE = REFRESH_TYPE;
+
 
 module.exports = CONSTANTS;

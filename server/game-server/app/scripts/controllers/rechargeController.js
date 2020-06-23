@@ -151,13 +151,13 @@ class rechargeController
         });
     }
 
-
     //获取当前查询的订单状态
     async fetchOrderStatus (sident) {
         return new Promise(resolve => {
             this.getFromDBOrCache(async doc => {
                 if (doc != null && doc.orderList[sident] != null && doc.orderList[sident] != null) {
                     if (doc.orderList[sident].pstatus !== rechargeController.PayStatus().PaySuccess) {
+                        console.log("status ==============> 1")
                         resolve ({status:1}); // 订单还未确认
                     }else {
                         if (doc.orderList[sident].gstatus === rechargeController.GameHandleStatus().ContentUndo) {
@@ -165,6 +165,7 @@ class rechargeController
                             let cid = doc.orderList[sident].cid;
                             let rechargeConfig = RechargeData.getRechargeConfigData(cid);
                             if (rechargeConfig == null) {
+                                console.log("status ==============> 3")
                                 resolve({status: 3}); // 订单配置已失效
                             }else {
                                 let rechargeTime = await player.getRechargeTime ();
@@ -173,6 +174,7 @@ class rechargeController
 
                                 let isFirstRecharge = rechargeTime === 0
                                 if (rechargeTime == null) {
+                                    console.log("status ==============> 4")
                                     resolve({status: 4}); //未找到玩家数据
                                 }else {
 
@@ -209,6 +211,7 @@ class rechargeController
                                         retData.status = 0;
                                         retData.handledOrder.push({sident:sident, cid:doc.orderList[sident].cid, pstatus:doc.orderList[sident].pstatus, gstatus:doc.orderList[sident].gstatus, firstrecharge:isFirstRecharge, addDiamonds:addDiamonds})
                                         this.getOrderRecordFromDBOrCache(record => {
+                                            console.log("status ==============> 5")
                                             if (record.orderList == null) record.orderList = {};
                                             record.orderList[sident] = doc.orderList[sident];
                                             record.orderList[sident].updatetime = utils.getTime();
@@ -221,10 +224,12 @@ class rechargeController
                                 }
                             }
                         }else {
+                            console.log("status ==============> 2")
                             resolve ({status:2}); // 订单已处理
                         }
                     }
                 }else {
+                    console.log("status ==============> 5")
                     resolve ({status:5}); //订单未找到
                 }
             });

@@ -164,12 +164,12 @@ class collectController
                     retUnlockData.poetrys.push (poetry)
                 }
 
-                if (unlockInfo.gitfs) {
-                    if (doc.gitfs == null) doc.gitfs = [];
-                    retUnlockData.gitfs = [];
-                    let gift = models.GiftData (unlockInfo.gitfs);
-                    doc.gitfs.push (gift)
-                    retUnlockData.gitfs.push (gift);
+                if (unlockInfo.gifts) {
+                    if (doc.gifts == null) doc.gifts = [];
+                    retUnlockData.gifts = [];
+                    let gift = models.GiftData (unlockInfo.gifts);
+                    doc.gifts.push (gift)
+                    retUnlockData.gifts.push (gift);
                 }
 
                 this.multiController.uniqPush(1,this.tblname_ + ":" + this.uuid_ , JSON.stringify(doc))

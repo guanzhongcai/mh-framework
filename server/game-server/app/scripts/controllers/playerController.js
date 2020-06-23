@@ -224,7 +224,7 @@ class PlayerController
                         resolve(playerData.firstRechargeReward);
                     }
                 } else {
-                    resolve(true);
+                    resolve(false);
                 }
             });
         });
@@ -489,7 +489,8 @@ class PlayerController
         return items;
     }
 
-    addCurrencyMulti(currency, callback, taskData= null)
+    // addCurrencyMulti(currency, callback, taskData= null)
+    addCurrencyMulti(currency, callback, actType= null)
     {
         var currItem = PlayerController.getItemFromCurrency(currency),
             paramGroup = [];
@@ -509,18 +510,22 @@ class PlayerController
                     if(this.taskController){
                         //TODO 增加货币
                         this.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.GetItem, paramGroup);
+                        if(actType){
+                            this.taskController.addPointObj(actType, paramGroup);
+                        }
                         callback(res.currency)
-                    }else {
-    
-                        var tskSave = taskData ? false : true;
-                        taskController.getSourceTaskData(this.m_uuid, taskData, TaskData => {
-                            taskController.addTaskCounterGroup(TaskData, this.m_uuid, 1, paramGroup, () => {
-                                taskController.setSourceTaskData(this.m_uuid, TaskData, () => {
-                                    callback(res.currency);
-                                }, tskSave);
-                            });
-                        });
                     }
+                    // else {
+                    //
+                    //     var tskSave = taskData ? false : true;
+                    //     taskController.getSourceTaskData(this.m_uuid, taskData, TaskData => {
+                    //         taskController.addTaskCounterGroup(TaskData, this.m_uuid, 1, paramGroup, () => {
+                    //             taskController.setSourceTaskData(this.m_uuid, TaskData, () => {
+                    //                 callback(res.currency);
+                    //             }, tskSave);
+                    //         });
+                    //     });
+                    // }
                 });
             } else {
                 callback(null);

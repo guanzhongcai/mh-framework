@@ -19,6 +19,7 @@ async function fetchOrderStatus(request, response)
         respData.code = ERRCODES().PARAMS_ERROR;
         protocol.responseSend(response, respData);
     } else {
+        console.log("fetchOrderStatus", request.body.sident)
         let retData = await recharge.fetchOrderStatus (request.body.sident);
         if (retData.status == 0)  {
             respData.status = retData.status;

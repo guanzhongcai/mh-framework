@@ -532,73 +532,60 @@ async function SendShortOrder(request, response)
                                     player.addItem (awards.items, itemRet => {
                                         player.addCurrencyMulti (awards.currency, currencyRet => {
                                             respData.currency = currencyRet;
-    
                                             request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.GetItemFromShortOrder,getTaskItemParamGroup(respData.items));
                                             request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.CompleteShortOrder,getTaskParamGroup(respData.items));
                                             request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.CompleteShortOrder_CostItem,getTaskParamGroup(respData.costitems));
                                             request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.ShortOrder_CostItem,getTaskParamGroup(respData.costitems));
-    
                                             if(retData.shortOrders.orderType === orderController.ShortOrderType().TIME){
                                                 request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.Complete_Urgent_ShortOrder,[{params:[0]}]);
     
                                             }
+
            
-                                            // taskController.addTaskCounterGroup(TaskData, request.body.uuid, 524, getTaskItemParamGroup(respData.items), () => {
-                                            //         taskController.addTaskCounterGroup(TaskData, request.body.uuid, 521, getTaskParamGroup(respData.items), () => {
-                                            //             taskController.addTaskCounterGroup(TaskData, request.body.uuid, 526, getTaskParamGroup(respData.costitems), () => {
-                                            //                 taskController.addTaskCounterGroup(TaskData, request.body.uuid, 527, getTaskParamGroup(respData.costitems), () => {
-                                            //                     taskController.getCounterDataByTypeGroup(request.body.uuid, [1, 2, 3, 521, 524, 526, 527], taskEventData => {
-                                            //                         taskController.saveTaskDataFromSource(request.body.uuid, TaskData, () => {
-                                            //                             respData.taskEventData = taskEventData;
-                                                                        request.multiController.save(async function(err,data){
-                                                                            if(err){
-                                                                                respData.code = ERRCODES().FAILED;
-                                                                                return  protocol.responseSend(response, respData);
-                                                                            }
-                                                                            respData.taskEventData = [];
-                                                                            respData.taskList = [];
-                                                                            try {
-                                                                                let {taskList, taskEventData} = await request.taskController.taskUpdate(request.body.uuid)
-                                                                                respData.taskEventData = taskEventData;
-                                                                                respData.taskList = taskList;
-                                                                            }catch (e) {
-                                                                                respData.code = ERRCODES().FAILED;
-                                                                                return  protocol.responseSend(response, respData);
-                                                                            }
-                                                                            protocol.responseSend(response, respData);
-                                                                        })
-                                                                        async.parallel({
-                                                                            "GoodsHouseLog":async function (cb) {
-                                                                                await request.logServer.itemLogBindMohun({uuid:request.body.uuid,
-                                                                                    actionId: request.Const.actions.createShortOrder,
-                                                                                    cost:respData.costitems, gain:respData.shortOrders[0].reward.items,
-                                                                                    heroId: request.body.heroId,
-                                                                                    functionId: request.Const.functions.oddGoodsHouse
-                                                                                });
-                                                                                cb(1)
-                                                                            },
-                                                                            "logCurrency": async function(cb){
-                                                                                await request.logServer.logCurrency(request.body.uuid,request.Const.actions.createShortOrder,request.Const.functions.oddGoodsHouse,0,awards.currency, newCurrency)
-                                                                                cb(1)
-                                                                            },
-                                                                            "logCurrency1": async function(cb){
-                                                                                await request.logServer.logCurrency(request.body.uuid,request.Const.actions.createShortOrder,request.Const.functions.oddGoodsHouse,1,respData.shortOrders[0].reward.currency, newCurrency)
-                                                                                cb(1)
-                                                                            },
-                                                                            "addLevel": async function(cb){
-                                                                                await request.logServer.ExpLog(Object.assign(levelData, {uuid: request.body.uuid,actionId: request.Const.actions.createShortOrder,functionId: request.Const.functions.oddGoodsHouse}))
-                                                                                cb(1)
-                                                                            }
-                                                                        },function (err,results) {
-                                                                        })
-                                                                    // });
-                                                                // });
-                                                            // });
-                                                        // });
-                                                    // });
-                                                // });
-                                        });
-                                    });
+                                            request.multiController.save(async function(err,data){
+                                                if(err){
+                                                    respData.code = ERRCODES().FAILED;
+                                                    return  protocol.responseSend(response, respData);
+                                                }
+                                                respData.taskEventData = [];
+                                                respData.taskList = [];
+                                                try {
+                                                    let {taskList, taskEventData} = await request.taskController.taskUpdate(request.body.uuid)
+                                                    respData.taskEventData = taskEventData;
+                                                    respData.taskList = taskList;
+                                                }catch (e) {
+                                                    respData.code = ERRCODES().FAILED;
+                                                    return  protocol.responseSend(response, respData);
+                                                }
+                                                protocol.responseSend(response, respData);
+                                            })
+                                            async.parallel({
+                                                "GoodsHouseLog":async function (cb) {
+                                                    await request.logServer.itemLogBindMohun({uuid:request.body.uuid,
+                                                        actionId: request.Const.actions.createShortOrder,
+                                                        cost:respData.costitems, gain:respData.shortOrders[0].reward.items,
+                                                        heroId: request.body.heroId,
+                                                        functionId: request.Const.functions.oddGoodsHouse
+                                                    });
+                                                    cb(1)
+                                                },
+                                                "logCurrency": async function(cb){
+                                                    await request.logServer.logCurrency(request.body.uuid,request.Const.actions.createShortOrder,request.Const.functions.oddGoodsHouse,0,awards.currency, newCurrency)
+                                                    cb(1)
+                                                },
+                                                "logCurrency1": async function(cb){
+                                                    await request.logServer.logCurrency(request.body.uuid,request.Const.actions.createShortOrder,request.Const.functions.oddGoodsHouse,1,respData.shortOrders[0].reward.currency, newCurrency)
+                                                    cb(1)
+                                                },
+                                                "addLevel": async function(cb){
+                                                    await request.logServer.ExpLog(Object.assign(levelData, {uuid: request.body.uuid,actionId: request.Const.actions.createShortOrder,functionId: request.Const.functions.oddGoodsHouse}))
+                                                    cb(1)
+                                                }
+                                            },function (err,results) {
+                                            })
+                  
+                                        }, CONSTANTS.TASK_TRIGGER_TYPE.GetItemFromShortOrder);
+                                    }, );
                                 });
                             });
                         });
@@ -800,51 +787,44 @@ async function GetLongOrderReward(request, response){
             let currency = respData.lorderReward.currency;
             let exp = respData.lorderReward.exp;
             assert (items != null && currency != null && exp != null, "should check long order reward data")
-            // taskController.getTaskDataFromSource(request.body.uuid, TaskData => {
-                player.addExp (exp, levelData =>{
-                    respData.userLevelData = levelData;
-                    let totalReward = [];
-                    if (levelData.levelUpAwardItems != null) {
-                        for (let i in levelData.levelUpAwardItems) {
-                            totalReward.push(levelData.levelUpAwardItems[i]);
-                        }
+            player.addExp (exp, levelData =>{
+                respData.userLevelData = levelData;
+                let totalReward = [];
+                if (levelData.levelUpAwardItems != null) {
+                    for (let i in levelData.levelUpAwardItems) {
+                        totalReward.push(levelData.levelUpAwardItems[i]);
                     }
-                    let awards = categoryFromItemList(totalReward);
-                    let newAddItems = items.concat (awards.items);
-                    let totalCostCurrency = [];
-                    for (let i = 0; i < 3; i++) {
-                        totalCostCurrency.push (currency[i] + awards.currency[i]);
-                    }
-                    player.addItem (newAddItems, itemRet => {
-                        player.addCurrencyMulti(totalCostCurrency, newCurrency => {
-                            
-                            
-                            // taskController.getCounterDataByTypeGroup(request.body.uuid, [1], taskEventData => {
-                            //     taskController.saveTaskDataFromSource(request.body.uuid, TaskData, () => {
-                            //         respData.taskEventData = taskEventData;
-                                    request.multiController.save(async function(err,data){
-                                        if(err){
-                                            respData.code = ERRCODES().FAILED;
-                                            return  protocol.responseSend(response, respData);
-                                        }
-                                        respData.taskEventData = [];
-                                        respData.taskList = [];
-                                        try {
-                                            let {taskList, taskEventData} = await request.taskController.taskUpdate(request.body.uuid)
-                                            respData.taskEventData = taskEventData;
-                                            respData.taskList = taskList;
-                                        }catch (e) {
-                                            respData.code = ERRCODES().FAILED;
-                                            return  protocol.responseSend(response, respData);
-                                        }
-                                        protocol.responseSend(response, respData);
-                                    })
-                                // });
-                            // });
-                        });
-                    });
+                }
+                let awards = categoryFromItemList(totalReward);
+                let newAddItems = items.concat (awards.items);
+                let totalCostCurrency = [];
+                for (let i = 0; i < 3; i++) {
+                    totalCostCurrency.push (currency[i] + awards.currency[i]);
+                }
+                player.addItem (newAddItems, itemRet => {
+                    player.addCurrencyMulti(totalCostCurrency, newCurrency => {
+                        request.multiController.save(async function(err,data){
+                            if(err){
+                                respData.code = ERRCODES().FAILED;
+                                return  protocol.responseSend(response, respData);
+                            }
+                            respData.taskEventData = [];
+                            respData.taskList = [];
+                            try {
+                                let {taskList, taskEventData} = await request.taskController.taskUpdate(request.body.uuid)
+                                respData.taskEventData = taskEventData;
+                                respData.taskList = taskList;
+                            }catch (e) {
+                                respData.code = ERRCODES().FAILED;
+                                return  protocol.responseSend(response, respData);
+                            }
+                            protocol.responseSend(response, respData);
+                        })
+          
+                    },CONSTANTS.TASK_TRIGGER_TYPE.GetItemByLongOrder);
                 });
-            // });
+            });
+           
         }else if (retData.status == 1) {
             respData.code = ERRCODES().ORDER_NOT_EXIST;
             protocol.responseSend(response, respData);
@@ -912,11 +892,6 @@ async function LongOrderSpeedUp(request, response){
      player.getLevel (async level => {
          let order = new orderController (request.body.uuid,request.multiController, request.taskController);
          let retData = await order.sendLongOrder (level);
-         
-         
-         
-         
-         
          if (retData.status == 0) {
              respData.lorderReward = retData.lorderReward;
              respData.lorderCount = retData.lorderCount;
@@ -925,31 +900,24 @@ async function LongOrderSpeedUp(request, response){
              request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.LongOrderSend,[{params:[0]}]);
              //TODO 长订单档位
              request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.LongOrderQ_A,  [{params:[respData.lorderReward.level]}] );
-             // request.taskController.addPointObj(CONSTANTS.TASK_TRIGGER_TYPE.GetItemFromShortOrder,  [{params:[respData.lorderReward.level]}] );
-             // taskController.getTaskDataFromSource(request.body.uuid, TaskData => {
-             //     taskController.getCounterDataByTypeGroup(request.body.uuid, [1], taskEventData => {
-             //         taskController.saveTaskDataFromSource(request.body.uuid, TaskData, () => {
-             //             respData.taskEventData = taskEventData;
-                         request.multiController.save(async function(err,data){
-                             if(err){
-                                 respData.code = ERRCODES().FAILED;
-                                 return  protocol.responseSend(response, respData);
-                             }
-                             respData.taskEventData = [];
-                             respData.taskList = [];
-                             try {
-                                 let {taskList, taskEventData} = await request.taskController.taskUpdate(request.body.uuid)
-                                 respData.taskEventData = taskEventData;
-                                 respData.taskList = taskList;
-                             }catch (e) {
-                                 respData.code = ERRCODES().FAILED;
-                                 return  protocol.responseSend(response, respData);
-                             }
-                             protocol.responseSend(response, respData);
-                         })
-                     // });
-                 // });
-             // });
+             request.multiController.save(async function(err,data){
+                 if(err){
+                     respData.code = ERRCODES().FAILED;
+                     return  protocol.responseSend(response, respData);
+                 }
+                 respData.taskEventData = [];
+                 respData.taskList = [];
+                 try {
+                     let {taskList, taskEventData} = await request.taskController.taskUpdate(request.body.uuid)
+                     respData.taskEventData = taskEventData;
+                     respData.taskList = taskList;
+                 }catch (e) {
+                     respData.code = ERRCODES().FAILED;
+                     return  protocol.responseSend(response, respData);
+                 }
+                 protocol.responseSend(response, respData);
+             })
+
          }else if (retData.status == 1) {
              respData.code = ERRCODES().ORDER_NOT_EXIST;
              protocol.responseSend(response, respData);
