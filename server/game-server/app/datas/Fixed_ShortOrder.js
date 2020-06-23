@@ -1,0 +1,26 @@
+function ShortOrderData() {
+	return Object.freeze({
+		1: Object.freeze({ OrderId:1, OrderType:1, MinLevel:1, MaxLevel:3, ValueInterval:'12,12', CateInfo:'1,100', Items:'421015,100', Exp:30, ProfitRate:6.99651619486552, RewardItems:'440007,100|440008,0|440009,0', RewardProb:'5,5', LimitedTime:'', ExtBonus:'' }),
+		2: Object.freeze({ OrderId:2, OrderType:1, MinLevel:4, MaxLevel:5, ValueInterval:'18,22', CateInfo:'1,100', Items:'421015,60|421016,40', Exp:40, ProfitRate:6.99651619486552, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'5,5', LimitedTime:'', ExtBonus:'' }),
+		3: Object.freeze({ OrderId:3, OrderType:1, MinLevel:6, MaxLevel:10, ValueInterval:'24,26', CateInfo:'1,100', Items:'421015,30|421016,30|421022,40', Exp:52, ProfitRate:6.47825573598659, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'4,6|5,5|6,4', LimitedTime:'', ExtBonus:'' }),
+		4: Object.freeze({ OrderId:4, OrderType:1, MinLevel:11, MaxLevel:15, ValueInterval:'30,32', CateInfo:'1,60|2,40', Items:'421015,100|421016,80|421022,120|421017,50|421023,60', Exp:66, ProfitRate:5.99838494072832, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3', LimitedTime:'', ExtBonus:'' }),
+		5: Object.freeze({ OrderId:5, OrderType:1, MinLevel:16, MaxLevel:20, ValueInterval:'42,45', CateInfo:'1,60|2,40', Items:'421015,100|421016,80|421022,120|421017,50|421023,60|421018,10|421043,180', Exp:84, ProfitRate:5.1426482688, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3|8,2', LimitedTime:'', ExtBonus:'' }),
+		6: Object.freeze({ OrderId:6, OrderType:1, MinLevel:21, MaxLevel:25, ValueInterval:'52,56', CateInfo:'1,60|2,40', Items:'421015,100|421016,80|421022,150|421017,60|421023,60|421018,40|421024,10|421043,220|421019,10', Exp:100, ProfitRate:4.76171136, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3|8,2', LimitedTime:'', ExtBonus:'' }),
+		7: Object.freeze({ OrderId:7, OrderType:1, MinLevel:26, MaxLevel:30, ValueInterval:'80,85', CateInfo:'1,20|2,40|3,40', Items:'421015,100|421016,90|421022,100|421017,80|421023,90|421018,70|421024,80|421043,180|421019,60|421025,70|421044,150|421020,50', Exp:100, ProfitRate:4.0824, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3|8,2', LimitedTime:'', ExtBonus:'' }),
+		8: Object.freeze({ OrderId:8, OrderType:1, MinLevel:31, MaxLevel:70, ValueInterval:'125,150', CateInfo:'1,20|2,40|3,40', Items:'421015,100|421016,90|421022,100|421017,80|421023,85|421018,70|421024,70|421043,150|421019,60|421025,55|421044,120|421020,50|421026,40|421045,100|421021,30', Exp:100, ProfitRate:3.5, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3|8,2', LimitedTime:'', ExtBonus:'' }),
+		10001: Object.freeze({ OrderId:10001, OrderType:2, MinLevel:6, MaxLevel:10, ValueInterval:'45,54', CateInfo:'1,25', Items:'421015,30|421016,30|421022,40', Exp:100, ProfitRate:8.63767431464879, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'5,5', LimitedTime:'3600', ExtBonus:'460114,1' }),
+		10002: Object.freeze({ OrderId:10002, OrderType:2, MinLevel:11, MaxLevel:15, ValueInterval:'60,60', CateInfo:'1,70|2,30', Items:'421015,100|421016,80|421022,120|421017,50|421023,60', Exp:130, ProfitRate:7.99784658763776, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'4,6|5,5|6,4', LimitedTime:'3600', ExtBonus:'460114,1' }),
+		10003: Object.freeze({ OrderId:10003, OrderType:2, MinLevel:16, MaxLevel:20, ValueInterval:'80,90', CateInfo:'1,70|2,30', Items:'421015,100|421016,80|421022,120|421017,50|421023,60|421018,10|421043,180', Exp:160, ProfitRate:6.8568643584, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3', LimitedTime:'3600', ExtBonus:'460115,1' }),
+		10004: Object.freeze({ OrderId:10004, OrderType:2, MinLevel:21, MaxLevel:25, ValueInterval:'100,120', CateInfo:'1,40|2,40|3,20', Items:'421015,100|421016,80|421022,150|421017,60|421023,60|421018,40|421024,10|421043,220|421019,10', Exp:180, ProfitRate:6.34894848, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3', LimitedTime:'3600', ExtBonus:'460115,1' }),
+		10005: Object.freeze({ OrderId:10005, OrderType:2, MinLevel:26, MaxLevel:30, ValueInterval:'160,170', CateInfo:'1,40|2,40|3,20', Items:'421015,100|421016,90|421022,100|421017,80|421023,90|421018,70|421024,80|421043,180|421019,60|421025,70|421044,150|421020,50', Exp:200, ProfitRate:5.4432, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3', LimitedTime:'3600', ExtBonus:'460116,1' }),
+		10006: Object.freeze({ OrderId:10006, OrderType:2, MinLevel:31, MaxLevel:70, ValueInterval:'250,270', CateInfo:'1,40|2,40|3,15|4,5', Items:'421015,100|421016,90|421022,100|421017,80|421023,85|421018,70|421024,70|421043,150|421019,60|421025,55|421044,120|421020,50|421026,40|421045,100|421021,30', Exp:200, ProfitRate:4.66666666666667, RewardItems:'440007,10|440008,10|440009,10', RewardProb:'3,7|4,6|5,5|6,4|7,3', LimitedTime:'3600', ExtBonus:'460116,1' }),
+	});
+}
+
+const ShortOrderIndexes = Object.freeze({
+	OrderType1:Object.freeze([1,2,3,4,5,6,7,8]),
+	OrderType2:Object.freeze([10001,10002,10003,10004,10005,10006])
+});
+
+exports.ShortOrderIndexes = ShortOrderIndexes;
+exports.ShortOrderData = ShortOrderData;
