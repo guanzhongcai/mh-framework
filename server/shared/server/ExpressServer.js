@@ -180,7 +180,7 @@ ExpressServer.prototype.InitMiddleware = function () {
     app.use(require('../middleware/logMessage'));
 
     //签名检查
-    app.use(checkSign);
+    // app.use(checkSign);
     this.loadResponseTime();
 };
 
