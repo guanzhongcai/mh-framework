@@ -7,7 +7,8 @@
 		"url": "localhost",
 		"port": 6379,
         "db":3,
-        "password": "mhpass123456",
+		"password-mh": "mhpass123456",
+		"password": "gotech123",
 		"syncdata": "UserSyncData"
 	},
 	"uuid_index": 18808030

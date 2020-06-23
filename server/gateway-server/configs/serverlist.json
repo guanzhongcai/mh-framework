@@ -1,33 +1,20 @@
 [
 	{
 		"serverId": 1,
-		"loginServInfo": {
-			"win32": {
-				"host": "192.168.188.224",
-				"port": 8120
+        "loginServInfo":{
+            "win32":{"host": "192.168.100.169", "port": 6610},
+            "ios":{"host": "192.168.100.169", "port": 6610},
+            "android":{"host": "192.168.100.169", "port": 6610}
 			},
-			"ios": {
-				"host": "192.168.188.224",
-				"port": 8120
+        "gameServInfo":{
+            "win32":{"host": "192.168.100.169", "port": 6410},
+            "ios":{"host": "192.168.100.169", "port": 6410},
+            "android":{"host": "192.168.100.169", "port": 6410}
 			},
-			"android": {
-				"host": "192.168.188.224",
-				"port": 8120
-			}
-		},
-		"gameServInfo": {
-			"win32": {
-				"host": "192.168.188.224",
-				"port": 8130
-			},
-			"ios": {
-				"host": "192.168.188.224",
-				"port": 8130
-			},
-			"android": {
-				"host": "192.168.188.224",
-				"port": 8130
-			}
+        "payServInfo":{
+            "win32":{"host": "192.168.100.169", "port": 6409},
+            "ios":{"host": "192.168.100.169", "port": 6409},
+            "android":{"host": "192.168.100.169", "port": 6409}
 		},
 		"maxNum": 100000,
 		"extNum": 0
