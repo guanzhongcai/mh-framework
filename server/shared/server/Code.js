@@ -13,5 +13,7 @@ module.exports = {
         game: "game",
         config: "config",
         monitor: "monitor",
+        pay: "pay",
+        sdk: "sdk",
     },
 };

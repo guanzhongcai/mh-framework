@@ -44,11 +44,13 @@
     "ORDER":{
         "GoldValueRateDefault":0.1,
         "ItemValueRateDefault":1.0,
+        "ItemSellPriceDefault":100,
         "ShortOrderBuyMax":5,
         "ShortOrderMaxRefreshTime":3,
         "ShortOrderAddCountPerTime":10,
         "ShortOrderCountLimited":20,
         "ShortOrderMaxTimeOrder":1,
+        "LongOrderMaxCount":2,
         "ShortOrderTimeOrderMaxComplete":5,
         "MaxMessageLength":20,
         "LimitedOrderRefreshMaxCount":6,
@@ -72,6 +74,7 @@
         "RespType_Birthday":3,
         "RespType_Return":4
     },
+
     "MapBuildingBuySource":{
         "BuySource_Shop":1,
         "BuySource_Shopcart":2,

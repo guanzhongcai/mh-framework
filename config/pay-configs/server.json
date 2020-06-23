@@ -1,0 +1,23 @@
+{
+    "debug": true,
+    "encrypt": false,
+    "enableClientDebug": true,
+	"server_secret":"de0959ecdb8a62adcb786f7151323fd6",
+    "host": "0.0.0.0",
+    "port": 8411,
+    "gamedb": {
+		"url": "mongodb://localhost:27017",
+		"dbname": "mohungames",
+		"options": {
+			"useNewUrlParser": true,
+			"useUnifiedTopology": true
+		}
+    },
+    "gameRedis": {
+		"url": "127.0.0.1",
+		"port": 6379,
+		"db":0,
+		"password": "mhpass123456",
+        "syncdata": "UserSyncData"
+	}
+}

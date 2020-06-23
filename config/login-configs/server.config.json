@@ -3,7 +3,7 @@
 	"encrypt": true,
 	"version": "1.0.0",
 	"host": "0.0.0.0",
-	"port": 8120,
+	"port": 6610,
 	"gamedb": {
 		"url": "mongodb://localhost:27017",
 		"dbname": "mohungames",
@@ -14,9 +14,9 @@
 	},
 	"loginRedis": {
 		"url": "localhost",
-		"port": 6379,
-		"db": 0,
-		"password": "gotech123",
+		"port": 6379 ,
+		"db":3,
+		"password": "mhpass123456",
 		"syncdata": "UserSyncData"
 	},
 	"gameIndexTables": [
