@@ -18,6 +18,7 @@ configData.Init(serverType, serverConfig.address.config, function (err) {
         Code.ServiceType.login,
         Code.ServiceType.game,
         Code.ServiceType.gateway,
+        Code.ServiceType.pay,
     ];
 
     server.InitMiddleware();
