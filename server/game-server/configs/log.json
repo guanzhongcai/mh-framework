@@ -1,0 +1,16 @@
+{
+  "kafkaConf" : {
+    "enable" : false,
+		"fork": true,
+    "kafkaHost" : "localhost:9092",
+    "zkHost" : "localhost:2181",
+    "topic" : "mohunlogs",
+    "maxCount" : 100
+	},
+	"webConf": {
+		"logFileKeepDays": "1",
+		"autoClearTime": "2",
+		"loggerPath": "./devOpsLog"
+	}
+}
+
