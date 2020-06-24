@@ -28,11 +28,11 @@ module.exports = function (req, res, next) {
         let body;
         if (typeof chunk === "string") {
             body = chunk;
-            console.warn(`string chunk::`, __filename, chunk);
+            // console.warn(`string chunk::`, __filename, chunk);
         } else {
             body = Buffer.concat(chunks).toString('utf8');
         }
-        console.debug(`[LogMessage] %s, %j, 请求= %j, 回应= %s`, req.originalUrl, req.user || {}, msg, body);
+        // console.debug(`[LogMessage] %s, %j, 请求= %j, 回应= %s`, req.originalUrl, req.user || {}, msg, body);
         oldEnd.apply(res, arguments);
     };
 
