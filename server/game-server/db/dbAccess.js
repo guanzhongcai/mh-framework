@@ -19,7 +19,7 @@ exports.InitDB = function (cb) {
         require('../index.app').GameRedisHelper.redisClient = redisAccess;
         let app = require('../app');
         app.watchDatabase('redis', redisAccess);
-        return cb(null);
+        // return cb(null);
 
         const url = configData.mongo.uri;
         const options = configData.mongo.options;
@@ -86,7 +86,7 @@ function dbTest() {
 exports.CloseDB = function (cb) {
 
     redisAccess.shutdown(function (err) {
-        return cb(err);
+        // return cb(err);
         gameMongo.Disconnect(cb);
     });
 };
