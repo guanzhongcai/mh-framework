@@ -6,6 +6,7 @@ const monitorMongo = require('../db/monitorMongo');
 router.post('/add', function (req, res, next) {
 
     const body = req.body;
+    console.debug(`error add::%j`, body);
     monitorMongo.create(monitorMongo.models.ErrorReport, body, function (err) {
 
         res.json({code: 200});

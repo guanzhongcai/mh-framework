@@ -86,7 +86,9 @@ ExpressServer.prototype.InitServer = async function (dbAccess, discoverServers) 
     for (let server of discoverServers) {
         await this.serviceAccess.discover(server);
     }
-    await this.serviceAccess.discover(Code.ServiceType.monitor);
+    if (this.serverType !== Code.ServiceType.monitor) {
+        await this.serviceAccess.discover(Code.ServiceType.monitor);
+    }
 
     this._initMonitor();
 
@@ -167,7 +169,7 @@ ExpressServer.prototype.InitMiddleware = function () {
     const {app} = this;
 
     //终端日志
-    app.use(require('../middleware/logger'));
+    // app.use(require('../middleware/logger'));
 
     //http压缩
     app.use(compression({threshold: '10KB'}));
@@ -177,7 +179,7 @@ ExpressServer.prototype.InitMiddleware = function () {
     app.use(express.urlencoded({extended: false}));
 
     //消息日志
-    app.use(require('../middleware/logMessage'));
+    // app.use(require('../middleware/logMessage'));
 
     //签名检查
     // app.use(checkSign);
