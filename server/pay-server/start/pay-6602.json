@@ -1,0 +1,9 @@
+{
+  "name": "pay-6802",
+  "script": "app.js",
+  "cwd": "../",
+  "max_memory_restart": "800M",
+  "args": "port=6802",
+  "env": {
+  }
+}
