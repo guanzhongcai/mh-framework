@@ -15,7 +15,8 @@ controller.getServices = function () {
     const app = require('../app');
     const loginServInfo = app.serviceAccess.getOne(Code.ServiceType.login);
     const gameServInfo = app.serviceAccess.getOne(Code.ServiceType.game);
+    const payServInfo = app.serviceAccess.getOne(Code.ServiceType.pay);
 
-    return {loginServInfo, gameServInfo};
+    return {loginServInfo, gameServInfo, payServInfo};
 };
 

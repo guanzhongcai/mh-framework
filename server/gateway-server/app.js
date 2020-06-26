@@ -36,6 +36,7 @@ configData.Init(serverType, serverConfig.address.config, function (err) {
         const discoverServers = [
             Code.ServiceType.login,
             Code.ServiceType.game,
+            Code.ServiceType.pay,
         ];
 
         server.InitServer(dbAccess, discoverServers).then(async function () {
