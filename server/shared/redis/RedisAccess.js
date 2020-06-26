@@ -123,7 +123,11 @@ RedisAccess.prototype.hmset = function (key, fieldValue, cb) {
 
     let args = [key];
     for (const field in fieldValue) {
-        args.push(field, fieldValue[field]);
+        let value = fieldValue[field];
+        if (typeof value === 'object') {
+            value = JSON.stringify(value);
+        }
+        args.push(field, value);
     }
     this.exec('hmset', args, cb);
 };
