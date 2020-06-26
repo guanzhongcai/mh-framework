@@ -18,6 +18,7 @@ exp.check = function (limit = 1000) {
 
     _limit = limit;
     return function (req, res, next) {
+        debug(`req:: route=%s, method=%s, body=%j, query=%j`, req.originalUrl, req.method, req.body, req.query);
         if (_processing >= _limit) {
             debug(`_processing is over ${_limit}`);
             if (req.originalUrl.indexOf('/admin/') === -1) {

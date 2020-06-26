@@ -60,7 +60,7 @@ class multiController
         let self = this
         return new Promise(resolve => {
             if(self.pkgcmd.length > 0){
-                this.redisHelper.multi(self.pkgcmd,function(err,data){
+                require('../../../db/redisAccess').multi(self.pkgcmd,function(err,data){
                     ++self.saveCount
                     console.log(self.saveCount + 'do this.packcmd : result',self.pkgcmd,err,data)
                     self.reset()
@@ -85,7 +85,7 @@ class multiController
     save(callback){
         let self = this
         if(this.pkgcmd.length > 0){
-            this.redisHelper.multi(this.pkgcmd,function(err,data){
+            require('../../../db/redisAccess').multi(self.pkgcmd,function(err,data){
                 ++self.saveCount
                 console.log(self.saveCount + 'do this.packcmd : result',self.pkgcmd,err,data)
                 self.reset()
