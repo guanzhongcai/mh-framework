@@ -28,9 +28,28 @@ function loadConfig() {
     }
 }
 
+/**
+ * 加载指定的监听端口
+ */
+function loadArgs() {
+
+    const args = process.argv.splice(2);
+    for (let arg of args) {
+        const [key, value] = arg.split("=");
+        if (key === "port") {
+            port = Number(value);
+            if (!port) {
+                throw new Error(`wrong port=${port}`);
+            }
+        }
+    }
+}
+
 configData.Init(serverType, serverConfig.address.config, function (err) {
 
     loadConfig();
+    loadArgs();
+    server.UpdateListen({host: serverConfig.publicIP, port});
     require('./app/app.init').startServer(server, function (err) {
 
         server.InitServer(dbAccess, []).then(async function () {
